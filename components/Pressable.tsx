@@ -9,7 +9,7 @@ function Pressable({
   onPress,
 }: {
   children: ReactNode;
-  style: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
   activeBackground?: string;
   onPress?: () => void;
 }) {

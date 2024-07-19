@@ -11,7 +11,7 @@ function IconButton({
   icon,
   onPress,
   iconSize,
-  iconColor
+  iconColor = Colors.light.foreground
 }: {
   icon: IconDefinition;
   iconColor?: string;

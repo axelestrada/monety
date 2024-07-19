@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/Colors";
 import { ReactNode } from "react";
 
 import {
@@ -39,7 +40,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,.6)",
+    backgroundColor: Colors.light.modalBackDrop,
   },
 });
 
