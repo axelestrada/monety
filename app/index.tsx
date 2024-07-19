@@ -1,11 +1,13 @@
 import Header from "@/components/Header";
 import { Colors } from "@/constants/Colors";
-import { StatusBar, StyleSheet } from "react-native";
+import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useFonts } from "expo-font";
-import { SplashScreen } from "expo-router";
+import { Link, SplashScreen } from "expo-router";
 import { useCallback } from "react";
+import TimeInterval from "@/components/TimeInterval";
+import { StatusBar } from "expo-status-bar";
 
 export default function Index() {
   // #region Load Fonts
@@ -28,9 +30,10 @@ export default function Index() {
   return (
     <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
       <Header />
+      <TimeInterval />
 
       <StatusBar
-        barStyle="dark-content"
+        style="dark"
         backgroundColor="transparent"
         translucent
       />

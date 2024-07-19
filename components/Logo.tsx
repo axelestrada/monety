@@ -7,7 +7,8 @@ import { StyleSheet, Text, View } from "react-native";
 function Logo() {
   return (
     <View style={styles.logo}>
-      <FontAwesomeIcon icon={faDollar} size={40} />
+      <FontAwesomeIcon icon={faDollar} size={40} color={Colors.light.foreground} />
+
       <View style={styles.textContainer}>
         <Text style={styles.text}>Money</Text>
 
@@ -30,9 +31,10 @@ const styles = StyleSheet.create({
   textContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 4
+    gap: 6,
   },
   text: {
+    color: Colors.light.foreground,
     fontFamily: "Inter-Regular",
     fontSize: 26,
   },

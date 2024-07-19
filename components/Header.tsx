@@ -1,21 +1,26 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { faBars, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { StyleSheet, Text, View } from "react-native";
+import { faBars, faPen } from "@fortawesome/free-solid-svg-icons";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
-import HeaderAction from "./HeaderAction";
+import IconButton from "./IconButton";
+import { Colors } from "@/constants/Colors";
 
 function Header() {
   const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
-      <HeaderAction onPress={() => navigation.dispatch(DrawerActions.openDrawer)} icon={faBars}/>
+      <IconButton
+        onPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+        icon={faBars}
+        iconColor={Colors.light.foreground}
+      />
 
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Overall balance</Text>
-        <Text style={styles.balance}>716 HNL</Text>
+        <Text style={styles.balance}>0 HNL</Text>
       </View>
 
-      <HeaderAction onPress={() => {}} icon={faPlus}  />
+      <IconButton icon={faPen} iconColor={Colors.light.foreground}/>
     </View>
   );
 }
@@ -25,16 +30,18 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
-    paddingHorizontal: 12,
+    paddingHorizontal: 11,
     paddingTop: 8,
   },
   titleContainer: {
     alignItems: "center",
   },
   title: {
+    color: Colors.light.foreground,
     fontFamily: "Inter-Regular",
   },
   balance: {
+    color: Colors.light.foreground,
     fontFamily: "Inter-Regular",
     fontSize: 28,
   },
