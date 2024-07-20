@@ -18,7 +18,7 @@ import TimeIntervalModal from "@/modals/TimeIntervalModal";
 
 
 function TimeInterval() {
-  const [showModal, setShowModal] = useState(true)
+  const [showModal, setShowModal] = useState(false)
 
   return (
     <View style={styles.container}>
