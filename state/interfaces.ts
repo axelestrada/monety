@@ -13,8 +13,17 @@ export interface IOverallBalanceAction {
 
 //#endregion
 
-
 //#region Selected Interval
+
+export const intervalModes = [
+  "range",
+  "allTime",
+  "day",
+  "week",
+  "today",
+  "year",
+  "month",
+] as const;
 
 export interface ISelectedInterval {
   range?: {
@@ -42,7 +51,6 @@ export interface ISelectedIntervalAction {
 
 //#endregion
 
-
 //#region Settings
 
 export interface ISettings {
@@ -50,8 +58,8 @@ export interface ISettings {
     mainCurrency: {
       name: string;
       code: string;
-    }
-  }
+    };
+  };
 }
 
 export interface ISettingsAction {
@@ -67,4 +75,7 @@ export interface IState {
   settings: ISettings;
 }
 
-export type StateActions = IOverallBalanceAction | ISelectedIntervalAction | ISettingsAction
+export type StateActions =
+  | IOverallBalanceAction
+  | ISelectedIntervalAction
+  | ISettingsAction;

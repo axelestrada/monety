@@ -5,6 +5,7 @@ export const Colors = {
     modalCardBackground: "#E6E9F2",
     activeBackground: "rgba(0,0,0,.1)",
     itemActiveBackground: "#DCE2FA",
+    itemHoverBackground: "#DFDEE3",
     foreground: "#1B1A1F",
     textHighlight: "#FFFFFF",
     textHighlightBackground: "#1B1A1F",

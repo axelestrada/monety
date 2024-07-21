@@ -16,12 +16,12 @@ function Pressable({
   return (
     <PressableRaw
       style={({ pressed }) => [
-        activeBackground
+        style,
+        activeBackground && pressed
           ? {
-              backgroundColor: pressed ? activeBackground : "transparent",
+              backgroundColor:activeBackground,
             }
           : {},
-        style,
       ]}
       onPress={onPress}
     >

@@ -28,7 +28,13 @@ let initialState = {
     balance: 0,
   },
   selectedInterval: {
+    range: undefined,
+    allTime: undefined,
+    day: undefined,
+    week: undefined,
     today: new Date(),
+    year: undefined,
+    month: undefined,
   },
   settings: {
     formatting: {

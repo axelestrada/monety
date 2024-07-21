@@ -3,8 +3,11 @@ import { faBars, faPen } from "@fortawesome/free-solid-svg-icons";
 import { DrawerActions, useNavigation } from "@react-navigation/native";
 import IconButton from "./IconButton";
 import { Colors } from "@/constants/Colors";
+import { useContext } from "react";
+import { AppContext } from "@/state/AppProvider";
 
 function Header() {
+  const { state } = useContext(AppContext);
   const navigation = useNavigation();
 
   return (
@@ -16,10 +19,10 @@ function Header() {
 
       <View style={styles.titleContainer}>
         <Text style={styles.title}>Overall balance</Text>
-        <Text style={[styles.title, styles.balance]}>0 HNL</Text>
+        <Text style={[styles.title, styles.balance]}>{state.overallBalance.balance + " " + state.settings.formatting.mainCurrency.code}</Text>
       </View>
 
-      <IconButton icon={faPen}/>
+      <IconButton icon={faPen} />
     </View>
   );
 }
