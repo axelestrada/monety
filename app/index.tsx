@@ -1,19 +1,39 @@
-import Header from "@/components/Header";
-import { Colors } from "@/constants/Colors";
-import { StyleSheet } from "react-native";
+import {
+  Dimensions,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useFonts } from "expo-font";
-import { Link, SplashScreen } from "expo-router";
-import { useCallback } from "react";
-import TimeInterval from "@/components/TimeInterval";
-import { StatusBar } from "expo-status-bar";
+import { SplashScreen } from "expo-router";
+import { useCallback, useState } from "react";
+
+import { BarChart, barDataItem } from "react-native-gifted-charts";
+
+import BackgroundGradient from "@/components/ui/BackgroundGradient";
+import Header from "@/components/Header";
+import BottomTabNavigator from "@/components/BottomTabNavigator";
+import OverallBalance from "@/components/OverallBalance";
+import AnalyticsChart from "@/components/AnalyticsChart";
+import CashFlowItem from "@/components/CashFlowItem";
+import TransactionsList from "@/components/TransactionsList";
+import IconButton from "@/components/ui/IconButton";
+import { Octicons } from "@expo/vector-icons";
 
 export default function Index() {
+  const [analyticsType, setAnalyticsType] = useState<"incomes" | "expenses">(
+    "incomes"
+  );
+
   // #region Load Fonts
   const [fontsLoaded, fontError] = useFonts({
-    "Inter-Regular": require("../assets/fonts/Inter-Regular.ttf"),
-    "Inter-Medium": require("../assets/fonts/Inter-Medium.ttf"),
+    "Rounded-Regular": require("../assets/fonts/Rounded-Regular.ttf"),
+    "Rounded-Medium": require("../assets/fonts/Rounded-Medium.ttf"),
+    "Rounded-Bold": require("../assets/fonts/Rounded-Bold.ttf"),
   });
 
   const onLayoutRootView = useCallback(async () => {
@@ -28,22 +48,37 @@ export default function Index() {
   //#endregion
 
   return (
-    <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
-      <Header />
-      <TimeInterval />
+    <SafeAreaView className="flex flex-1" onLayout={onLayoutRootView}>
+      <BackgroundGradient />
 
-      <StatusBar
-        style="dark"
-        backgroundColor="transparent"
-        translucent
-      />
+      <Header title="Home">
+        <IconButton>
+          <Octicons name="gear" size={20} color="#1B1D1C" />
+        </IconButton>
+      </Header>
+
+      <OverallBalance />
+
+      <ScrollView className="px-4 mt-4" contentContainerStyle={{ flexGrow: 1 }}>
+        <AnalyticsChart type={analyticsType} />
+
+        <View className="flex flex-row mt-4" style={{ gap: 16 }}>
+          <CashFlowItem
+            type="incomes"
+            value={1250}
+            onPress={() => setAnalyticsType("incomes")}
+          />
+          <CashFlowItem
+            type="expenses"
+            value={570}
+            onPress={() => setAnalyticsType("expenses")}
+          />
+        </View>
+
+        <TransactionsList />
+      </ScrollView>
+
+      <BottomTabNavigator />
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: Colors.light.mainBackground,
-  },
-});
