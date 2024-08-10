@@ -17,13 +17,14 @@ const Dropdown = ({
 }: Props) => {
   return (
     <View
-      className="absolute top-6 right-0 -left-5 z-50 bg-white rounded-lg py-1"
+      className="absolute top-6 right-0 -left-6 z-50 bg-white rounded-lg py-1"
       style={{ elevation: 8, shadowColor: "#1B1D1C80" }}
     >
       {options
         .filter((opt) => opt !== selectedOption)
         .map((opt) => (
           <TouchableOpacity
+          key={opt}
             activeOpacity={0.5}
             onPress={() => {
               hide();

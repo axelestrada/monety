@@ -1,7 +1,7 @@
 import { TransactionInterface } from "@/interfaces/transaction";
 import { numberWithSign } from "@/utils/format";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { Text, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import moment from "moment";
 const Transaction = ({
   transaction,
@@ -11,7 +11,7 @@ const Transaction = ({
   const { category, account, amount, type, createdAt } = transaction;
 
   return (
-    <View className="bg-white p-4 mb-4 rounded-2xl flex flex-row justify-between items-center">
+    <TouchableOpacity activeOpacity={0.5} className="bg-white p-4 mb-4 rounded-2xl flex flex-row justify-between items-center">
       <View className="flex flex-row items-center">
         <View
           className={`justify-center items-center p-4 mr-2 rounded-full`}
@@ -46,7 +46,7 @@ const Transaction = ({
           {moment(createdAt).format("DD MMM YY")}
         </Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

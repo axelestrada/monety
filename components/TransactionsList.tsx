@@ -1,5 +1,4 @@
 import { TransactionInterface } from "@/interfaces/transaction";
-import { Feather } from "@expo/vector-icons";
 import { Text, View } from "react-native";
 import SeeAllButton from "./ui/SeeAllButton";
 import Transaction from "./Transaction";
@@ -59,7 +58,7 @@ const data: TransactionInterface[] = [
   },
 ];
 
-const data3: TransactionInterface[] = [];
+const data2: TransactionInterface[] = [];
 
 const TransactionsList = () => {
   return (

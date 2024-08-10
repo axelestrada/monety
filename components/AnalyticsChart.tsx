@@ -57,7 +57,7 @@ interface Props {
 const AnalyticsChart = ({ type }: Props) => {
   const windowWidth = Dimensions.get("window").width;
 
-  const [dropdownOpen, setDropdownOpen] = useState(true);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownSelectedOption, setDropdownSelectedOption] =
     useState("This day");
 
