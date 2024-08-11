@@ -6,15 +6,18 @@ import { firstLetterUppercase, numberWithCommas } from "@/utils/format";
 interface Props {
   type: "incomes" | "expenses";
   value: number;
-  onPress: () => void;
+  active?: boolean;
+  onPress?: () => void;
 }
 
-const CashFlowItem = ({ type, value, onPress }: Props) => {
+const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
   return (
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.5}
-      className="bg-white flex flex-1 rounded-2xl p-4 flex-row items-center"
+      className={`${
+        active && "bg-white"
+      } flex flex-1 rounded-2xl p-4 flex-row items-center`}
     >
       <View
         className={`${

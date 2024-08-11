@@ -1,10 +1,16 @@
 import { Text, View } from "react-native";
 
-const OverallBalance = () => {
+interface Props {
+  compressed?: boolean;
+}
+
+const OverallBalance = ({compressed} : Props) => {
   return (
-    <View className="justify-center items-center py-5">
-      <Text className="text-main-500">Overall balance</Text>
-      <Text className="text-main font-[Rounded-Bold] text-4.5xl">L 4,125.83</Text>
+    <View className={`justify-center items-center ${compressed ? "py-1" : "py-4"}`}>
+      <Text className="text-[#1b1d1c80]">Overall balance</Text>
+      <Text className="text-main font-[Rounded-Bold] text-4.5xl">
+        L 4,125.83
+      </Text>
     </View>
   );
 };

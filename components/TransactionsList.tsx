@@ -62,10 +62,10 @@ const data2: TransactionInterface[] = [];
 
 const TransactionsList = () => {
   return (
-    <View className="mt-4 rounded-md grow">
+    <View className="my-4 rounded-md grow">
       <View className="flex flex-row justify-between items-center mb-3">
         <Text className="font-[Rounded-Bold] text-xl text-main">
-          Recent Transactions
+          Latest Transactions
         </Text>
 
         {data.length > 0 && <SeeAllButton />}

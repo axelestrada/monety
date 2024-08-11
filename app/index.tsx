@@ -1,18 +1,9 @@
-import {
-  Dimensions,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useFonts } from "expo-font";
 import { SplashScreen } from "expo-router";
 import { useCallback, useState } from "react";
-
-import { BarChart, barDataItem } from "react-native-gifted-charts";
 
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import Header from "@/components/Header";
@@ -59,7 +50,7 @@ export default function Index() {
 
       <OverallBalance />
 
-      <ScrollView className="px-4 mt-4" contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView className="px-4 mt-4 -mb-4" contentContainerStyle={{ flexGrow: 1 }}>
         <AnalyticsChart type={analyticsType} />
 
         <View className="flex flex-row mt-4" style={{ gap: 16 }}>

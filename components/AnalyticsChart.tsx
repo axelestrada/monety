@@ -101,7 +101,7 @@ const AnalyticsChart = ({ type }: Props) => {
               {dropdownSelectedOption}
             </Text>
 
-            <View className="bg-yellow rounded-full w-4 h-4 justify-center items-center">
+            <View className="bg-[#73d1cc] rounded-full w-4 h-4 justify-center items-center">
               <Entypo name="chevron-down" color="#1B1D1C" />
             </View>
           </TouchableOpacity>
@@ -110,7 +110,7 @@ const AnalyticsChart = ({ type }: Props) => {
 
       <BarChart
         data={data}
-        frontColor="#FFE56E"
+        frontColor="#73d1cc"
         barBorderRadius={100}
         barWidth={16}
         hideRules
