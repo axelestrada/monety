@@ -1,17 +1,13 @@
-import { FontAwesome6 } from "@expo/vector-icons";
+import { CategoryInterface } from "@/database/models/category";
+import {  Ionicons } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 
 interface Props {
-  category: {
-    amount: number;
-    name: string;
-    icon: string;
-    color: string;
-  };
+  category: CategoryInterface
 }
 
 const Category = ({ category }: Props) => {
-  const { amount, name, icon, color } = category;
+  const { title, icon, color } = category;
 
   return (
     <TouchableOpacity
@@ -22,14 +18,14 @@ const Category = ({ category }: Props) => {
         className={`justify-center items-center p-3 mr-2 rounded-full`}
         style={{ backgroundColor: color + "1A" }}
       >
-        <FontAwesome6 name={icon} color={color} size={18} />
+        <Ionicons name={icon} color={color} size={18} />
       </View>
 
       <View>
-        <Text className="text-main font-[Rounded-Medium] text-lg">{name}</Text>
+        <Text className="text-main font-[Rounded-Medium] text-lg">{title}</Text>
 
         <Text className="text-base font-[Rounded-Regular]" style={{ color }}>
-          L {amount}
+          L 110
         </Text>
       </View>
     </TouchableOpacity>

@@ -59,9 +59,9 @@ const AnalyticsChart = ({ type }: Props) => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownSelectedOption, setDropdownSelectedOption] =
-    useState("This day");
+    useState("Today");
 
-  const dropdownOptions = ["This day", "This week", "This month", "This year"];
+  const dropdownOptions = ["Today", "This week", "This month", "This year"];
 
   return (
     <View className="bg-white rounded-2xl py-4">
@@ -101,7 +101,7 @@ const AnalyticsChart = ({ type }: Props) => {
               {dropdownSelectedOption}
             </Text>
 
-            <View className="bg-[#73d1cc] rounded-full w-4 h-4 justify-center items-center">
+            <View className="bg-yellow rounded-full w-4 h-4 justify-center items-center">
               <Entypo name="chevron-down" color="#1B1D1C" />
             </View>
           </TouchableOpacity>
@@ -110,7 +110,7 @@ const AnalyticsChart = ({ type }: Props) => {
 
       <BarChart
         data={data}
-        frontColor="#73d1cc"
+        frontColor="#FFE56E"
         barBorderRadius={100}
         barWidth={16}
         hideRules

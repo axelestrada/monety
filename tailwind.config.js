@@ -6,11 +6,11 @@ module.exports = {
       colors: {
         main: "#1B1D1C",
         "main-500": "#939496",
-        blue: "#73d1cc",
         green: "#3FE671",
         "green-10": "#3FE6711A",
         red: "#FF8092",
-        "red-10": "#FF80921A"
+        "red-10": "#FF80921A",
+        yellow: "#FFE56E"
       },
       fontSize: {
         "4.5xl": "40px",

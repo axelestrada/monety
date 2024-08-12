@@ -1,16 +1,19 @@
+import { ReactElement } from "react";
 import { Text, View } from "react-native";
 
 interface Props {
-  compressed?: boolean;
+  children?: ReactElement;
 }
 
-const OverallBalance = ({compressed} : Props) => {
+const OverallBalance = ({ children }: Props) => {
   return (
-    <View className={`justify-center items-center ${compressed ? "py-1" : "py-4"}`}>
-      <Text className="text-[#1b1d1c80]">Overall balance</Text>
+    <View className={`justify-center items-center py-4 mb-4`}>
+      <Text className="text-[#1b1d1cbf]">Overall balance</Text>
       <Text className="text-main font-[Rounded-Bold] text-4.5xl">
         L 4,125.83
       </Text>
+
+      {children}
     </View>
   );
 };
