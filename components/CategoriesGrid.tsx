@@ -1,7 +1,6 @@
-import { View } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import Category from "./Category";
 import { CategoryInterface } from "@/database/models/category";
-import { useCallback, useEffect } from "react";
 
 interface Props {
   categories: CategoryInterface[];
@@ -9,11 +8,17 @@ interface Props {
 
 const CategoriesGrid = ({ categories }: Props) => {
   return (
-    <View className="flex flex-1 mb-8" style={{ gap: 16 }}>
-      {categories.map((category) => (
-        <Category key={category.id} category={category} />
-      ))}
-    </View>
+    <FlatList
+      data={categories}
+      renderItem={({ item }) => <Category category={item} />}
+      numColumns={2}
+      style={{ flex: 1 }}
+      contentContainerStyle={{
+        paddingTop: 20,
+        paddingBottom: 4,
+        paddingHorizontal: 8,
+      }}
+    />
   );
 };
 

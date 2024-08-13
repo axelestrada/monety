@@ -1,18 +1,36 @@
 import { CategoryInterface } from "@/database/models/category";
-import {  Ionicons } from "@expo/vector-icons";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Feather, Ionicons } from "@expo/vector-icons";
+import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 
 interface Props {
-  category: CategoryInterface
+  category: CategoryInterface;
 }
 
-const Category = ({ category }: Props) => {
-  const { title, icon, color } = category;
 
-  return (
+
+const Category = ({ category }: Props) => {
+  const windowWidth = Dimensions.get("window").width;
+
+  const { title, icon, color, parentId } = category;
+
+  return parentId === 7 ? (
     <TouchableOpacity
       activeOpacity={0.5}
-      className="bg-white rounded-2xl p-4 flex-row items-center flex-1"
+      className=" mb-[17] mt-[1] mx-[9] rounded-2xl justify-center items-center py-6"
+      style={{
+        width: (windowWidth - 50) / 2,
+        borderStyle: "dashed",
+        borderWidth: 2,
+        borderColor: "#1B1D1C",
+      }}
+    >
+      <Feather name="plus" color={"#1B1D1C"} size={20} />
+    </TouchableOpacity>
+  ) : (
+    <TouchableOpacity
+      activeOpacity={0.5}
+      className="bg-white rounded-2xl p-4 mb-4 mx-2 flex-row items-center"
+      style={{ width: (windowWidth - 48) / 2 }}
     >
       <View
         className={`justify-center items-center p-3 mr-2 rounded-full`}

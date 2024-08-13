@@ -96,9 +96,17 @@ function Categories() {
         color: "#F5C818",
         icon: "shirt-outline",
         id: 8,
-        parentId: null,
         title: "Clothes",
+        parentId: null,
         type: 1,
+      },
+      {
+        color: "",
+        icon: "",
+        id: 0,
+        parentId: 7,
+        title: "",
+        type: 0,
       },
     ]);
   }, []);
@@ -118,7 +126,7 @@ function Categories() {
       </OverallBalance>
 
       <View
-        className="flex flex-row mx-4 p-2 bg-[#FFFFFF80] rounded-2xl"
+        className="flex flex-row mx-4 p-2 bg-[#ffffff99] rounded-2xl"
         style={{ gap: 16 }}
       >
         <CashFlowItem
@@ -136,9 +144,7 @@ function Categories() {
         />
       </View>
 
-      <ScrollView className="flex flex-1 pt-4 px-4">
-        <CategoriesGrid categories={categories} />
-      </ScrollView>
+      <CategoriesGrid categories={categories} />
 
       <BottomTabNavigator />
     </SafeAreaView>
