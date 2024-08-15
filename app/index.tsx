@@ -50,10 +50,10 @@ export default function Index() {
 
       <OverallBalance />
 
-      <ScrollView className="px-4 mt-4 -mb-4" contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView className="mt-4 -mb-4" contentContainerStyle={{ flexGrow: 1 }}>
         <AnalyticsChart type={analyticsType} />
 
-        <View className="flex flex-row mt-4" style={{ gap: 16 }}>
+        <View className="flex flex-row mt-4 mx-2">
           <CashFlowItem
             type="incomes"
             value={1250}

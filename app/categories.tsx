@@ -126,8 +126,7 @@ function Categories() {
       </OverallBalance>
 
       <View
-        className="flex flex-row mx-4 p-2 bg-[#ffffff99] rounded-2xl"
-        style={{ gap: 16 }}
+        className="flex flex-row mx-2 py-2 bg-[#ffffff99] rounded-2xl"
       >
         <CashFlowItem
           type="incomes"

@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 
 import { firstLetterUppercase, numberWithCommas } from "@/utils/format";
+import styles from "@/styles/shadow";
 
 interface Props {
   type: "incomes" | "expenses";
@@ -17,7 +18,8 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
       activeOpacity={0.5}
       className={`${
         active && "bg-white"
-      } flex flex-1 rounded-2xl py-3 px-2 flex-row items-center`}
+      } flex flex-1 rounded-2xl py-3 px-2 mx-2 flex-row items-center`}
+      style={active ? styles.shadow : {}}
     >
       <View
         className={`${

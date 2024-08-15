@@ -1,4 +1,5 @@
 import { CategoryInterface } from "@/database/models/category";
+import styles from "@/styles/shadow";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 
@@ -30,7 +31,7 @@ const Category = ({ category }: Props) => {
     <TouchableOpacity
       activeOpacity={0.5}
       className="bg-white rounded-2xl p-4 mb-4 mx-2 flex-row items-center"
-      style={{ width: (windowWidth - 48) / 2 }}
+      style={{ width: (windowWidth - 48) / 2 , ...styles.shadow}}
     >
       <View
         className={`justify-center items-center p-3 mr-2 rounded-full`}

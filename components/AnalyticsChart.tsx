@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import { BarChart, barDataItem } from "react-native-gifted-charts";
 import Dropdown from "./ui/Dropdown";
+import styles from "@/styles/shadow";
 
 // TODO: Replace data with real information
 
@@ -64,7 +65,7 @@ const AnalyticsChart = ({ type }: Props) => {
   const dropdownOptions = ["Today", "This week", "This month", "This year"];
 
   return (
-    <View className="bg-white rounded-2xl py-4">
+    <View className="bg-white rounded-2xl py-4 mx-4" style={styles.shadow}>
       <View className="flex flex-row justify-between items-center px-4 mb-4">
         <View className="flex flex-row items-center">
           <Text className="text-main text-base font-[Rounded-Bold] mr-1">
