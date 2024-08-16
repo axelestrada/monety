@@ -6,110 +6,36 @@ import OverallBalance from "@/components/OverallBalance";
 import TimeRange from "@/components/TimeRange";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import IconButton from "@/components/ui/IconButton";
-import {
-  createCategoriesTable,
-  getCategories,
-  getDBConnection,
-} from "@/database/db";
-import { CategoryInterface } from "@/database/models/category";
+import { CategoryInterface } from "@/interfaces/category";
 import { Octicons } from "@expo/vector-icons";
-import {
-  ReactElement,
-  ReactNode,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
-import {
-  FlatList,
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-} from "react-native";
+import { useSQLiteContext } from "expo-sqlite";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 function Categories() {
-  const [type, setType] = useState<0 | 1>(1);
+  const [type, setType] = useState<"Income" | "Expense">("Expense");
   const [categories, setCategories] = useState<CategoryInterface[]>([]);
 
+  const db = useSQLiteContext();
+
   useEffect(() => {
-    setCategories([
-      {
-        color: "#744E8C",
-        icon: "fast-food-outline",
-        id: 1,
-        parentId: null,
-        title: "Food",
-        type: 1,
-      },
-      {
-        color: "#E9579F",
-        icon: "cafe-outline",
-        id: 2,
-        parentId: null,
-        title: "Cafe",
-        type: 1,
-      },
-      {
-        color: "#08AFE7",
-        icon: "film-outline",
-        id: 3,
-        parentId: null,
-        title: "Entertainment",
-        type: 1,
-      },
-      {
-        color: "#EA8F3D",
-        icon: "bus-outline",
-        id: 4,
-        parentId: null,
-        title: "Transport",
-        type: 1,
-      },
-      {
-        color: "#0BAF87",
-        icon: "medkit-outline",
-        id: 5,
-        parentId: null,
-        title: "Health",
-        type: 1,
-      },
-      {
-        color: "#C37949",
-        icon: "paw-outline",
-        id: 6,
-        parentId: null,
-        title: "Pets",
-        type: 1,
-      },
-      {
-        color: "#F55351",
-        icon: "people-outline",
-        id: 7,
-        parentId: null,
-        title: "Family",
-        type: 1,
-      },
-      {
-        color: "#F5C818",
-        icon: "shirt-outline",
-        id: 8,
-        title: "Clothes",
-        parentId: null,
-        type: 1,
-      },
-      {
-        color: "",
-        icon: "",
-        id: 0,
-        parentId: 7,
-        title: "",
-        type: 0,
-      },
-    ]);
-  }, []);
+    const getCategories = async () => {
+      const result = await db.getAllAsync<CategoryInterface>(
+        `
+        SELECT * FROM Categories WHERE type = ?;
+        `,
+        type
+      );
+
+      setCategories([
+        ...result,
+        { id: "", name: "", icon: "", color: "", type },
+      ]);
+    };
+
+    getCategories();
+  }, [type]);
 
   return (
     <SafeAreaView className="flex flex-1">
@@ -125,21 +51,19 @@ function Categories() {
         <TimeRange />
       </OverallBalance>
 
-      <View
-        className="flex flex-row mx-2 py-2 bg-[#ffffff99] rounded-2xl"
-      >
+      <View className="flex flex-row mx-2 py-2 bg-[#ffffff99] rounded-2xl">
         <CashFlowItem
           type="incomes"
           value={1250}
-          active={type === 0}
-          onPress={() => setType(0)}
+          active={type === "Income"}
+          onPress={() => setType("Income")}
         />
 
         <CashFlowItem
           type="expenses"
           value={570}
-          active={type === 1}
-          onPress={() => setType(1)}
+          active={type === "Expense"}
+          onPress={() => setType("Expense")}
         />
       </View>
 

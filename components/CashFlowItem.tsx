@@ -2,7 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 
 import { firstLetterUppercase, numberWithCommas } from "@/utils/format";
-import styles from "@/styles/shadow";
+import {styles} from "@/styles/shadow";
 
 interface Props {
   type: "incomes" | "expenses";

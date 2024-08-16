@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { BarChart, barDataItem } from "react-native-gifted-charts";
 import Dropdown from "./ui/Dropdown";
-import styles from "@/styles/shadow";
+import {styles} from "@/styles/shadow";
 
 // TODO: Replace data with real information
 

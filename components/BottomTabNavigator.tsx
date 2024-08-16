@@ -3,7 +3,7 @@ import { View } from "react-native";
 import IconButton from "./ui/IconButton";
 
 import { useRouter, usePathname } from "expo-router";
-import styles from "@/styles/shadow";
+import {styles} from "@/styles/shadow";
 
 const BottomTabNavigator = () => {
   const router = useRouter();

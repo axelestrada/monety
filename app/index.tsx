@@ -1,9 +1,9 @@
-import { ScrollView, View } from "react-native";
+import { ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useFonts } from "expo-font";
-import { SplashScreen } from "expo-router";
-import { useCallback, useState } from "react";
+import { Link, SplashScreen } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import Header from "@/components/Header";
@@ -14,11 +14,61 @@ import CashFlowItem from "@/components/CashFlowItem";
 import TransactionsList from "@/components/TransactionsList";
 import IconButton from "@/components/ui/IconButton";
 import { Octicons } from "@expo/vector-icons";
+import { useSQLiteContext } from "expo-sqlite";
+
+import { v4 as uuidv4 } from "uuid";
+import { defaultCategories } from "@/constants/categories";
 
 export default function Index() {
   const [analyticsType, setAnalyticsType] = useState<"incomes" | "expenses">(
     "incomes"
   );
+
+  const db = useSQLiteContext();
+
+  useEffect(() => {
+    const initializeDatabase = async () => {
+      try {
+        await db.execAsync(`
+          PRAGMA journal_mode = WAL;
+          PRAGMA foreign_keys = ON;
+        `);
+      } catch (error) {
+        console.error(error);
+      }
+
+      const categoriesTable = await db.getAllAsync(`
+        SELECT name FROM sqlite_master WHERE type='table' AND name='Categories';
+        `);
+
+      if (categoriesTable.length === 0) {
+        try {
+          await db.execAsync(`
+            CREATE TABLE IF NOT EXISTS Categories (
+              id TEXT PRIMARY KEY NOT NULL,
+              name TEXT NOT NULL,
+              icon TEXT NOT NULL,
+              color TEXT NOT NULL,
+              type TEXT NOT NULL CHECK (type IN ('Expense', 'Income'))
+          );`);
+
+          defaultCategories.forEach(async ({id, name, icon, color, type}) => {
+            try {
+              await db.runAsync(`
+                INSERT INTO Categories (id, name, icon, color, type) VALUES (?, ?, ?, ?, ?);
+              `, [id, name, icon, color, type]);
+            } catch (error) {
+              console.error();
+            }
+          });
+        } catch (error) {
+          console.error(error);
+        }
+      }
+    };
+
+    initializeDatabase();
+  }, []);
 
   // #region Load Fonts
   const [fontsLoaded, fontError] = useFonts({
@@ -50,7 +100,10 @@ export default function Index() {
 
       <OverallBalance />
 
-      <ScrollView className="mt-4 -mb-4" contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView
+        className="mt-4 -mb-4"
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         <AnalyticsChart type={analyticsType} />
 
         <View className="flex flex-row mt-4 mx-2">

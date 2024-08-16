@@ -1,36 +1,21 @@
-import { CategoryInterface } from "@/database/models/category";
-import styles from "@/styles/shadow";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { CategoryInterface } from "@/interfaces/category";
+import {styles} from "@/styles/shadow";
+import { Ionicons } from "@expo/vector-icons";
 import { Dimensions, Text, TouchableOpacity, View } from "react-native";
 
 interface Props {
   category: CategoryInterface;
 }
 
-
-
 const Category = ({ category }: Props) => {
   const windowWidth = Dimensions.get("window").width;
 
-  const { title, icon, color, parentId } = category;
+  const { name, icon, color } = category;
 
-  return parentId === 7 ? (
+  return (
     <TouchableOpacity
       activeOpacity={0.5}
-      className=" mb-[17] mt-[1] mx-[9] rounded-2xl justify-center items-center py-6"
-      style={{
-        width: (windowWidth - 50) / 2,
-        borderStyle: "dashed",
-        borderWidth: 2,
-        borderColor: "#1B1D1C",
-      }}
-    >
-      <Feather name="plus" color={"#1B1D1C"} size={20} />
-    </TouchableOpacity>
-  ) : (
-    <TouchableOpacity
-      activeOpacity={0.5}
-      className="bg-white rounded-2xl p-4 mb-4 mx-2 flex-row items-center"
+      className="bg-white rounded-2xl py-4 px-2 mb-4 mx-2 flex-row items-center"
       style={{ width: (windowWidth - 48) / 2 , ...styles.shadow}}
     >
       <View
@@ -40,11 +25,11 @@ const Category = ({ category }: Props) => {
         <Ionicons name={icon} color={color} size={18} />
       </View>
 
-      <View>
-        <Text className="text-main font-[Rounded-Medium] text-lg">{title}</Text>
+      <View style={{flex: 1}}>
+        <Text numberOfLines={1} className="text-main font-[Rounded-Medium] text-lg">{name}</Text>
 
         <Text className="text-base font-[Rounded-Regular]" style={{ color }}>
-          L 110
+          L 0
         </Text>
       </View>
     </TouchableOpacity>

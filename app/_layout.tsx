@@ -1,14 +1,17 @@
 import { Stack } from "expo-router";
+import { SQLiteProvider } from "expo-sqlite";
 
 export default function Layout() {
   return (
-    <Stack
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="index" />
-      <Stack.Screen name="categories" />
-    </Stack>
+    <SQLiteProvider databaseName="todos.db">
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="index" />
+        <Stack.Screen name="categories" />
+      </Stack>
+    </SQLiteProvider>
   );
 }

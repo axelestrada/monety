@@ -3,7 +3,7 @@ import { numberWithSign } from "@/utils/format";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 import moment from "moment";
-import styles from "@/styles/shadow";
+import {styles} from "@/styles/shadow";
 const Transaction = ({
   transaction,
 }: {
