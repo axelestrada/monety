@@ -24,7 +24,7 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
       <View
         className={`${
           type === "incomes" ? "bg-green-10" : "bg-red-10"
-        } justify-center items-center p-4 mr-3 rounded-full`}
+        } justify-center items-center p-4 mr-2 rounded-full`}
       >
         <Feather
           name={`${type === "incomes" ? "arrow-down-left" : "arrow-up-right"}`}
@@ -33,7 +33,7 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
         />
       </View>
 
-      <View>
+      <View style={{flex: 1}}>
         <Text
           className={`${
             type === "incomes" ? "text-green" : "text-red"
