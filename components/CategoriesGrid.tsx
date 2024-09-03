@@ -1,14 +1,16 @@
 import { Dimensions, FlatList, TouchableOpacity } from "react-native";
 import Category from "./Category";
-import { CategoryInterface } from "@/interfaces/category";
+import { ICategory } from "@/interfaces/category";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { useState } from "react";
 
 interface Props {
-  categories: CategoryInterface[];
+  categories: ICategory[];
+  openModal: () => void;
 }
 
-const CategoriesGrid = ({ categories }: Props) => {
+const CategoriesGrid = ({ categories, openModal }: Props) => {
   const windowWidth = Dimensions.get("window").width;
   const router = useRouter();
 
@@ -37,6 +39,7 @@ const CategoriesGrid = ({ categories }: Props) => {
                 `/add-category?id=${item.id}&name=${item.name}&icon=${item.icon}&color=${item.color}&type=${item.type}`
               )
             }
+            onPress={openModal}
             category={item}
           />
         )

@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import { colors } from "@/constants/colors";
 import { icons } from "@/constants/icons";
-import { CategoryInterface } from "@/interfaces/category";
+import { ICategory } from "@/interfaces/category";
 import { styles } from "@/styles/shadow";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -180,44 +180,32 @@ const AddCategory = () => {
             <Text className="font-[Rounded-Medium] text-base mb-3">
               Choose color
             </Text>
-
-            <ScrollView
+            <FlatList
+              data={colors.map((color, index) => ({
+                id: index,
+                code: color,
+              }))}
+              contentContainerStyle={{ paddingBottom: 16 }}
               horizontal
-              showsHorizontalScrollIndicator={false}
-              directionalLockEnabled={true}
-              alwaysBounceVertical={false}
-            >
-              <FlatList
-                data={colors.map((color, index) => ({
-                  id: index,
-                  code: color,
-                }))}
-                contentContainerStyle={{ paddingBottom: 16 }}
-                numColumns={Math.ceil(colors.length / 2)}
-                showsVerticalScrollIndicator={false}
-                showsHorizontalScrollIndicator={false}
-                renderItem={({ item }) => (
-                  <TouchableOpacity
-                    activeOpacity={0.5}
-                    key={item.id + item.code}
-                    onPress={() =>
-                      setCategory((prev) => ({ ...prev, color: item.code }))
-                    }
-                    className={`${
-                      category.color === item.code
-                        ? "bg-white"
-                        : "bg-[#FFFFFF33]"
-                    } rounded-lg p-4 mb-4 mr-4`}
-                    style={category.color === item.code ? styles.shadow : {}}
-                  >
-                    <View
-                      className="w-8 h-8 rounded-full"
-                      style={{ backgroundColor: "#" + item.code }}
-                    />
-                  </TouchableOpacity>
-                )}
-              />
-            </ScrollView>
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  activeOpacity={0.5}
+                  key={item.id + item.code}
+                  onPress={() =>
+                    setCategory((prev) => ({ ...prev, color: item.code }))
+                  }
+                  className={`${
+                    category.color === item.code ? "bg-white" : "bg-[#FFFFFF33]"
+                  } rounded-lg p-4 mb-4 mr-4`}
+                  style={category.color === item.code ? styles.shadow : {}}
+                >
+                  <View
+                    className="w-8 h-8 rounded-full"
+                    style={{ backgroundColor: "#" + item.code }}
+                  />
+                </TouchableOpacity>
+              )}
+            />
           </View>
         </View>
 

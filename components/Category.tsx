@@ -1,13 +1,13 @@
-import { CategoryInterface } from "@/interfaces/category";
+import { ICategory } from "@/interfaces/category";
 import {styles} from "@/styles/shadow";
 import { Ionicons } from "@expo/vector-icons";
 import { Dimensions, Text, TouchableOpacity, TouchableOpacityProps, View } from "react-native";
 
 interface Props extends TouchableOpacityProps {
-  category: CategoryInterface;
+  category: ICategory;
 }
 
-const Category = ({ category, onLongPress }: Props) => {
+const Category = ({ category, ...params }: Props) => {
   const windowWidth = Dimensions.get("window").width;
 
   const { name, icon, color } = category;
@@ -16,8 +16,8 @@ const Category = ({ category, onLongPress }: Props) => {
     <TouchableOpacity
       activeOpacity={0.5}
       className="bg-white rounded-2xl py-4 px-2 mb-4 mx-2 flex-row items-center"
-      onLongPress={onLongPress}
       style={{ width: (windowWidth - 48) / 2 , ...styles.shadow}}
+      {...params}
     >
       <View
         className={`justify-center items-center p-3 mr-2 rounded-full`}
