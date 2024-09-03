@@ -13,7 +13,7 @@ const IconButton = ({ children, highlight, onPress }: Props) => {
     <TouchableOpacity
       className={`p-2 -m-2 ${
         highlight && "bg-main rounded-full w-12 h-12 justify-center items-center "
-      }`}
+      }`} 
       activeOpacity={0.5}
       onPress={onPress}
     >

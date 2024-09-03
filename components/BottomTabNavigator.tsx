@@ -3,7 +3,6 @@ import { View } from "react-native";
 import IconButton from "./ui/IconButton";
 
 import { useRouter, usePathname } from "expo-router";
-import {styles} from "@/styles/shadow";
 
 const BottomTabNavigator = () => {
   const router = useRouter();
@@ -14,7 +13,7 @@ const BottomTabNavigator = () => {
       className="bg-white rounded-t-3xl py-6 flex flex-row justify-evenly items-center"
       style={{
         elevation: 32,
-        shadowColor: "##1B1D1C4D"
+        shadowColor: "##1B1D1C4D",
       }}
     >
       <IconButton onPress={() => router.navigate("/")}>
@@ -25,7 +24,7 @@ const BottomTabNavigator = () => {
         />
       </IconButton>
 
-      <IconButton>
+      <IconButton onPress={() => router.navigate("/accounts")}>
         <Ionicons
           name="wallet-outline"
           size={22}

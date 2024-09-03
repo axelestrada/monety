@@ -16,7 +16,7 @@ import IconButton from "@/components/ui/IconButton";
 import { Octicons } from "@expo/vector-icons";
 import { useSQLiteContext } from "expo-sqlite";
 
-import { v4 as uuidv4 } from "uuid";
+import uuid from "react-native-uuid";
 import { defaultCategories } from "@/constants/categories";
 
 export default function Index() {
@@ -52,15 +52,53 @@ export default function Index() {
               type TEXT NOT NULL CHECK (type IN ('Expense', 'Income'))
           );`);
 
-          defaultCategories.forEach(async ({id, name, icon, color, type}) => {
+          defaultCategories.forEach(async ({ id, name, icon, color, type }) => {
             try {
-              await db.runAsync(`
+              await db.runAsync(
+                `
                 INSERT INTO Categories (id, name, icon, color, type) VALUES (?, ?, ?, ?, ?);
-              `, [id, name, icon, color, type]);
+              `,
+                [id, name, icon, color, type]
+              );
             } catch (error) {
               console.error();
             }
           });
+        } catch (error) {
+          console.error(error);
+        }
+      }
+
+      const accountsTable = await db.getAllAsync(`
+        SELECT name FROM sqlite_master WHERE type='table' AND name='Accounts';
+        `);
+
+      if (accountsTable.length === 0) {
+        try {
+          await db.execAsync(`
+            CREATE TABLE IF NOT EXISTS Accounts (
+              id TEXT PRIMARY KEY NOT NULL,
+              name TEXT NOT NULL,
+              description TEXT,
+              icon TEXT NOT NULL,
+              color TEXT NOT NULL,
+              type TEXT NOT NULL CHECK (type IN ('Regular', 'Savings')),
+              currentBalance REAL NOT NULL
+          );`);
+
+          await db.runAsync(
+            `
+              INSERT INTO Accounts (id, name, icon, color, type, currentBalance) VALUES (?, ?, ?, ?, ?, ?);
+              `,
+            [
+              uuid.v4().toString(),
+              "Cash",
+              "cash-outline",
+              "00AD74",
+              "Regular",
+              0,
+            ]
+          );
         } catch (error) {
           console.error(error);
         }
