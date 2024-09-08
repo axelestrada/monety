@@ -15,7 +15,7 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
   return (
     <TouchableOpacity
       onPress={onPress}
-      activeOpacity={0.5}
+      activeOpacity={0.75}
       className={`${
         active && "bg-white"
       } flex flex-1 rounded-2xl py-3 px-2 mx-2 flex-row items-center`}
@@ -28,7 +28,7 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
       >
         <Feather
           name={`${type === "incomes" ? "arrow-down-left" : "arrow-up-right"}`}
-          color={`${type === "incomes" ? "#3FE671" : "#FF8092"}`}
+          color={`${type === "incomes" ? "#6ce590" : "#FF8092"}`}
           size={18}
         />
       </View>

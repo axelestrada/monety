@@ -1,7 +1,7 @@
 import { colors } from "@/constants/colors";
 import { icons } from "@/constants/icons";
 
-export interface IAccount {
+export default interface IAccount {
   id: string;
   name: string;
   description?: string;

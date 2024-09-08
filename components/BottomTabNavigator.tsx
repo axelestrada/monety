@@ -36,7 +36,7 @@ const BottomTabNavigator = () => {
         <Octicons name="apps" size={22} color="#FFFFFF" />
       </IconButton>
 
-      <IconButton>
+      <IconButton onPress={() => router.navigate("/transactions")}>
         <Octicons
           name="rows"
           size={20}

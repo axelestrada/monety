@@ -6,12 +6,12 @@ export const numberWithCommas = (num: number) =>
 
 export const numberWithSign = (
   num: number,
-  type: "income" | "expense" | "transfer"
+  type: "Income" | "Expense" | "Transfer"
 ): string => {
   const signs = {
-    income: "+ ",
-    expense: "- ",
-    transfer: "",
+    Income: "+ ",
+    Expense: "- ",
+    Transfer: "",
   };
 
   return signs[type] + "L" + numberWithCommas(num);

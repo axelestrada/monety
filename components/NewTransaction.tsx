@@ -15,11 +15,30 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import Header from "./Header";
 import { styles } from "@/styles/shadow";
 import { useState } from "react";
+import { IAccount } from "@/interfaces";
+import { useCategories } from "@/hooks";
+import { useAppDispatch, useTypedSelector } from "@/store";
+import { useSQLiteContext } from "expo-sqlite";
+import uuid from "react-native-uuid";
+import { transactionServices } from "@/reducers/transactionsSlice";
 
-const NewTransaction = ({ hideModal }: { hideModal: () => void }) => {
+const NewTransaction = ({
+  hideModal,
+  categoryId,
+}: {
+  hideModal: () => void;
+  categoryId: string;
+}) => {
+  const { categories } = useTypedSelector((state) => state.categories);
+  const { accounts } = useTypedSelector((state) => state.accounts);
+
   const [operator, setOperator] = useState<"+" | "-" | "÷" | "×" | "">("");
   const [firstValue, setFirstValue] = useState("");
   const [secondValue, setSecondValue] = useState("");
+
+  const [comment, setComment] = useState("");
+
+  const db = useSQLiteContext();
 
   const windowWidth = Dimensions.get("window").width;
 
@@ -76,6 +95,59 @@ const NewTransaction = ({ hideModal }: { hideModal: () => void }) => {
     setOperator("");
   };
 
+  const category = categories.find((category) => category.id === categoryId);
+  const account = accounts.find((account) => account.name === "Cash");
+
+  const dispatch = useAppDispatch();
+
+  const addTransaction = async () => {
+    try {
+      if (account && category) {
+        const id = uuid.v4().toString();
+
+        const createdAt = new Date(2024, 8, 7).getTime() / 1000;
+        const date = new Date().getTime() / 1000;
+
+        await db.runAsync(
+          `INSERT INTO Transactions (id, category_id, account_id, created_at, date, amount, comment, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
+          [
+            id,
+            category.id,
+            account.id,
+            createdAt,
+            date,
+            parseFloat(secondValue),
+            comment,
+            category.type,
+          ]
+        );
+
+        setFirstValue("");
+        setSecondValue("");
+
+        dispatch(
+          transactionServices.actions.addTransaction({
+            id,
+            categoryName: category.name,
+            categoryColor: category.color,
+            categoryIcon: category.icon,
+            accountName: account.name,
+            createdAt: createdAt,
+            date,
+            amount: parseFloat(secondValue),
+            comment,
+            type: category.type,
+          })
+        );
+
+        hideModal();
+        setComment("");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
       <TouchableOpacity
@@ -89,65 +161,69 @@ const NewTransaction = ({ hideModal }: { hideModal: () => void }) => {
 
             <ScrollView>
               <View className="flex-row mx-1 mt-4">
-                <TouchableOpacity
-                  activeOpacity={0.5}
-                  className="bg-white rounded-2xl p-2 mx-1 flex-1"
-                  style={{ ...styles.shadow }}
-                >
-                  <View className="flex-row items-center pr-2">
-                    <View
-                      className={`justify-center items-center p-3 mr-2 rounded-full`}
-                      style={{ backgroundColor: "#" + "8FC448" + "1A" }}
-                    >
-                      <Ionicons
-                        name="cash-outline"
-                        color={"#" + "8FC448"}
-                        size={18}
-                      />
-                    </View>
-
-                    <View style={{ flex: 1 }}>
-                      <Text
-                        numberOfLines={1}
-                        className="text-main font-[Rounded-Medium] text-lg"
+                {account && (
+                  <TouchableOpacity
+                    activeOpacity={0.75}
+                    className="bg-white rounded-2xl p-2 mx-1 flex-1"
+                    style={{ ...styles.shadow }}
+                  >
+                    <View className="flex-row items-center">
+                      <View
+                        className={`justify-center items-center p-3 mr-2 rounded-full`}
+                        style={{ backgroundColor: "#" + account.color + "1A" }}
                       >
-                        Cash
-                      </Text>
+                        <Ionicons
+                          name={account.icon}
+                          color={"#" + account.color}
+                          size={18}
+                        />
+                      </View>
+
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          numberOfLines={1}
+                          className="text-main font-[Rounded-Medium] text-lg"
+                        >
+                          {account.name}
+                        </Text>
+                      </View>
+
+                      <Ionicons name="chevron-down" color="#1b1d1c" size={14} />
                     </View>
+                  </TouchableOpacity>
+                )}
 
-                    <Ionicons name="chevron-down" color="#1b1d1c" size={14} />
-                  </View>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  activeOpacity={0.5}
-                  className="bg-white rounded-2xl p-2 mx-2 flex-1"
-                  style={{ ...styles.shadow }}
-                >
-                  <View className="flex-row items-center pr-2">
-                    <View
-                      className={`justify-center items-center p-3 mr-2 rounded-full`}
-                      style={{ backgroundColor: "#" + "E93043" + "1A" }}
-                    >
-                      <Ionicons
-                        name="cash-outline"
-                        color={"#" + "E93043"}
-                        size={18}
-                      />
-                    </View>
-
-                    <View style={{ flex: 1 }}>
-                      <Text
-                        numberOfLines={1}
-                        className="text-main font-[Rounded-Medium] text-lg"
+                {category && (
+                  <TouchableOpacity
+                    activeOpacity={0.75}
+                    className="bg-white rounded-2xl p-2 mx-2 flex-1"
+                    style={{ ...styles.shadow }}
+                  >
+                    <View className="flex-row items-center">
+                      <View
+                        className={`justify-center items-center p-3 mr-2 rounded-full`}
+                        style={{ backgroundColor: "#" + category.color + "1A" }}
                       >
-                        Food
-                      </Text>
-                    </View>
+                        <Ionicons
+                          name={category.icon}
+                          color={"#" + category.color}
+                          size={18}
+                        />
+                      </View>
 
-                    <Ionicons name="chevron-down" color="#1b1d1c" size={14} />
-                  </View>
-                </TouchableOpacity>
+                      <View style={{ flex: 1 }}>
+                        <Text
+                          numberOfLines={1}
+                          className="text-main font-[Rounded-Medium] text-lg"
+                        >
+                          {category.name}
+                        </Text>
+                      </View>
+
+                      <Ionicons name="chevron-down" color="#1b1d1c" size={14} />
+                    </View>
+                  </TouchableOpacity>
+                )}
               </View>
 
               <View className="py-8 justify-center items-center">
@@ -167,6 +243,8 @@ const NewTransaction = ({ hideModal }: { hideModal: () => void }) => {
                 <TextInput
                   className="text-center mt-4 font-[Rounded-Medium] text-base text-main"
                   placeholder="Add comment..."
+                  value={comment}
+                  onChangeText={(value) => setComment(value)}
                 />
 
                 <View className=" py-2 px-1 pt-4 flex-row">
@@ -501,6 +579,14 @@ const NewTransaction = ({ hideModal }: { hideModal: () => void }) => {
                           setOperator("");
                           setFirstValue("");
                           setSecondValue(firstValue);
+                        }
+
+                        if (
+                          operator === "" &&
+                          secondValue !== "" &&
+                          secondValue !== "0"
+                        ) {
+                          addTransaction();
                         }
                       }}
                       style={{ height: ((windowWidth - 48) / 5) * 2 + 8 }}

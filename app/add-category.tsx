@@ -2,7 +2,7 @@ import Header from "@/components/Header";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import { colors } from "@/constants/colors";
 import { icons } from "@/constants/icons";
-import { ICategory } from "@/interfaces/category";
+import { ICategory } from "@/interfaces";
 import { styles } from "@/styles/shadow";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -19,6 +19,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSQLiteContext } from "expo-sqlite";
+import { useCategories } from "@/hooks";
+import { useAppDispatch } from "@/store";
+import { categoriesServices } from "@/reducers/categoriesSlice";
 
 const AddCategory = () => {
   const params: {
@@ -47,11 +50,14 @@ const AddCategory = () => {
 
   const db = useSQLiteContext();
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const saveCategory = async () => {
     const { name, icon, color } = category;
 
     if (name === "") return;
+
+    const id = params.id || uuid.v4().toString()
 
     try {
       if (params.id) {
@@ -59,18 +65,27 @@ const AddCategory = () => {
           `
         UPDATE Categories SET name = ?, icon = ?, color = ?, type = ? WHERE id = ?;
       `,
-          [name, icon, color, type, params.id]
+          [name, icon, color, type, id]
         );
       } else {
         await db.runAsync(
           `
         INSERT INTO Categories (id, name, icon, color, type) VALUES (?, ?, ?, ?, ?);
       `,
-          [uuid.v4().toString(), name, icon, color, type]
+          [id, name, icon, color, type]
         );
       }
 
       setCategory((prev) => ({ ...prev, id: undefined, name: "" }));
+      dispatch(
+        categoriesServices.actions.addCategory({
+          id: id,
+          name,
+          icon,
+          color,
+          type,
+        })
+      );
       router.back();
     } catch (error) {
       console.error();
@@ -82,15 +97,17 @@ const AddCategory = () => {
       if (params.id) {
         await db.runAsync(
           `
-          DELETE FROM Categories WHERE id = ?
+          DELETE FROM Categories WHERE id = ?;
           `,
           params.id
         );
       }
 
+      dispatch(categoriesServices.actions.deleteCategory(params.id));
+
       router.back();
     } catch (error) {
-      console.error();
+      console.error(error);
     }
   };
 
@@ -102,7 +119,7 @@ const AddCategory = () => {
 
       <View className="flex flex-row justify-between bg-[#ffffff33] mx-4 mt-2 py-2 rounded-2xl">
         <TouchableOpacity
-          activeOpacity={0.5}
+          activeOpacity={0.75}
           onPress={() => setType("Income")}
           className={`${
             type === "Income" && "bg-white"
@@ -113,7 +130,7 @@ const AddCategory = () => {
         </TouchableOpacity>
 
         <TouchableOpacity
-          activeOpacity={0.5}
+          activeOpacity={0.75}
           onPress={() => setType("Expense")}
           className={`${
             type === "Expense" && "bg-white"

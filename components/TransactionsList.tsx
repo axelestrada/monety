@@ -1,66 +1,12 @@
-import { TransactionInterface } from "@/interfaces/transaction";
 import { Text, View } from "react-native";
 import SeeAllButton from "./ui/SeeAllButton";
 import Transaction from "./Transaction";
 import NoTransactions from "./NoTransactions";
-
-const data: TransactionInterface[] = [
-  {
-    id: "2436874573958",
-    type: "income",
-    amount: 120,
-    category: {
-      name: "In Driver",
-      color: "#3FE671",
-      icon: "taxi",
-    },
-    account: {
-      name: "Cash",
-      color: "#3FE671",
-      icon: "money-bill",
-    },
-    createdAt: new Date(2024, 7, 6),
-    date: new Date(2024, 7, 6, 13, 23),
-  },
-  {
-    id: "243687456767858",
-    type: "expense",
-    amount: 1350,
-    category: {
-      name: "Fuel",
-      color: "#FF9257",
-      icon: "gas-pump",
-    },
-    account: {
-      name: "Cash",
-      color: "#FF9257",
-      icon: "money-bill",
-    },
-    createdAt: new Date(2024, 7, 8),
-    date: new Date(2024, 7, 6, 13, 23),
-  },
-  {
-    id: "395843756380647",
-    type: "income",
-    amount: 130,
-    category: {
-      name: "In Driver",
-      color: "#3FE671",
-      icon: "taxi",
-    },
-    account: {
-      name: "Cash",
-      color: "#3FE671",
-      icon: "money-bill",
-    },
-    createdAt: new Date(2024, 7, 9),
-    date: new Date(2024, 7, 6, 13, 23),
-  },
-];
-
-const data2: TransactionInterface[] = [];
+import { useTypedSelector } from "@/store";
 
 const TransactionsList = () => {
+  const {transactions} = useTypedSelector((state) => state.transactions)
+
   return (
     <View className="my-4 rounded-md grow">
       <View className="flex flex-row justify-between items-center mb-3 mx-4">
@@ -68,11 +14,11 @@ const TransactionsList = () => {
           Latest Transactions
         </Text>
 
-        {data.length > 0 && <SeeAllButton />}
+        {transactions.length > 0 && <SeeAllButton />}
       </View>
 
-      {data.length > 0 ? (
-        data.map((transaction) => (
+      {transactions.length > 0 ? (
+        transactions.slice(0, 5).map((transaction) => (
           <Transaction key={transaction.id} transaction={transaction} />
         ))
       ) : (

@@ -6,7 +6,7 @@ import OverallBalance from "@/components/OverallBalance";
 import TimeRange from "@/components/TimeRange";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import IconButton from "@/components/ui/IconButton";
-import { ICategory } from "@/interfaces/category";
+import { ICategory } from "@/interfaces";
 import { Octicons } from "@expo/vector-icons";
 import { useSegments } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
@@ -14,49 +14,22 @@ import { useCallback, useEffect, useState } from "react";
 import { Modal, StatusBar, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NewTransaction from "@/components/NewTransaction";
+import { useCategories } from "@/hooks";
+import { useTypedSelector } from "@/store";
 
 function Categories() {
   const [type, setType] = useState<"Income" | "Expense">("Expense");
-  const [categories, setCategories] = useState<ICategory[]>([]);
   const [activeModal, setActiveModal] = useState(false);
+  const [currentCategory, setCurrentCategory] = useState("");
 
-  const db = useSQLiteContext();
-  const segments = useSegments();
-
-  const getCategories = useCallback(async () => {
-    const result = await db.getAllAsync<ICategory>(
-      `
-      SELECT * FROM Categories WHERE type = ?;
-      `,
-      type
-    );
-
-    setCategories([
-      ...result,
-      {
-        id: "",
-        name: "",
-        icon: "accessibility-outline",
-        color: "623387",
-        type,
-      },
-    ]);
-  }, [type]);
-
-  useEffect(() => {
-    getCategories();
-  }, [type]);
-
-  useEffect(() => {
-    if (segments[0] === "categories") getCategories();
-  }, [segments]);
+  const { categories } = useCategories();
+  const { transactions } = useTypedSelector((state) => state.transactions);
 
   return (
     <SafeAreaView className="flex flex-1">
       <BackgroundGradient />
 
       <Modal
-
         visible={activeModal}
         onRequestClose={() => setActiveModal(false)}
         animationType="slide"
@@ -64,7 +37,10 @@ function Categories() {
         statusBarTranslucent
         presentationStyle="overFullScreen"
       >
-        <NewTransaction hideModal={() => setActiveModal(false)} />
+        <NewTransaction
+          hideModal={() => setActiveModal(false)}
+          categoryId={currentCategory}
+        />
       </Modal>
 
       <Header title="Categories">
@@ -80,22 +56,27 @@ function Categories() {
       <View className="flex flex-row mx-4 py-2 bg-[#ffffff80] rounded-2xl">
         <CashFlowItem
           type="incomes"
-          value={1250}
+          value={transactions
+            .filter((transaction) => transaction.type === "Income")
+            .reduce((acc, curr) => acc + curr.amount, 0)}
           active={type === "Income"}
           onPress={() => setType("Income")}
         />
 
         <CashFlowItem
           type="expenses"
-          value={570}
+          value={transactions
+            .filter((transaction) => transaction.type === "Expense")
+            .reduce((acc, curr) => acc + curr.amount, 0)}
           active={type === "Expense"}
           onPress={() => setType("Expense")}
         />
       </View>
 
       <CategoriesGrid
-        categories={categories}
+        categories={categories.filter((item) => item.type === type)}
         openModal={() => setActiveModal(true)}
+        setCurrentCategory={setCurrentCategory}
       />
 
       <BottomTabNavigator />

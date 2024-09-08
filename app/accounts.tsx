@@ -3,13 +3,16 @@ import Header from "@/components/Header";
 import OverallBalance from "@/components/OverallBalance";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import IconButton from "@/components/ui/IconButton";
-import { IAccount } from "@/interfaces/account";
+import { useAccounts } from "@/hooks";
+import { IAccount } from "@/interfaces";
+import { accountsServices } from "@/reducers/accountsSlice";
+import { useAppDispatch, useTypedSelector } from "@/store";
 import { styles } from "@/styles/shadow";
 import { Feather, Ionicons } from "@expo/vector-icons";
-import { useSegments } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import {
+  Button,
   Dimensions,
   FlatList,
   ScrollView,
@@ -19,53 +22,10 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const Accounts = () => {
-  const [accounts, setAccounts] = useState<IAccount[]>([]);
-
-  const db = useSQLiteContext();
-  const segments = useSegments();
+export default function Accounts() {
+  const { accounts } = useAccounts();
 
   const windowWidth = Dimensions.get("window").width;
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const result = await db.getAllAsync<IAccount>(
-          `
-        SELECT * FROM Accounts;
-        `
-        );
-
-        setAccounts([
-          ...result,
-          {
-            id: "",
-            name: "",
-            icon: "accessibility-outline",
-            color: "623387",
-            type: "Regular",
-            currentBalance: 0,
-          },
-          {
-            id: "",
-            name: "",
-            icon: "accessibility-outline",
-            color: "623387",
-            type: "Savings",
-            currentBalance: 0,
-          },
-        ]);
-
-        console.log(result);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    if (segments[0] === "accounts") {
-      fetchData();
-    }
-  }, [segments]);
 
   return (
     <SafeAreaView className="flex flex-1">
@@ -106,7 +66,7 @@ const Accounts = () => {
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
-                activeOpacity={0.5}
+                activeOpacity={0.75}
                 className="bg-white p-4 mb-4 mx-4 rounded-2xl flex flex-row justify-between items-center"
                 style={styles.shadow}
               >
@@ -166,7 +126,7 @@ const Accounts = () => {
                   </TouchableOpacity>
                 ) : (
                   <TouchableOpacity
-                    activeOpacity={0.5}
+                    activeOpacity={0.75}
                     className="bg-white p-4 mb-4 mx-4 rounded-2xl flex flex-row justify-between items-center"
                     style={styles.shadow}
                   >
@@ -203,6 +163,4 @@ const Accounts = () => {
       <BottomTabNavigator />
     </SafeAreaView>
   );
-};
-
-export default Accounts;
+}

@@ -18,6 +18,7 @@ import { useSQLiteContext } from "expo-sqlite";
 
 import uuid from "react-native-uuid";
 import { defaultCategories } from "@/constants/categories";
+import { useAccounts } from "@/hooks";
 
 export default function Index() {
   const [analyticsType, setAnalyticsType] = useState<"incomes" | "expenses">(
@@ -25,8 +26,11 @@ export default function Index() {
   );
 
   const db = useSQLiteContext();
+  const { loadAccounts } = useAccounts();
 
   useEffect(() => {
+    loadAccounts();
+
     const initializeDatabase = async () => {
       try {
         await db.execAsync(`
@@ -102,6 +106,26 @@ export default function Index() {
         } catch (error) {
           console.error(error);
         }
+      }
+
+      try {
+        // await db.execAsync(`DROP TABLE Transactions`);
+
+        await db.execAsync(`
+          CREATE TABLE IF NOT EXISTS Transactions (
+            id TEXT PRIMARY KEY NOT NULL,
+            category_id TEXT NOT NULL,
+            account_id TEXT NOT NULL,
+            created_at INTEGER NOT NULL,
+            date INTEGER NOT NULL,
+            amount REAL NOT NULL,
+            comment TEXT,
+            type TEXT NOT NULL CHECK (type IN ('Income', 'Expense', 'Transfer')),
+            FOREIGN KEY (category_id) REFERENCES Categories (id),
+            FOREIGN KEY (account_id) REFERENCES Accounts (id)
+        );`);
+      } catch (error) {
+        console.error(error);
       }
     };
 
