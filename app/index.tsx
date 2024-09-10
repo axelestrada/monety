@@ -18,7 +18,7 @@ import { useSQLiteContext } from "expo-sqlite";
 
 import uuid from "react-native-uuid";
 import { defaultCategories } from "@/constants/categories";
-import { useAccounts, useTransactions } from "@/hooks";
+import { useAccounts, useCategories, useTransactions } from "@/hooks";
 import { useTypedSelector } from "@/store";
 
 export default function Index() {
@@ -29,12 +29,14 @@ export default function Index() {
   const db = useSQLiteContext();
   const { loadAccounts } = useAccounts();
   const { loadTransactions } = useTransactions();
+  const { loadCategories } = useCategories();
 
   const { transactions } = useTypedSelector((state) => state.transactions);
 
   useEffect(() => {
     loadAccounts();
     loadTransactions();
+    loadCategories();
 
     const initializeDatabase = async () => {
       try {

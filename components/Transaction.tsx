@@ -4,6 +4,7 @@ import { FontAwesome5, Ionicons } from "@expo/vector-icons";
 import { Text, TouchableOpacity, View } from "react-native";
 import moment from "moment";
 import { styles } from "@/styles/shadow";
+import { useTransactions } from "@/hooks";
 const Transaction = ({ transaction }: { transaction: ITransaction }) => {
   const {
     categoryName,
@@ -14,13 +15,17 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
     type,
     createdAt,
     comment,
+    id,
   } = transaction;
+
+  const { deleteTransaction } = useTransactions();
 
   return (
     <TouchableOpacity
       activeOpacity={0.75}
       className="bg-white py-3 px-2 mb-3 mx-3 rounded-2xl"
       style={styles.shadow}
+      onLongPress={() => deleteTransaction(id)}
     >
       <View className="flex flex-row justify-between items-center">
         <View className="flex flex-row items-center">
@@ -41,7 +46,8 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
             </Text>
 
             <Text className="font-[Rounded-Regular] text-sm text-main-500">
-              {accountName}{comment && " • " + comment}
+              {accountName}
+              {comment && " • " + comment}
             </Text>
           </View>
         </View>

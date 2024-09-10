@@ -14,6 +14,19 @@ export default function useTransactions() {
 
   const db = useSQLiteContext();
 
+  const deleteTransaction = useCallback((async (id: string) => {
+    if (id) {
+      await db.runAsync(
+        `
+        DELETE FROM Transactions WHERE id = ?;
+        `,
+        id
+      );
+    }
+
+    dispatch(transactionServices.actions.deleteTransaction(id));
+  }), [])
+
   const loadTransactions = useCallback(async () => {
     try {
       const result = await db.getAllAsync<ITransaction[]>(
@@ -40,5 +53,5 @@ export default function useTransactions() {
     loadTransactions();
   }, [timeRange]);
 
-  return { loadTransactions, transactions };
+  return { loadTransactions, deleteTransaction, transactions };
 }

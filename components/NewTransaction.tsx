@@ -110,7 +110,7 @@ const NewTransaction = ({
     }
 
     if (date >= tomorrow.unix()) {
-      return "Tomorrow, " + moment().format("MMMM DD");
+      return "Tomorrow, " + moment(date * 1000).format("MMMM DD");
     }
 
     if (date >= today.unix()) {
