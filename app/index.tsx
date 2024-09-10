@@ -18,7 +18,8 @@ import { useSQLiteContext } from "expo-sqlite";
 
 import uuid from "react-native-uuid";
 import { defaultCategories } from "@/constants/categories";
-import { useAccounts } from "@/hooks";
+import { useAccounts, useTransactions } from "@/hooks";
+import { useTypedSelector } from "@/store";
 
 export default function Index() {
   const [analyticsType, setAnalyticsType] = useState<"Incomes" | "Expenses">(
@@ -27,9 +28,13 @@ export default function Index() {
 
   const db = useSQLiteContext();
   const { loadAccounts } = useAccounts();
+  const { loadTransactions } = useTransactions();
+
+  const { transactions } = useTypedSelector((state) => state.transactions);
 
   useEffect(() => {
     loadAccounts();
+    loadTransactions();
 
     const initializeDatabase = async () => {
       try {
@@ -171,12 +176,16 @@ export default function Index() {
         <View className="flex flex-row mt-3 mx-1.5">
           <CashFlowItem
             type="Incomes"
-            value={1250}
+            value={transactions
+              .filter((transaction) => transaction.type === "Income")
+              .reduce((acc, curr) => acc + curr.amount, 0)}
             onPress={() => setAnalyticsType("Incomes")}
           />
           <CashFlowItem
             type="Expenses"
-            value={570}
+            value={transactions
+              .filter((transaction) => transaction.type === "Expense")
+              .reduce((acc, curr) => acc + curr.amount, 0)}
             onPress={() => setAnalyticsType("Expenses")}
           />
         </View>
