@@ -45,7 +45,7 @@ const Category = ({ category, summary = 0, ...params }: Props) => {
           className="text-base font-[Rounded-Regular]"
           style={{ color: "#" + color }}
         >
-          L {summary}
+          L {Intl.NumberFormat("en-US").format(summary)}
         </Text>
       </View>
     </TouchableOpacity>

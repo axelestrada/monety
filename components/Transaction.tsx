@@ -16,8 +16,6 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
     comment,
   } = transaction;
 
-  console.log(transaction);
-
   return (
     <TouchableOpacity
       activeOpacity={0.75}
