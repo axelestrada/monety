@@ -50,17 +50,17 @@ const Transactions = () => {
     const formattedNumber = Intl.NumberFormat("en-US").format(number);
 
     if (number < 0) {
-      return "- L " + formattedNumber.toString().slice(1)
+      return "- L " + formattedNumber.toString().slice(1);
     }
 
     if (number === 0) {
-      return "L " + formattedNumber
+      return "L " + formattedNumber;
     }
 
     if (number > 0) {
-      return "+ L " + formattedNumber
+      return "+ L " + formattedNumber;
     }
-  }
+  };
 
   return (
     <SafeAreaView className="flex-1">
@@ -76,20 +76,20 @@ const Transactions = () => {
         <TimeRange />
       </OverallBalance>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="rounded-md grow">
+      <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="-mb-6">
+        <View className="rounded-md grow mb-6">
           {transactions.length <= 0 ? (
             <NoTransactions />
           ) : (
             <>
-              <View className="flex flex-row justify-between items-center mb-3 mx-4">
+              <View className="flex flex-row justify-between items-center mb-2 mx-3">
                 <Text className="font-[Rounded-Bold] text-lg text-main">
                   Today
                 </Text>
 
                 <Text className="font-[Rounded-Bold] text-lg text-main">
-                  {format(transactions
-                    .reduce((acc, cur) => {
+                  {format(
+                    transactions.reduce((acc, cur) => {
                       if (cur.type === "Income") {
                         return acc + cur.amount;
                       }
@@ -100,7 +100,7 @@ const Transactions = () => {
 
                       return acc;
                     }, 0)
-                    )}
+                  )}
                 </Text>
               </View>
 

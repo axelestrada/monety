@@ -8,9 +8,9 @@ const TransactionsList = () => {
   const {transactions} = useTypedSelector((state) => state.transactions)
 
   return (
-    <View className="my-4 rounded-md grow">
-      <View className="flex flex-row justify-between items-center mb-3 mx-4">
-        <Text className="font-[Rounded-Bold] text-xl text-main">
+    <View className="grow mb-6">
+      <View className="flex flex-row justify-between items-center mt-3 mb-2 mx-3">
+        <Text className="font-[Rounded-Bold] text-lg text-main">
           Latest Transactions
         </Text>
 

@@ -40,11 +40,11 @@ export default function Accounts() {
       <OverallBalance />
 
       <ScrollView className="flex flex-1">
-        <View className="mx-4 flex-row justify-between items-center mb-4">
+        <View className="mx-3 flex-row justify-between items-center mb-3">
           <Text className="text-main font-[Rounded-Bold] text-lg">
             Accounts
           </Text>
-          <Text className="text-main font-[Rounded-Bold] text-lg">L 1,250</Text>
+          <Text className="text-main font-[Rounded-Bold] text-lg">L 0</Text>
         </View>
 
         <FlatList
@@ -54,40 +54,40 @@ export default function Accounts() {
             item.id === "" ? (
               <TouchableOpacity
                 activeOpacity={0.5}
-                className="mx-4 rounded-2xl justify-center items-center py-6"
+                className="mx-3 rounded-2xl justify-center items-center py-5"
                 style={{
-                  width: windowWidth - 32,
+                  width: windowWidth - 24,
                   borderStyle: "dashed",
                   borderWidth: 2,
                   borderColor: "#1B1D1C",
                 }}
               >
-                <Feather name="plus" color={"#1B1D1C"} size={20} />
+                <Feather name="plus" color={"#1B1D1C"} size={18} />
               </TouchableOpacity>
             ) : (
               <TouchableOpacity
                 activeOpacity={0.75}
-                className="bg-white p-4 mb-4 mx-4 rounded-2xl flex flex-row justify-between items-center"
+                className="bg-white px-2 py-3 mb-3 mx-3 rounded-2xl flex flex-row justify-between items-center"
                 style={styles.shadow}
               >
                 <View className="flex flex-row items-center">
                   <View
-                    className={`justify-center items-center p-4 mr-2 rounded-full`}
+                    className={`justify-center items-center p-3.5 mr-1.5 rounded-full`}
                     style={{ backgroundColor: "#" + item.color + "1A" }}
                   >
                     <Ionicons
                       name={item.icon}
                       color={"#" + item.color}
-                      size={18}
+                      size={16}
                     />
                   </View>
 
                   <View>
-                    <Text className="font-[Rounded-Bold] text-lg text-main">
+                    <Text className="font-[Rounded-Medium] text-lg text-main">
                       {item.name}
                     </Text>
 
-                    <Text className="font-[Rounded-Regular] text-sm text-main-500">
+                    <Text className="font-[Rounded-Regular] text-base text-main-500">
                       {"L " + item.currentBalance}
                     </Text>
                   </View>

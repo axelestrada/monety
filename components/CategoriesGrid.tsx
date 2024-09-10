@@ -29,18 +29,18 @@ const CategoriesGrid = ({
         item.id === "" ? (
           <TouchableOpacity
             activeOpacity={0.5}
-            className=" mb-[17] mt-[1] mx-[9] rounded-2xl justify-center items-center py-6"
+            className="mb-3 mx-1.5 rounded-2xl justify-center items-center py-5"
             onPress={() => {
               router.navigate(`/add-category?type=${item.type}`);
             }}
             style={{
-              width: (windowWidth - 50) / 2,
+              width: (windowWidth - 36) / 2,
               borderStyle: "dashed",
               borderWidth: 2,
               borderColor: "#1B1D1C",
             }}
           >
-            <Feather name="plus" color={"#1B1D1C"} size={20} />
+            <Feather name="plus" color={"#1B1D1C"} size={18} />
           </TouchableOpacity>
         ) : (
           <Category
@@ -64,9 +64,9 @@ const CategoriesGrid = ({
       numColumns={2}
       contentContainerStyle={{
         flexGrow: 1,
-        paddingTop: 20,
+        paddingTop: 16,
         paddingBottom: 4,
-        paddingHorizontal: 8,
+        paddingHorizontal: 6,
       }}
     />
   );

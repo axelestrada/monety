@@ -21,36 +21,36 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.75}
-      className="bg-white p-4 mb-4 mx-4 rounded-2xl"
+      className="bg-white py-3 px-2 mb-3 mx-3 rounded-2xl"
       style={styles.shadow}
     >
       <View className="flex flex-row justify-between items-center">
         <View className="flex flex-row items-center">
           <View
-            className={`justify-center items-center p-4 mr-2 rounded-full`}
+            className={`justify-center items-center p-3.5 mr-1.5 rounded-full`}
             style={{ backgroundColor: "#" + categoryColor + "1A" }}
           >
             <Ionicons
               name={categoryIcon}
               color={"#" + categoryColor}
-              size={18}
+              size={16}
             />
           </View>
 
           <View>
-            <Text className="font-[Rounded-Bold] text-lg text-main">
+            <Text className="font-[Rounded-Medium] text-lg text-main">
               {categoryName}
             </Text>
 
             <Text className="font-[Rounded-Regular] text-sm text-main-500">
-              {accountName}
+              {accountName}{comment && " • " + comment}
             </Text>
           </View>
         </View>
 
         <View className="items-end">
           <Text
-            className="font-[Rounded-Bold] text-lg"
+            className="font-[Rounded-Medium] text-base"
             style={{ color: type === "Income" ? "#6ce590" : "#FF8092" }}
           >
             {numberWithSign(amount, type)}
@@ -61,12 +61,6 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
           </Text>
         </View>
       </View>
-
-      {comment && (
-        <Text className="font-[Rounded-Regular] text-sm text-main pt-2">
-          {comment}
-        </Text>
-      )}
     </TouchableOpacity>
   );
 };

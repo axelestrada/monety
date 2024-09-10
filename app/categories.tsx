@@ -53,9 +53,9 @@ function Categories() {
         <TimeRange />
       </OverallBalance>
 
-      <View className="flex flex-row mx-4 py-2 bg-[#ffffff80] rounded-2xl">
+      <View className="flex flex-row mx-3 py-1.5 bg-[#ffffff80] rounded-2xl">
         <CashFlowItem
-          type="incomes"
+          type="Incomes"
           value={transactions
             .filter((transaction) => transaction.type === "Income")
             .reduce((acc, curr) => acc + curr.amount, 0)}
@@ -64,7 +64,7 @@ function Categories() {
         />
 
         <CashFlowItem
-          type="expenses"
+          type="Expenses"
           value={transactions
             .filter((transaction) => transaction.type === "Expense")
             .reduce((acc, curr) => acc + curr.amount, 0)}

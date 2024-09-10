@@ -19,7 +19,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.axelestrada.moneymanager"
     },
     "plugins": [
       "expo-router",
@@ -27,6 +28,14 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "686c38a4-bd1a-4dcc-b4f7-1f14061454a0"
+      }
     }
   }
 }

@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { BarChart, barDataItem } from "react-native-gifted-charts";
 import Dropdown from "./ui/Dropdown";
-import {styles} from "@/styles/shadow";
+import { styles } from "@/styles/shadow";
 
 // TODO: Replace data with real information
 
@@ -52,21 +52,20 @@ const data: barDataItem[] = [
 ];
 
 interface Props {
-  type: "incomes" | "expenses";
+  type: "Incomes" | "Expenses";
 }
 
 const AnalyticsChart = ({ type }: Props) => {
   const windowWidth = Dimensions.get("window").width;
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  const [dropdownSelectedOption, setDropdownSelectedOption] =
-    useState("Today");
+  const [dropdownSelectedOption, setDropdownSelectedOption] = useState("Today");
 
   const dropdownOptions = ["Today", "This week", "This month", "This year"];
 
   return (
-    <View className="bg-white rounded-2xl py-4 mx-4" style={styles.shadow}>
-      <View className="flex flex-row justify-between items-center px-4 mb-4">
+    <View className="bg-white rounded-2xl p-2 mx-3" style={styles.shadow}>
+      <View className="flex flex-row justify-between items-center pb-2">
         <View className="flex flex-row items-center">
           <Text className="text-main text-base font-[Rounded-Bold] mr-1">
             Analytics
@@ -74,12 +73,12 @@ const AnalyticsChart = ({ type }: Props) => {
 
           <Text
             className={`${
-              type === "incomes"
+              type === "Incomes"
                 ? "text-green bg-green-10"
                 : "text-red bg-red-10"
-            } rounded-md px-2 py-1`}
+            } rounded-md px-1.5 py-1 text-sm`}
           >
-            {firstLetterUppercase(type)}
+            {type}
           </Text>
         </View>
 
@@ -96,9 +95,9 @@ const AnalyticsChart = ({ type }: Props) => {
           <TouchableOpacity
             onPress={() => setDropdownOpen(!dropdownOpen)}
             activeOpacity={0.5}
-            className="flex flex-row justify-between items-center p-2 -m-2"
+            className="flex flex-row justify-between items-center pr-2 -m-2"
           >
-            <Text className="text-main-500 font-[Rounded-Medium] mr-2">
+            <Text className="text-main-500 font-[Rounded-Medium] mr-1 text-sm">
               {dropdownSelectedOption}
             </Text>
 
@@ -109,29 +108,32 @@ const AnalyticsChart = ({ type }: Props) => {
         </View>
       </View>
 
-      <BarChart
-        data={data}
-        frontColor="#FFE56E"
-        barBorderRadius={100}
-        barWidth={16}
-        hideRules
-        adjustToWidth
-        xAxisLabelTextStyle={{
-          color: "#939496",
-          fontFamily: "Rounded-Regular",
-        }}
-        hideYAxisText
-        hideOrigin
-        yAxisThickness={0}
-        xAxisThickness={0}
-        width={windowWidth - 58}
-        spacing={(windowWidth - 16 * 7 - 50) / 7}
-        initialSpacing={16}
-        endSpacing={4}
-        maxValue={1050}
-        height={150}
-        disableScroll
-      />
+      <View className="-mx-2">
+        <BarChart
+          data={data}
+          frontColor="#FFE56E"
+          barBorderRadius={100}
+          barWidth={16}
+          hideRules
+          adjustToWidth
+          xAxisLabelTextStyle={{
+            color: "#939496",
+            fontFamily: "Rounded-Regular",
+            fontSize: 14,
+          }}
+          hideYAxisText
+          hideOrigin
+          yAxisThickness={0}
+          xAxisThickness={0}
+          width={windowWidth - 40}
+          spacing={(windowWidth - 16 * 7 - 10) / 7}
+          initialSpacing={8}
+          endSpacing={4}
+          maxValue={1050}
+          height={150}
+          disableScroll
+        />
+      </View>
     </View>
   );
 };

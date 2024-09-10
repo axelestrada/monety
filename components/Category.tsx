@@ -22,15 +22,15 @@ const Category = ({ category, summary = 0, ...params }: Props) => {
   return (
     <TouchableOpacity
       activeOpacity={0.75}
-      className="bg-white rounded-2xl py-4 px-2 mb-4 mx-2 flex-row items-center"
-      style={{ width: (windowWidth - 48) / 2, ...styles.shadow }}
+      className="bg-white rounded-2xl py-3 px-2 mb-3 mx-1.5 flex-row items-center"
+      style={{ width: (windowWidth - 36) / 2, ...styles.shadow }}
       {...params}
     >
       <View
-        className={`justify-center items-center p-3 mr-2 rounded-full`}
+        className={`justify-center items-center p-3.5 mr-1.5 rounded-full`}
         style={{ backgroundColor: "#" + color + "1A" }}
       >
-        <Ionicons name={icon} color={"#" + color} size={18} />
+        <Ionicons name={icon} color={"#" + color} size={16} />
       </View>
 
       <View style={{ flex: 1 }}>

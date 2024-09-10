@@ -5,7 +5,7 @@ import { firstLetterUppercase, numberWithCommas } from "@/utils/format";
 import {styles} from "@/styles/shadow";
 
 interface Props {
-  type: "incomes" | "expenses";
+  type: "Incomes" | "Expenses";
   value: number;
   active?: boolean;
   onPress?: () => void;
@@ -18,32 +18,32 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
       activeOpacity={0.75}
       className={`${
         active && "bg-white"
-      } flex flex-1 rounded-2xl py-3 px-2 mx-2 flex-row items-center`}
+      } flex flex-1 rounded-2xl py-3 px-2 mx-1.5 flex-row items-center`}
       style={active ? styles.shadow : {}}
     >
       <View
         className={`${
-          type === "incomes" ? "bg-green-10" : "bg-red-10"
-        } justify-center items-center p-4 mr-2 rounded-full`}
+          type === "Incomes" ? "bg-green-10" : "bg-red-10"
+        } justify-center items-center p-3.5 mr-1.5 rounded-full`}
       >
         <Feather
-          name={`${type === "incomes" ? "arrow-down-left" : "arrow-up-right"}`}
-          color={`${type === "incomes" ? "#6ce590" : "#FF8092"}`}
-          size={18}
+          name={`${type === "Incomes" ? "arrow-down-left" : "arrow-up-right"}`}
+          color={`${type === "Incomes" ? "#6ce590" : "#FF8092"}`}
+          size={16}
         />
       </View>
 
       <View style={{flex: 1}}>
         <Text
           className={`${
-            type === "incomes" ? "text-green" : "text-red"
-          } text-lg font-[Rounded-Bold]`}
+            type === "Incomes" ? "text-green" : "text-red"
+          } text-base font-[Rounded-Bold] -mb-0.5`}
         >
           {"L " + numberWithCommas(value)}
         </Text>
 
-        <Text className="text-main font-[Rounded-Bold] text-lg">
-          {firstLetterUppercase(type)}
+        <Text className="text-main font-[Rounded-Bold] text-base">
+          {type}
         </Text>
       </View>
     </TouchableOpacity>

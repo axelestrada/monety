@@ -10,16 +10,16 @@ const BottomTabNavigator = () => {
 
   return (
     <View
-      className="bg-white rounded-t-3xl py-6 flex flex-row justify-evenly items-center"
+      className="bg-white rounded-t-3xl py-5 flex flex-row justify-evenly items-center"
       style={{
         elevation: 32,
-        shadowColor: "##1B1D1C4D",
+        shadowColor: "#1B1D1C4D",
       }}
     >
       <IconButton onPress={() => router.navigate("/")}>
         <Octicons
           name="home"
-          size={20}
+          size={18}
           color={pathname === "/" ? "#1B1D1C" : "#939496"}
         />
       </IconButton>
@@ -27,19 +27,19 @@ const BottomTabNavigator = () => {
       <IconButton onPress={() => router.navigate("/accounts")}>
         <Ionicons
           name="wallet-outline"
-          size={22}
+          size={20}
           color={pathname === "/accounts" ? "#1B1D1C" : "#939496"}
         />
       </IconButton>
 
       <IconButton highlight onPress={() => router.navigate("/categories")}>
-        <Octicons name="apps" size={22} color="#FFFFFF" />
+        <Octicons name="apps" size={20} color="#FFFFFF" />
       </IconButton>
 
       <IconButton onPress={() => router.navigate("/transactions")}>
         <Octicons
           name="rows"
-          size={20}
+          size={18}
           color={pathname === "/transactions" ? "#1B1D1C" : "#939496"}
         />
       </IconButton>
@@ -47,7 +47,7 @@ const BottomTabNavigator = () => {
       <IconButton>
         <Feather
           name="bar-chart-2"
-          size={22}
+          size={20}
           color={pathname === "/statistics" ? "#1B1D1C" : "#939496"}
         />
       </IconButton>

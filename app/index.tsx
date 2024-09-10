@@ -21,8 +21,8 @@ import { defaultCategories } from "@/constants/categories";
 import { useAccounts } from "@/hooks";
 
 export default function Index() {
-  const [analyticsType, setAnalyticsType] = useState<"incomes" | "expenses">(
-    "incomes"
+  const [analyticsType, setAnalyticsType] = useState<"Incomes" | "Expenses">(
+    "Incomes"
   );
 
   const db = useSQLiteContext();
@@ -156,28 +156,28 @@ export default function Index() {
 
       <Header title="Home">
         <IconButton>
-          <Octicons name="gear" size={20} color="#1B1D1C" />
+          <Octicons name="gear" size={18} color="#1B1D1C" />
         </IconButton>
       </Header>
 
       <OverallBalance />
 
       <ScrollView
-        className="mt-4 -mb-4"
+        className="mt-2 -mb-6"
         contentContainerStyle={{ flexGrow: 1 }}
       >
         <AnalyticsChart type={analyticsType} />
 
-        <View className="flex flex-row mt-4 mx-2">
+        <View className="flex flex-row mt-3 mx-1.5">
           <CashFlowItem
-            type="incomes"
+            type="Incomes"
             value={1250}
-            onPress={() => setAnalyticsType("incomes")}
+            onPress={() => setAnalyticsType("Incomes")}
           />
           <CashFlowItem
-            type="expenses"
+            type="Expenses"
             value={570}
-            onPress={() => setAnalyticsType("expenses")}
+            onPress={() => setAnalyticsType("Expenses")}
           />
         </View>
 

@@ -14,14 +14,14 @@ const Header = ({ title, children, goBack }: Props) => {
   const router = useRouter();
 
   return (
-    <View className="flex flex-row justify-between items-center p-4">
+    <View className="flex flex-row justify-between items-center py-2 px-3">
       {goBack && (
         <IconButton onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={20} color="#1B1D1C" />
+          <Ionicons name="arrow-back" size={18} color="#1B1D1C" />
         </IconButton>
       )}
 
-      <Text className="text-main text-2xl font-[Rounded-Bold]">{title}</Text>
+      <Text className="text-main text-xl font-[Rounded-Bold]">{title}</Text>
 
       {children}
 
