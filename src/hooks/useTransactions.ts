@@ -8,14 +8,7 @@ import { transactionServices } from "@/reducers/transactionsSlice";
 import moment from "moment";
 
 export default function useTransactions() {
-  const [timeRange, setTimeRange] = useState<{
-    from: moment.Moment;
-    to: moment.Moment;
-  }>({
-    from: moment().startOf("day"),
-    to: moment().endOf("day"),
-  });
-
+  const { timeRange } = useTypedSelector((state) => state.userPreferences);
   const { transactions } = useTypedSelector((state) => state.transactions);
   const dispatch = useAppDispatch();
 
@@ -34,18 +27,18 @@ export default function useTransactions() {
         WHERE Transactions.created_at >= ? AND Transactions.created_at <= ?
         ORDER BY Transactions.date DESC;
       `,
-        [timeRange.from.unix(), timeRange.to.unix()]
+        [timeRange.from, timeRange.to]
       );
 
       dispatch(transactionServices.actions.updateTransactions(result));
     } catch (error) {
       console.error(error);
     }
-  }, []);
+  }, [timeRange]);
 
   useEffect(() => {
     loadTransactions();
-  }, []);
+  }, [timeRange]);
 
   return { loadTransactions, transactions };
 }

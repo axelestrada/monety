@@ -21,6 +21,7 @@ import { useAppDispatch, useTypedSelector } from "@/store";
 import { useSQLiteContext } from "expo-sqlite";
 import uuid from "react-native-uuid";
 import { transactionServices } from "@/reducers/transactionsSlice";
+import moment from "moment";
 
 const NewTransaction = ({
   hideModal,
@@ -29,8 +30,11 @@ const NewTransaction = ({
   hideModal: () => void;
   categoryId: string;
 }) => {
+  const { timeRange } = useTypedSelector((state) => state.userPreferences);
   const { categories } = useTypedSelector((state) => state.categories);
   const { accounts } = useTypedSelector((state) => state.accounts);
+
+  const [selectedDate, setSelectedDate] = useState(moment(timeRange.from * 1000));
 
   const [operator, setOperator] = useState<"+" | "-" | "÷" | "×" | "">("");
   const [firstValue, setFirstValue] = useState("");
@@ -95,6 +99,29 @@ const NewTransaction = ({
     setOperator("");
   };
 
+  const formatDate = (date: number) => {
+    const yesterday = moment().subtract(1, "day").startOf("day");
+    const today = moment().startOf("day");
+    const tomorrow = moment().add(1, "day").startOf("day");
+    const tomorrowEnd = moment().add(1, "day").endOf("day");
+
+    if (date > tomorrowEnd.unix() || date < yesterday.unix()) {
+      return moment(date * 1000).format("dddd, MMMM DD");
+    }
+
+    if (date >= tomorrow.unix()) {
+      return "Tomorrow, " + moment().format("MMMM DD");
+    }
+
+    if (date >= today.unix()) {
+      return "Today, " + moment(date * 1000).format("MMMM DD");
+    }
+
+    if (date >= yesterday.unix()) {
+      return "Yesterday, " + moment(date * 1000).format("MMMM DD");
+    }
+  };
+
   const category = categories.find((category) => category.id === categoryId);
   const account = accounts.find((account) => account.name === "Cash");
 
@@ -105,8 +132,8 @@ const NewTransaction = ({
       if (account && category) {
         const id = uuid.v4().toString();
 
-        const createdAt = new Date(2024, 8, 7).getTime() / 1000;
-        const date = new Date().getTime() / 1000;
+        const createdAt = moment(selectedDate).unix();
+        const date = moment(selectedDate).unix();
 
         await db.runAsync(
           `INSERT INTO Transactions (id, category_id, account_id, created_at, date, amount, comment, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
@@ -146,6 +173,20 @@ const NewTransaction = ({
     } catch (error) {
       console.error(error);
     }
+  };
+
+  const formatNumber = (number: string) => {
+    const formatter = Intl.NumberFormat("en-US");
+
+    if (number.includes(".")) {
+      return (
+        formatter.format(Math.floor(parseFloat(number))) +
+        "." +
+        number.split(".")[1]
+      );
+    }
+
+    return formatter.format(parseFloat(number));
   };
 
   return (
@@ -229,13 +270,16 @@ const NewTransaction = ({
               <View className="py-8 justify-center items-center">
                 <Text className="text-main font-[Rounded-Bold] text-4.5xl">
                   {operator === ""
-                    ? "L " + (secondValue !== "" ? secondValue : "0")
+                    ? "L " +
+                      (secondValue !== ""
+                        ? formatNumber(secondValue)
+                        : "0")
                     : "L " +
-                      (firstValue !== "" ? firstValue : "0") +
+                      (firstValue !== "" ? formatNumber(firstValue) : "0") +
                       " " +
                       operator +
                       " " +
-                      (secondValue !== "" ? "L " + secondValue : "")}
+                      (secondValue !== "" ? "L " + formatNumber(secondValue) : "")}
                 </Text>
               </View>
 
@@ -603,7 +647,7 @@ const NewTransaction = ({
                 </View>
 
                 <Text className="font-[Rounded-Medium] text-main text-center mb-2">
-                  Today, September 2
+                  {formatDate(selectedDate.unix())}
                 </Text>
               </View>
             </ScrollView>
