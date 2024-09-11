@@ -25,7 +25,7 @@ const TimeRange = () => {
   }
 
   return (
-    <View className="mb-2 justify-between items-center flex flex-row w-full">
+    <View className="mt-1 justify-between items-center flex flex-row w-full">
       <IconButton onPress={previousDay}>
         <Feather name="chevron-left" color="#1B1D1C" size={22} />
       </IconButton>

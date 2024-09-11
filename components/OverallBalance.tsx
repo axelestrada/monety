@@ -7,7 +7,7 @@ interface Props {
 
 const OverallBalance = ({ children }: Props) => {
   return (
-    <View className={`justify-center items-center p-2`}>
+    <View className={`justify-center items-center p-2 pb-4`}>
       <Text className="text-[#1b1d1cbf] text-xs">Overall balance</Text>
       <Text className="text-main font-[Rounded-Bold] text-[34px]">
         L 4,125.83
