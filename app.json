@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Money Manager",
-    "slug": "money-manager",
+    "name": "Monety",
+    "slug": "monety",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -20,7 +20,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.axelestrada.moneymanager"
+      "package": "com.axelestrada.monety"
     },
     "plugins": [
       "expo-router",
