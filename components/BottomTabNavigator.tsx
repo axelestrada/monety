@@ -10,7 +10,7 @@ const BottomTabNavigator = () => {
 
   return (
     <View
-      className="bg-white rounded-t-3xl py-5 flex flex-row justify-evenly items-center"
+      className="bg-white rounded-t-3xl py-6 flex flex-row justify-evenly items-center"
       style={{
         elevation: 32,
         shadowColor: "#1B1D1C4D",
