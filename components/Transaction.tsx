@@ -47,7 +47,6 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
 
             <Text className="font-[Rounded-Regular] text-sm text-main-500">
               {accountName}
-              {comment && " • " + comment}
             </Text>
           </View>
         </View>
@@ -65,6 +64,12 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
           </Text>
         </View>
       </View>
+
+      {comment && (
+        <Text className="font-[Rounded-Regular] text-sm text-main pt-2">
+          {comment}
+        </Text>
+      )}
     </TouchableOpacity>
   );
 };

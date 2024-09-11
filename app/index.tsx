@@ -32,111 +32,118 @@ export default function Index() {
   const { loadCategories } = useCategories();
 
   const { transactions } = useTypedSelector((state) => state.transactions);
+  const { categories } = useTypedSelector((state) => state.categories);
 
   useEffect(() => {
-    loadAccounts();
-    loadTransactions();
-    loadCategories();
+    if (categories.length === 0) {
+      loadAccounts();
+      loadTransactions();
+      loadCategories();
 
-    const initializeDatabase = async () => {
-      try {
-        await db.execAsync(`
-          PRAGMA journal_mode = WAL;
-          PRAGMA foreign_keys = ON;
-        `);
-      } catch (error) {
-        console.error(error);
-      }
-
-      const categoriesTable = await db.getAllAsync(`
-        SELECT name FROM sqlite_master WHERE type='table' AND name='Categories';
-        `);
-
-      if (categoriesTable.length === 0) {
+      const initializeDatabase = async () => {
         try {
           await db.execAsync(`
-            CREATE TABLE IF NOT EXISTS Categories (
-              id TEXT PRIMARY KEY NOT NULL,
-              name TEXT NOT NULL,
-              icon TEXT NOT NULL,
-              color TEXT NOT NULL,
-              type TEXT NOT NULL CHECK (type IN ('Expense', 'Income'))
-          );`);
-
-          defaultCategories.forEach(async ({ id, name, icon, color, type }) => {
-            try {
-              await db.runAsync(
-                `
-                INSERT INTO Categories (id, name, icon, color, type) VALUES (?, ?, ?, ?, ?);
-              `,
-                [id, name, icon, color, type]
-              );
-            } catch (error) {
-              console.error();
-            }
-          });
+            PRAGMA journal_mode = WAL;
+            PRAGMA foreign_keys = ON;
+          `);
         } catch (error) {
           console.error(error);
         }
-      }
 
-      const accountsTable = await db.getAllAsync(`
-        SELECT name FROM sqlite_master WHERE type='table' AND name='Accounts';
-        `);
+        const categoriesTable = await db.getAllAsync(`
+          SELECT name FROM sqlite_master WHERE type='table' AND name='Categories';
+          `);
 
-      if (accountsTable.length === 0) {
+        if (categoriesTable.length === 0) {
+          try {
+            await db.execAsync(`
+              CREATE TABLE IF NOT EXISTS Categories (
+                id TEXT PRIMARY KEY NOT NULL,
+                name TEXT NOT NULL,
+                icon TEXT NOT NULL,
+                color TEXT NOT NULL,
+                type TEXT NOT NULL CHECK (type IN ('Expense', 'Income'))
+            );`);
+
+            defaultCategories.forEach(
+              async ({ id, name, icon, color, type }) => {
+                try {
+                  await db.runAsync(
+                    `
+                  INSERT INTO Categories (id, name, icon, color, type) VALUES (?, ?, ?, ?, ?);
+                `,
+                    [id, name, icon, color, type]
+                  );
+                } catch (error) {
+                  console.error();
+                }
+              }
+            );
+          } catch (error) {
+            console.error(error);
+          }
+        }
+
+        const accountsTable = await db.getAllAsync(`
+          SELECT name FROM sqlite_master WHERE type='table' AND name='Accounts';
+          `);
+
+        if (accountsTable.length === 0) {
+          try {
+            await db.execAsync(`
+              CREATE TABLE IF NOT EXISTS Accounts (
+                id TEXT PRIMARY KEY NOT NULL,
+                name TEXT NOT NULL,
+                description TEXT,
+                icon TEXT NOT NULL,
+                color TEXT NOT NULL,
+                type TEXT NOT NULL CHECK (type IN ('Regular', 'Savings')),
+                currentBalance REAL NOT NULL,
+                includeInOverallBalance INTEGER NOT NULL
+            );`);
+
+            await db.runAsync(
+              `
+                INSERT INTO Accounts (id, name, icon, color, type, currentBalance, includeInOverallBalance) VALUES (?, ?, ?, ?, ?, ?, ?);
+                `,
+              [
+                uuid.v4().toString(),
+                "Cash",
+                "cash-outline",
+                "00AD74",
+                "Regular",
+                0,
+                1
+              ]
+            );
+          } catch (error) {
+            console.error(error);
+          }
+        }
+
         try {
-          await db.execAsync(`
-            CREATE TABLE IF NOT EXISTS Accounts (
-              id TEXT PRIMARY KEY NOT NULL,
-              name TEXT NOT NULL,
-              description TEXT,
-              icon TEXT NOT NULL,
-              color TEXT NOT NULL,
-              type TEXT NOT NULL CHECK (type IN ('Regular', 'Savings')),
-              currentBalance REAL NOT NULL
-          );`);
+          // await db.execAsync(`DROP TABLE Transactions`);
 
-          await db.runAsync(
-            `
-              INSERT INTO Accounts (id, name, icon, color, type, currentBalance) VALUES (?, ?, ?, ?, ?, ?);
-              `,
-            [
-              uuid.v4().toString(),
-              "Cash",
-              "cash-outline",
-              "00AD74",
-              "Regular",
-              0,
-            ]
-          );
+          await db.execAsync(`
+            CREATE TABLE IF NOT EXISTS Transactions (
+              id TEXT PRIMARY KEY NOT NULL,
+              category_id TEXT NOT NULL,
+              account_id TEXT NOT NULL,
+              created_at INTEGER NOT NULL,
+              date INTEGER NOT NULL,
+              amount REAL NOT NULL,
+              comment TEXT,
+              type TEXT NOT NULL CHECK (type IN ('Income', 'Expense', 'Transfer')),
+              FOREIGN KEY (category_id) REFERENCES Categories (id),
+              FOREIGN KEY (account_id) REFERENCES Accounts (id)
+          );`);
         } catch (error) {
           console.error(error);
         }
-      }
+      };
 
-      try {
-        // await db.execAsync(`DROP TABLE Transactions`);
-
-        await db.execAsync(`
-          CREATE TABLE IF NOT EXISTS Transactions (
-            id TEXT PRIMARY KEY NOT NULL,
-            category_id TEXT NOT NULL,
-            account_id TEXT NOT NULL,
-            created_at INTEGER NOT NULL,
-            date INTEGER NOT NULL,
-            amount REAL NOT NULL,
-            comment TEXT,
-            type TEXT NOT NULL CHECK (type IN ('Income', 'Expense', 'Transfer')),
-            FOREIGN KEY (category_id) REFERENCES Categories (id),
-            FOREIGN KEY (account_id) REFERENCES Accounts (id)
-        );`);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    initializeDatabase();
+      initializeDatabase();
+    }
   }, []);
 
   // #region Load Fonts

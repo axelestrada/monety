@@ -42,9 +42,5 @@ export default function useCategories() {
     }
   }, []);
 
-  useEffect(() => {
-    loadCategories();
-  }, []);
-
   return { loadCategories, categories };
 }
