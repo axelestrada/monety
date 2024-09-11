@@ -7,6 +7,7 @@ export default interface ITransaction {
   categoryColor: (typeof colors)[number];
   categoryIcon: (typeof icons)[number];
   accountName: string;
+  accountId: string;
   createdAt: number;
   date: number;
   amount: number;

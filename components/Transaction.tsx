@@ -25,7 +25,7 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
       activeOpacity={0.75}
       className="bg-white py-3 px-2 mb-3 mx-3 rounded-2xl"
       style={styles.shadow}
-      onLongPress={() => deleteTransaction(id)}
+      onLongPress={() => deleteTransaction(transaction)}
     >
       <View className="flex flex-row justify-between items-center">
         <View className="flex flex-row items-center">

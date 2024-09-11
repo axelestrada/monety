@@ -27,6 +27,18 @@ export default function Accounts() {
 
   const windowWidth = Dimensions.get("window").width;
 
+  const format = (number: number) => {
+    const formattedNumber = Intl.NumberFormat("en-US").format(number);
+
+    if (number < 0) {
+      return "- L " + formattedNumber.toString().slice(1);
+    }
+
+    if (number >= 0) {
+      return "L " + formattedNumber;
+    }
+  };
+
   return (
     <SafeAreaView className="flex flex-1">
       <BackgroundGradient />
@@ -87,8 +99,8 @@ export default function Accounts() {
                       {item.name}
                     </Text>
 
-                    <Text className="font-[Rounded-Regular] text-base text-main-500">
-                      {"L " + item.currentBalance}
+                    <Text className={`font-[Rounded-Regular] text-base ${item.currentBalance < 0 ? "text-red" : "text-main-500"}`}>
+                      {format(item.currentBalance)}
                     </Text>
                   </View>
                 </View>

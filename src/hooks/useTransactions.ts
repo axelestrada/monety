@@ -6,26 +6,60 @@ import { useAppDispatch, useTypedSelector } from "@/store";
 
 import { transactionServices } from "@/reducers/transactionsSlice";
 import moment from "moment";
+import { accountsServices } from "@/reducers/accountsSlice";
 
 export default function useTransactions() {
   const { timeRange } = useTypedSelector((state) => state.userPreferences);
   const { transactions } = useTypedSelector((state) => state.transactions);
+  const { accounts } = useTypedSelector((state) => state.accounts);
+
   const dispatch = useAppDispatch();
 
   const db = useSQLiteContext();
 
-  const deleteTransaction = useCallback((async (id: string) => {
-    if (id) {
-      await db.runAsync(
-        `
+  const deleteTransaction = useCallback(
+    async ({ id, type, accountId, amount }: ITransaction) => {
+      const accountBalance =
+        accounts.find((account) => accountId === account.id)?.currentBalance ||
+        0;
+
+      if (id) {
+        await db.runAsync(
+          `
         DELETE FROM Transactions WHERE id = ?;
         `,
-        id
-      );
-    }
+          id
+        );
 
-    dispatch(transactionServices.actions.deleteTransaction(id));
-  }), [])
+        await db.runAsync(
+          `
+        UPDATE Accounts SET currentBalance = ? WHERE id = ?
+      `,
+          type === "Income" ? accountBalance - amount : accountBalance + amount,
+          accountId
+        );
+
+        dispatch(transactionServices.actions.deleteTransaction(id));
+
+        if (type === "Expense") {
+          dispatch(
+            accountsServices.actions.incrementBalance({
+              id: accountId,
+              amount,
+            })
+          );
+        } else if (type === "Income") {
+          dispatch(
+            accountsServices.actions.decrementBalance({
+              id: accountId,
+              amount,
+            })
+          );
+        }
+      }
+    },
+    []
+  );
 
   const loadTransactions = useCallback(async () => {
     try {
@@ -33,7 +67,7 @@ export default function useTransactions() {
         `
         SELECT Transactions.id, Transactions.created_at as createdAt, Transactions.comment, Transactions.date, Transactions.amount,
           Transactions.type, Categories.color AS categoryColor, Categories.icon AS categoryIcon,
-          Categories.name AS categoryName, Accounts.name as accountName
+          Categories.name AS categoryName, Accounts.name as accountName, Accounts.id as accountId
         FROM Transactions
         INNER JOIN Categories ON Categories.id = Transactions.category_id
         INNER JOIN Accounts ON Accounts.id = Transactions.account_id

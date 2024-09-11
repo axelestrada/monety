@@ -22,6 +22,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import uuid from "react-native-uuid";
 import { transactionServices } from "@/reducers/transactionsSlice";
 import moment from "moment";
+import { accountsServices } from "@/reducers/accountsSlice";
 
 const NewTransaction = ({
   hideModal,
@@ -154,6 +155,16 @@ const NewTransaction = ({
           ]
         );
 
+        await db.runAsync(
+          `
+          UPDATE Accounts SET currentBalance = ? WHERE id = ?
+        `,
+          category.type === "Income"
+            ? account.currentBalance + parseFloat(secondValue)
+            : account.currentBalance - parseFloat(secondValue),
+          account.id
+        );
+
         setFirstValue("");
         setSecondValue("");
 
@@ -171,6 +182,22 @@ const NewTransaction = ({
             type: category.type,
           })
         );
+
+        if (category.type === "Income") {
+          dispatch(
+            accountsServices.actions.incrementBalance({
+              id: account.id,
+              amount: parseFloat(secondValue),
+            })
+          );
+        } else if (category.type === "Expense") {
+          dispatch(
+            accountsServices.actions.decrementBalance({
+              id: account.id,
+              amount: parseFloat(secondValue),
+            })
+          );
+        }
 
         hideModal();
         setComment("");
@@ -276,15 +303,15 @@ const NewTransaction = ({
                 <Text className="text-main font-[Rounded-Bold] text-4.5xl">
                   {operator === ""
                     ? "L " +
-                      (secondValue !== ""
-                        ? formatNumber(secondValue)
-                        : "0")
+                      (secondValue !== "" ? formatNumber(secondValue) : "0")
                     : "L " +
                       (firstValue !== "" ? formatNumber(firstValue) : "0") +
                       " " +
                       operator +
                       " " +
-                      (secondValue !== "" ? "L " + formatNumber(secondValue) : "")}
+                      (secondValue !== ""
+                        ? "L " + formatNumber(secondValue)
+                        : "")}
                 </Text>
               </View>
 
