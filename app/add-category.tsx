@@ -67,6 +67,17 @@ const AddCategory = () => {
       `,
           [name, icon, color, type, id]
         );
+
+        dispatch(
+          categoriesServices.actions.updateCategory({
+            id,
+            name,
+            icon,
+            color,
+            type,
+          })
+        );
+
       } else {
         await db.runAsync(
           `
@@ -74,18 +85,20 @@ const AddCategory = () => {
       `,
           [id, name, icon, color, type]
         );
+
+        dispatch(
+          categoriesServices.actions.addCategory({
+            id,
+            name,
+            icon,
+            color,
+            type,
+          })
+        );
       }
 
       setCategory((prev) => ({ ...prev, id: undefined, name: "" }));
-      dispatch(
-        categoriesServices.actions.addCategory({
-          id: id,
-          name,
-          icon,
-          color,
-          type,
-        })
-      );
+
       router.back();
     } catch (error) {
       console.error();

@@ -36,6 +36,11 @@ const categoriesSlice = createSlice({
         },
       ];
     },
+    updateCategory: (state, action) => {
+      state.categories = state.categories.map((category) =>
+        category.id === action.payload.id ? action.payload : category
+      );
+    },
     deleteCategory: (state, action) => {
       state.categories = state.categories.filter(
         (category) => category.id !== action.payload
