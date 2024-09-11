@@ -1,3 +1,4 @@
+import { useTypedSelector } from "@/store";
 import { ReactElement } from "react";
 import { Text, View } from "react-native";
 
@@ -6,11 +7,27 @@ interface Props {
 }
 
 const OverallBalance = ({ children }: Props) => {
+  const { accounts } = useTypedSelector((state) => state.accounts);
+
+  const formatNumber = (number: number) => {
+    const formattedNumber = Intl.NumberFormat("en-US").format(number);
+
+    if (number < 0) {
+      return "- L " + formattedNumber.toString().slice(1);
+    }
+
+    if (number >= 0) {
+      return "L " + formattedNumber;
+    }
+  };
+
   return (
     <View className={`justify-center items-center p-2 pb-4`}>
       <Text className="text-[#1b1d1cbf] text-xs">Overall balance</Text>
       <Text className="text-main font-[Rounded-Bold] text-[34px]">
-        L 4,125.83
+        {formatNumber(
+          accounts.reduce((acc, curr) => acc + curr.currentBalance, 0)
+        )}
       </Text>
 
       {children}

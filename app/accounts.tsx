@@ -56,7 +56,11 @@ export default function Accounts() {
           <Text className="text-main font-[Rounded-Bold] text-lg">
             Accounts
           </Text>
-          <Text className="text-main font-[Rounded-Bold] text-lg">L 0</Text>
+          <Text className="text-main font-[Rounded-Bold] text-lg">
+            {format(
+              accounts.reduce((acc, curr) => acc + curr.currentBalance, 0)
+            )}
+          </Text>
         </View>
 
         <FlatList
@@ -99,8 +103,12 @@ export default function Accounts() {
                       {item.name}
                     </Text>
 
-                    <Text className={`font-[Rounded-Regular] text-base ${item.currentBalance < 0 ? "text-red" : "text-main-500"}`}>
-                      {format(item.currentBalance)}
+                    <Text
+                      className={`font-[Rounded-Regular] text-base ${
+                        item.currentBalance < 0 ? "text-red" : "text-main-500"
+                      }`}
+                    >
+                      L {Intl.NumberFormat("en-US").format(item.currentBalance).replace("-", "")}
                     </Text>
                   </View>
                 </View>
