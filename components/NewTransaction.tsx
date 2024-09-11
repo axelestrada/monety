@@ -34,7 +34,7 @@ const NewTransaction = ({
   const { categories } = useTypedSelector((state) => state.categories);
   const { accounts } = useTypedSelector((state) => state.accounts);
 
-  const [selectedDate, setSelectedDate] = useState(moment(timeRange.from * 1000));
+  const [selectedDate, setSelectedDate] = useState(timeRange.from);
 
   const [operator, setOperator] = useState<"+" | "-" | "÷" | "×" | "">("");
   const [firstValue, setFirstValue] = useState("");
@@ -132,8 +132,13 @@ const NewTransaction = ({
       if (account && category) {
         const id = uuid.v4().toString();
 
-        const createdAt = moment(selectedDate).unix();
-        const date = moment(selectedDate).unix();
+        let createdAt = selectedDate;
+        let date = moment().unix();
+
+        if (selectedDate !== timeRange.from) {
+          createdAt = selectedDate;
+          date = selectedDate;
+        }
 
         await db.runAsync(
           `INSERT INTO Transactions (id, category_id, account_id, created_at, date, amount, comment, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
@@ -647,7 +652,7 @@ const NewTransaction = ({
                 </View>
 
                 <Text className="font-[Rounded-Medium] text-main text-center mb-2">
-                  {formatDate(selectedDate.unix())}
+                  {formatDate(selectedDate)}
                 </Text>
               </View>
             </ScrollView>
