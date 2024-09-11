@@ -9,6 +9,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import React, { useState } from "react";
 import uuid from "react-native-uuid";
 import {
+  Dimensions,
   FlatList,
   ScrollView,
   Text,
@@ -57,7 +58,7 @@ const AddCategory = () => {
 
     if (name === "") return;
 
-    const id = params.id || uuid.v4().toString()
+    const id = params.id || uuid.v4().toString();
 
     try {
       if (params.id) {
@@ -77,7 +78,6 @@ const AddCategory = () => {
             type,
           })
         );
-
       } else {
         await db.runAsync(
           `
@@ -124,40 +124,49 @@ const AddCategory = () => {
     }
   };
 
+  const windowWidth = Dimensions.get("window").width;
+  const windowHeight = Dimensions.get("window").height;
+
+  const itemSize = (windowWidth - 12 * 6) / 5;
+
   return (
     <SafeAreaView className="flex flex-1">
       <BackgroundGradient />
 
       <Header title={params.id ? "Edit Category" : "Add Category"} goBack />
 
-      <View className="flex flex-row justify-between bg-[#ffffff33] mx-4 mt-2 py-2 rounded-2xl">
-        <TouchableOpacity
-          activeOpacity={0.75}
-          onPress={() => setType("Income")}
-          className={`${
-            type === "Income" && "bg-white"
-          } flex flex-1 rounded-2xl p-4 mx-2 flex-row items-center justify-center`}
-          style={type === "Income" ? styles.shadow : {}}
-        >
-          <Text className="text-main font-[Rounded-Bold] text-lg">Income</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          activeOpacity={0.75}
-          onPress={() => setType("Expense")}
-          className={`${
-            type === "Expense" && "bg-white"
-          } flex flex-1 rounded-2xl p-4 mx-2 flex-row items-center justify-center`}
-          style={type === "Expense" ? styles.shadow : {}}
-        >
-          <Text className="text-main font-[Rounded-Bold] text-lg">Expense</Text>
-        </TouchableOpacity>
-      </View>
-
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="grow">
-          <View className="mx-4 mt-4">
-            <Text className="font-[Rounded-Medium] text-base mb-3">
+        <View className="flex flex-row justify-between bg-[#ffffff33] mt-3 mx-3 py-1.5 rounded-2xl">
+          <TouchableOpacity
+            activeOpacity={0.75}
+            onPress={() => setType("Income")}
+            className={`${
+              type === "Income" && "bg-white"
+            } flex flex-1 rounded-2xl p-3.5 mx-1.5 flex-row items-center justify-center`}
+            style={type === "Income" ? styles.shadow : {}}
+          >
+            <Text className="text-main font-[Rounded-Bold] text-base">
+              Income
+            </Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            activeOpacity={0.75}
+            onPress={() => setType("Expense")}
+            className={`${
+              type === "Expense" && "bg-white"
+            } flex flex-1 rounded-2xl p-3.5 mx-1.5 flex-row items-center justify-center`}
+            style={type === "Expense" ? styles.shadow : {}}
+          >
+            <Text className="text-main font-[Rounded-Bold] text-base">
+              Expense
+            </Text>
+          </TouchableOpacity>
+        </View>
+
+        <View className="grow" style={{minHeight: windowHeight - 235}}>
+          <View className="mx-3 mt-3">
+            <Text className="font-[Rounded-Medium] text-base mb-2">
               Category name
             </Text>
             <TextInput
@@ -171,8 +180,8 @@ const AddCategory = () => {
             />
           </View>
 
-          <View className="mx-2 mt-4">
-            <Text className="font-[Rounded-Medium] text-base mx-2 mb-3">
+          <View className="mx-1.5 mt-3 -mb-4">
+            <Text className="font-[Rounded-Medium] text-base mx-1.5 mb-2">
               Choose icon
             </Text>
 
@@ -191,8 +200,11 @@ const AddCategory = () => {
                   }
                   className={`${
                     category.icon === item.name ? "bg-white" : "bg-[#FFFFFF33]"
-                  } rounded-lg p-4 mb-4 mx-2`}
-                  style={category.icon === item.name ? styles.shadow : {}}
+                  } rounded-lg p-3 mb-3 mx-1.5 justify-center items-center`}
+                  style={[
+                    { width: itemSize, height: itemSize },
+                    category.icon === item.name ? styles.shadow : {},
+                  ]}
                 >
                   <Ionicons name={item.name} size={28} color="#1B1D1C" />
                 </TouchableOpacity>
@@ -206,8 +218,8 @@ const AddCategory = () => {
             />
           </View>
 
-          <View className="mx-4">
-            <Text className="font-[Rounded-Medium] text-base mb-3">
+          <View className="mx-1.5 -mb-4">
+            <Text className="font-[Rounded-Medium] text-base mx-1.5 mb-2">
               Choose color
             </Text>
             <FlatList
@@ -226,8 +238,11 @@ const AddCategory = () => {
                   }
                   className={`${
                     category.color === item.code ? "bg-white" : "bg-[#FFFFFF33]"
-                  } rounded-lg p-4 mb-4 mr-4`}
-                  style={category.color === item.code ? styles.shadow : {}}
+                  } rounded-lg p-3 mx-1.5 justify-center items-center`}
+                  style={[
+                    { width: itemSize, height: itemSize },
+                    category.color === item.code ? styles.shadow : {},
+                  ]}
                 >
                   <View
                     className="w-8 h-8 rounded-full"
@@ -242,31 +257,46 @@ const AddCategory = () => {
         <TouchableOpacity
           activeOpacity={0.5}
           onPress={saveCategory}
-          className="bg-main mx-4 mb-4 rounded-full p-4"
+          className="bg-main mx-3 mb-3 rounded-2xl p-4"
           style={styles.shadow}
         >
           <Text
             className="text-white text-center font-[Rounded-Medium] text-base"
             style={styles.shadow}
           >
-            {params.id ? "Save" : "Create new category"}
+            {params.id ? "Update category" : "Create new category"}
           </Text>
         </TouchableOpacity>
 
         {params.id && (
-          <TouchableOpacity
-            activeOpacity={0.5}
-            onPress={deleteCategory}
-            className="bg-[#E93043] mx-4 mb-4 rounded-full p-4"
-            style={styles.shadow}
-          >
-            <Text
-              className="text-white text-center font-[Rounded-Medium] text-base"
+          <>
+            <TouchableOpacity
+              activeOpacity={0.5}
+              className="bg-white mx-3 mb-3 rounded-2xl p-4"
               style={styles.shadow}
             >
-              Delete
-            </Text>
-          </TouchableOpacity>
+              <Text
+                className="text-main text-center font-[Rounded-Medium] text-base"
+                style={styles.shadow}
+              >
+                Move to archive
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={deleteCategory}
+              className="bg-[#E93043] mx-3 mb-3 rounded-2xl p-4"
+              style={styles.shadow}
+            >
+              <Text
+                className="text-white text-center font-[Rounded-Medium] text-base"
+                style={styles.shadow}
+              >
+                Delete
+              </Text>
+            </TouchableOpacity>
+          </>
         )}
       </ScrollView>
     </SafeAreaView>
