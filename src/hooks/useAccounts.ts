@@ -46,9 +46,5 @@ export default function useAccounts() {
     }
   }, []);
 
-  useEffect(() => {
-    loadAccounts();
-  }, []);
-
   return { loadAccounts, accounts };
 }

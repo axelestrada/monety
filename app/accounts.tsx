@@ -9,6 +9,7 @@ import { accountsServices } from "@/reducers/accountsSlice";
 import { useAppDispatch, useTypedSelector } from "@/store";
 import { styles } from "@/styles/shadow";
 import { Feather, Ionicons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useEffect } from "react";
 import {
@@ -26,6 +27,8 @@ export default function Accounts() {
   const { accounts } = useAccounts();
 
   const windowWidth = Dimensions.get("window").width;
+
+  const router = useRouter();
 
   const format = (number: number) => {
     const formattedNumber = Intl.NumberFormat("en-US").format(number);
@@ -71,6 +74,9 @@ export default function Accounts() {
               <TouchableOpacity
                 activeOpacity={0.5}
                 className="mx-3 rounded-2xl justify-center items-center py-5"
+                onPress={() => {
+                  router.navigate("/add-account");
+                }}
                 style={{
                   width: windowWidth - 24,
                   borderStyle: "dashed",
@@ -85,6 +91,14 @@ export default function Accounts() {
                 activeOpacity={0.75}
                 className="bg-white px-2 py-3 mb-3 mx-3 rounded-2xl flex flex-row justify-between items-center"
                 style={styles.shadow}
+                onLongPress={() => {
+                  router.push({
+                    pathname: "/add-account",
+                    params: {
+                      id: item.id,
+                    },
+                  });
+                }}
               >
                 <View className="flex flex-row items-center">
                   <View
@@ -108,7 +122,10 @@ export default function Accounts() {
                         item.currentBalance < 0 ? "text-red" : "text-main-500"
                       }`}
                     >
-                      L {Intl.NumberFormat("en-US").format(item.currentBalance).replace("-", "")}
+                      L{" "}
+                      {Intl.NumberFormat("en-US")
+                        .format(item.currentBalance)
+                        .replace("-", "")}
                     </Text>
                   </View>
                 </View>

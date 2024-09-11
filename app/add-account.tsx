@@ -2,10 +2,15 @@ import Header from "@/components/Header";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import { colors } from "@/constants/colors";
 import { icons } from "@/constants/icons";
-import { ICategory } from "@/interfaces";
+import { IAccount, ICategory } from "@/interfaces";
 import { styles } from "@/styles/shadow";
 import { Ionicons } from "@expo/vector-icons";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import {
+  useLocalSearchParams,
+  useRouter,
+  RouteParams,
+  useGlobalSearchParams,
+} from "expo-router";
 import React, { useState } from "react";
 import uuid from "react-native-uuid";
 import {
@@ -21,40 +26,50 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useSQLiteContext } from "expo-sqlite";
 import { useCategories } from "@/hooks";
-import { useAppDispatch } from "@/store";
+import { useAppDispatch, useTypedSelector } from "@/store";
 import { categoriesServices } from "@/reducers/categoriesSlice";
+import { LinearGradient } from "expo-linear-gradient";
+import { LocalRouteParamsContext } from "expo-router/build/Route";
+import { accountsServices } from "@/reducers/accountsSlice";
 
-const AddCategory = () => {
+const AddAccount = () => {
   const params: {
-    id?: string;
-    name: string;
-    icon: (typeof icons)[number];
-    color: (typeof colors)[number];
-    type?: "Income" | "Expense";
+    id: string;
   } = useLocalSearchParams();
 
-  const [category, setCategory] = useState<{
-    id?: string;
-    name: string;
-    icon: (typeof icons)[number];
-    color: (typeof colors)[number];
-    type?: "Income" | "Expense";
-  }>({
-    name: params.name || "",
-    icon: params.icon || "accessibility-outline",
-    color: params.color || "623387",
-  });
+  const { accounts } = useTypedSelector((state) => state.accounts);
 
-  const [type, setType] = useState<"Income" | "Expense">(
-    params.type || "Expense"
+  const [account, setAccount] = useState<IAccount>(
+    accounts.find((account) => account.id === params.id) || {
+      id: "",
+      name: "",
+      description: "",
+      icon: "accessibility-outline",
+      color: "623387",
+      currentBalance: 0,
+      includeInOverallBalance: 1,
+      type: "Regular",
+    }
   );
 
   const db = useSQLiteContext();
   const router = useRouter();
   const dispatch = useAppDispatch();
 
+  const [balance, setBalance] = useState(
+    account.currentBalance.toString() || ""
+  );
+
   const saveCategory = async () => {
-    const { name, icon, color } = category;
+    const {
+      name,
+      icon,
+      color,
+      description,
+      currentBalance,
+      includeInOverallBalance,
+      type,
+    } = account;
 
     if (name === "") return;
 
@@ -64,40 +79,64 @@ const AddCategory = () => {
       if (params.id) {
         await db.runAsync(
           `
-        UPDATE Categories SET name = ?, icon = ?, color = ?, type = ? WHERE id = ?;
+        UPDATE Accounts SET name = ?, description = ?, icon = ?, color = ?, type = ?, currentBalance = ?, includeInOverallBalance = ? WHERE id = ?;
       `,
-          [name, icon, color, type, id]
-        );
-
-        dispatch(
-          categoriesServices.actions.updateCategory({
-            id,
+          [
             name,
+            description,
             icon,
             color,
             type,
+            currentBalance,
+            includeInOverallBalance,
+            id,
+          ]
+        );
+
+        dispatch(
+          accountsServices.actions.updateAccount({
+            id,
+            name,
+            description,
+            icon,
+            color,
+            type,
+            currentBalance,
+            includeInOverallBalance,
           })
         );
       } else {
         await db.runAsync(
           `
-        INSERT INTO Categories (id, name, icon, color, type) VALUES (?, ?, ?, ?, ?);
+        INSERT INTO Accounts (id, name, description, icon, color, type, currentBalance, includeInOverallBalance) VALUES (?, ?, ?, ?, ?, ?, ?, ?);
       `,
-          [id, name, icon, color, type]
-        );
-
-        dispatch(
-          categoriesServices.actions.addCategory({
+          [
             id,
             name,
+            description,
             icon,
             color,
             type,
+            currentBalance,
+            includeInOverallBalance ? 1 : 0,
+          ]
+        );
+
+        dispatch(
+          accountsServices.actions.addAccount({
+            id,
+            name,
+            description,
+            icon,
+            color,
+            type,
+            currentBalance,
+            includeInOverallBalance,
           })
         );
       }
 
-      setCategory((prev) => ({ ...prev, id: undefined, name: "" }));
+      setAccount((prev) => ({ ...prev, id: "", name: "", description: "" }));
 
       router.back();
     } catch (error) {
@@ -105,18 +144,18 @@ const AddCategory = () => {
     }
   };
 
-  const deleteCategory = async () => {
+  const deleteAccount = async () => {
     try {
       if (params.id) {
         await db.runAsync(
           `
-          DELETE FROM Categories WHERE id = ?;
+          DELETE FROM Accounts WHERE id = ?;
           `,
           params.id
         );
       }
 
-      dispatch(categoriesServices.actions.deleteCategory(params.id));
+      dispatch(accountsServices.actions.deleteAccount(params.id));
 
       router.back();
     } catch (error) {
@@ -133,47 +172,63 @@ const AddCategory = () => {
     <SafeAreaView className="flex flex-1">
       <BackgroundGradient />
 
-      <Header title={params.id ? "Edit Category" : "New Category"} goBack />
+      <Header title={params.id ? "Edit Account" : "New Account"} goBack />
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View className="flex flex-row justify-between bg-[#ffffff33] mt-3 mx-3 py-1.5 rounded-2xl">
           <TouchableOpacity
             activeOpacity={0.75}
-            onPress={() => setType("Income")}
+            onPress={() => setAccount((prev) => ({ ...prev, type: "Regular" }))}
             className={`${
-              type === "Income" && "bg-white"
+              account.type === "Regular" && "bg-white"
             } flex flex-1 rounded-2xl p-3.5 mx-1.5 flex-row items-center justify-center`}
-            style={type === "Income" ? styles.shadow : {}}
+            style={account.type === "Regular" ? styles.shadow : {}}
           >
             <Text className="text-main font-[Rounded-Bold] text-base">
-              Income
+              Regular
             </Text>
           </TouchableOpacity>
 
           <TouchableOpacity
             activeOpacity={0.75}
-            onPress={() => setType("Expense")}
+            onPress={() => setAccount((prev) => ({ ...prev, type: "Savings" }))}
             className={`${
-              type === "Expense" && "bg-white"
+              account.type === "Savings" && "bg-white"
             } flex flex-1 rounded-2xl p-3.5 mx-1.5 flex-row items-center justify-center`}
-            style={type === "Expense" ? styles.shadow : {}}
+            style={account.type === "Savings" ? styles.shadow : {}}
           >
             <Text className="text-main font-[Rounded-Bold] text-base">
-              Expense
+              Savings
             </Text>
           </TouchableOpacity>
         </View>
 
-        <View className="grow" style={{minHeight: windowHeight - 235}}>
+        <View className="grow" style={{ minHeight: windowHeight - 235 }}>
           <View className="mx-3 mt-3">
             <Text className="font-[Rounded-Medium] text-base mb-2">
-              Category name
+              Account name
             </Text>
             <TextInput
-              value={category.name}
-              placeholder="Enter category name"
+              value={account.name}
+              placeholder="Enter account name"
               onChangeText={(text) =>
-                setCategory((prev) => ({ ...prev, name: text }))
+                setAccount((prev) => ({ ...prev, name: text }))
+              }
+              className="bg-white rounded-lg p-3 text-base"
+              style={{ fontFamily: "Rounded-Medium", ...styles.shadow }}
+            />
+          </View>
+
+          <View className="mx-3 mt-3">
+            <Text className="font-[Rounded-Medium] text-base mb-2">
+              Description
+            </Text>
+
+            <TextInput
+              value={account.description}
+              placeholder="-----"
+              onChangeText={(text) =>
+                setAccount((prev) => ({ ...prev, description: text }))
               }
               className="bg-white rounded-lg p-3 text-base"
               style={{ fontFamily: "Rounded-Medium", ...styles.shadow }}
@@ -186,7 +241,7 @@ const AddCategory = () => {
             </Text>
 
             <FlatList
-              data={icons.map((icon, index) => ({
+              data={icons.slice(0, -5).map((icon, index) => ({
                 id: index,
                 name: icon,
               }))}
@@ -196,14 +251,14 @@ const AddCategory = () => {
                   activeOpacity={0.5}
                   key={item.id + item.name}
                   onPress={() =>
-                    setCategory((prev) => ({ ...prev, icon: item.name }))
+                    setAccount((prev) => ({ ...prev, icon: item.name }))
                   }
                   className={`${
-                    category.icon === item.name ? "bg-white" : "bg-[#FFFFFF33]"
+                    account.icon === item.name ? "bg-white" : "bg-[#FFFFFF33]"
                   } rounded-lg p-3 mb-3 mx-1.5 justify-center items-center`}
                   style={[
                     { width: itemSize, height: itemSize },
-                    category.icon === item.name ? styles.shadow : {},
+                    account.icon === item.name ? styles.shadow : {},
                   ]}
                 >
                   <Ionicons name={item.name} size={28} color="#1B1D1C" />
@@ -218,7 +273,7 @@ const AddCategory = () => {
             />
           </View>
 
-          <View className="mx-1.5 -mb-4">
+          <View className="mx-1.5">
             <Text className="font-[Rounded-Medium] text-base mx-1.5 mb-2">
               Choose color
             </Text>
@@ -234,14 +289,14 @@ const AddCategory = () => {
                   activeOpacity={0.5}
                   key={item.id + item.code}
                   onPress={() =>
-                    setCategory((prev) => ({ ...prev, color: item.code }))
+                    setAccount((prev) => ({ ...prev, color: item.code }))
                   }
                   className={`${
-                    category.color === item.code ? "bg-white" : "bg-[#FFFFFF33]"
+                    account.color === item.code ? "bg-white" : "bg-[#FFFFFF33]"
                   } rounded-lg p-3 mx-1.5 justify-center items-center`}
                   style={[
                     { width: itemSize, height: itemSize },
-                    category.color === item.code ? styles.shadow : {},
+                    account.color === item.code ? styles.shadow : {},
                   ]}
                 >
                   <View
@@ -252,19 +307,75 @@ const AddCategory = () => {
               )}
             />
           </View>
+
+          <View className="mx-3">
+            <Text className="font-[Rounded-Medium] text-base mb-2">
+              Current Balance
+            </Text>
+
+            <TextInput
+              value={
+                "L " +
+                balance.split(".")[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",") +
+                (balance.includes(".") ? "." + balance.split(".")[1] : "")
+              }
+              keyboardType="number-pad"
+              placeholder="0"
+              onChangeText={(text) => {
+                setBalance(text.replace("L ", ""));
+              }}
+              className="bg-white rounded-lg p-3 text-base"
+              style={{
+                fontFamily: "Rounded-Medium",
+                ...styles.shadow,
+                fontWeight: "normal",
+              }}
+            />
+          </View>
+
+          <View
+            className="bg-white rounded-lg mx-3 my-4 p-2.5 flex-row justify-between items-center"
+            style={styles.shadow}
+          >
+            <Text className="font-[Rounded-Medium] text-base">
+              Include in overall balance
+            </Text>
+
+            <TouchableOpacity
+              activeOpacity={0.5}
+              onPress={() =>
+                setAccount((prev) => ({
+                  ...prev,
+                  includeInOverallBalance:
+                    prev.includeInOverallBalance === 1 ? 0 : 1,
+                }))
+              }
+              className={`w-14 p-1 rounded-full border-2 border-mai ${
+                account.includeInOverallBalance
+                  ? "bg-main items-end"
+                  : "items-start"
+              }`}
+            >
+              <View
+                className={`w-6 h-6 rounded-full ${
+                  account.includeInOverallBalance ? "bg-white" : "bg-main"
+                }`}
+              ></View>
+            </TouchableOpacity>
+          </View>
         </View>
 
         <TouchableOpacity
           activeOpacity={0.5}
           onPress={saveCategory}
-          className="bg-main mx-3 mb-3 rounded-2xl p-4 py-5"
+          className="bg-main mx-3 mb-3 mt-6 rounded-2xl p-4 py-5"
           style={styles.shadow}
         >
           <Text
             className="text-white text-center font-[Rounded-Medium] text-base"
             style={styles.shadow}
           >
-            {params.id ? "Update category" : "Create new category"}
+            {params.id ? "Update account" : "Create new account"}
           </Text>
         </TouchableOpacity>
 
@@ -285,7 +396,7 @@ const AddCategory = () => {
 
             <TouchableOpacity
               activeOpacity={0.5}
-              onPress={deleteCategory}
+              onPress={deleteAccount}
               className="bg-[#E93043] mx-3 mb-3 rounded-2xl p-4 py-5"
               style={styles.shadow}
             >
@@ -303,4 +414,4 @@ const AddCategory = () => {
   );
 };
 
-export default AddCategory;
+export default AddAccount;

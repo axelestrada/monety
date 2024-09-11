@@ -13,8 +13,42 @@ const accountsSlice = createSlice({
   name: "accountsSlice",
   initialState,
   reducers: {
+    addAccount: (state, action) => {
+      state.accounts = [
+        ...state.accounts.slice(0, -2),
+        { ...action.payload },
+        {
+          id: "",
+          name: "",
+          icon: "accessibility-outline",
+          color: "623387",
+          type: "Regular",
+          currentBalance: 0,
+          includeInOverallBalance: 0,
+        },
+        {
+          id: "",
+          name: "",
+          icon: "accessibility-outline",
+          color: "623387",
+          type: "Savings",
+          currentBalance: 0,
+          includeInOverallBalance: 0,
+        },
+      ];
+    },
     updateAccounts: (state, action) => {
       state.accounts = action.payload;
+    },
+    updateAccount: (state, action) => {
+      state.accounts = state.accounts.map((account) =>
+        account.id === action.payload.id ? action.payload : account
+      );
+    },
+    deleteAccount: (state, action) => {
+      state.accounts = state.accounts.filter(
+        (account) => account.id !== action.payload
+      );
     },
     incrementBalance: (
       state,

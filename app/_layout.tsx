@@ -17,6 +17,7 @@ export default function Layout() {
           <Stack.Screen name="accounts" />
           <Stack.Screen name="categories" />
           <Stack.Screen name="add-category" />
+          <Stack.Screen name="add-account" />
           <Stack.Screen name="transactions" />
         </Stack>
       </SQLiteProvider>
