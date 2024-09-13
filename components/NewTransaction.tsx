@@ -8,6 +8,7 @@ import {
   ToastAndroid,
   ScrollView,
   KeyboardAvoidingView,
+  Modal,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackgroundGradient from "./ui/BackgroundGradient";
@@ -15,7 +16,7 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import Header from "./Header";
 import { styles } from "@/styles/shadow";
 import { useState } from "react";
-import { IAccount } from "@/interfaces";
+import { IAccount, ICategory } from "@/interfaces";
 import { useCategories } from "@/hooks";
 import { useAppDispatch, useTypedSelector } from "@/store";
 import { useSQLiteContext } from "expo-sqlite";
@@ -23,17 +24,23 @@ import uuid from "react-native-uuid";
 import { transactionServices } from "@/reducers/transactionsSlice";
 import moment from "moment";
 import { accountsServices } from "@/reducers/accountsSlice";
+import AccountCategorySelector from "./AccountCategorySelector";
 
 const NewTransaction = ({
   hideModal,
-  categoryId,
+  openSelector,
+  from,
+  to,
 }: {
   hideModal: () => void;
-  categoryId: string;
+  openSelector: (
+    type: "" | "Accounts" | "Categories",
+    elementType: "from" | "to"
+  ) => void;
+  from: ICategory | IAccount;
+  to: ICategory | IAccount;
 }) => {
   const { timeRange } = useTypedSelector((state) => state.userPreferences);
-  const { categories } = useTypedSelector((state) => state.categories);
-  const { accounts } = useTypedSelector((state) => state.accounts);
 
   const [selectedDate, setSelectedDate] = useState(timeRange.from);
 
@@ -123,85 +130,111 @@ const NewTransaction = ({
     }
   };
 
-  const category = categories.find((category) => category.id === categoryId);
-  const account = accounts.find((account) => account.name === "Cash");
-
   const dispatch = useAppDispatch();
 
-  const addTransaction = async () => {
+  const addIncome = async (category: ICategory, account: IAccount) => {
     try {
-      if (account && category) {
-        const id = uuid.v4().toString();
+      const id = uuid.v4().toString();
 
-        let createdAt = selectedDate;
-        let date = moment().unix();
+      const createdAt = selectedDate;
+      const date = createdAt === timeRange.from ? moment().unix() : createdAt;
 
-        if (selectedDate !== timeRange.from) {
-          createdAt = selectedDate;
-          date = selectedDate;
-        }
+      const amount = parseFloat(secondValue);
 
-        await db.runAsync(
-          `INSERT INTO Transactions (id, category_id, account_id, created_at, date, amount, comment, type) VALUES (?, ?, ?, ?, ?, ?, ?, ?);`,
-          [
-            id,
-            category.id,
-            account.id,
-            createdAt,
-            date,
-            parseFloat(secondValue),
-            comment,
-            category.type,
-          ]
-        );
+      await db.runAsync(
+        `INSERT INTO Transactions (id, category_id, account_id, created_at, date, amount, comment, type) VALUES (?, ?, ?, ?, ?, ?, ?, 'Income');`,
+        [id, category.id, to.id, createdAt, date, amount, comment]
+      );
 
-        await db.runAsync(
-          `
-          UPDATE Accounts SET currentBalance = ? WHERE id = ?
-        `,
-          category.type === "Income"
-            ? account.currentBalance + parseFloat(secondValue)
-            : account.currentBalance - parseFloat(secondValue),
-          account.id
-        );
+      await db.runAsync(
+        `
+      UPDATE Accounts SET currentBalance = ? WHERE id = ?
+    `,
+        account.currentBalance + amount,
+        account.id
+      );
 
-        setFirstValue("");
-        setSecondValue("");
+      dispatch(
+        transactionServices.actions.addTransaction({
+          id,
+          categoryName: category.name,
+          categoryColor: category.color,
+          categoryIcon: category.icon,
+          accountName: account.name,
+          createdAt,
+          date,
+          amount,
+          comment,
+          type: "Income",
+        })
+      );
 
-        dispatch(
-          transactionServices.actions.addTransaction({
-            id,
-            categoryName: category.name,
-            categoryColor: category.color,
-            categoryIcon: category.icon,
-            accountName: account.name,
-            createdAt: createdAt,
-            date,
-            amount: parseFloat(secondValue),
-            comment,
-            type: category.type,
-          })
-        );
+      dispatch(
+        accountsServices.actions.incrementBalance({
+          id: account.id,
+          amount,
+        })
+      );
 
-        if (category.type === "Income") {
-          dispatch(
-            accountsServices.actions.incrementBalance({
-              id: account.id,
-              amount: parseFloat(secondValue),
-            })
-          );
-        } else if (category.type === "Expense") {
-          dispatch(
-            accountsServices.actions.decrementBalance({
-              id: account.id,
-              amount: parseFloat(secondValue),
-            })
-          );
-        }
+      hideModal();
 
-        hideModal();
-        setComment("");
-      }
+      setComment("");
+      setFirstValue("");
+      setSecondValue("");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const addExpense = async (account: IAccount, category: ICategory) => {
+    try {
+      const id = uuid.v4().toString();
+
+      const createdAt = selectedDate;
+      const date = createdAt === timeRange.from ? moment().unix() : createdAt;
+
+      const amount = parseFloat(secondValue);
+
+      await db.runAsync(
+        `INSERT INTO Transactions (id, category_id, account_id, created_at, date, amount, comment, type) VALUES (?, ?, ?, ?, ?, ?, ?, 'Expense');`,
+        [id, category.id, account.id, createdAt, date, amount, comment]
+      );
+
+      await db.runAsync(
+        `
+      UPDATE Accounts SET currentBalance = ? WHERE id = ?
+    `,
+        account.currentBalance - amount,
+        account.id
+      );
+
+      dispatch(
+        transactionServices.actions.addTransaction({
+          id,
+          categoryName: category.name,
+          categoryColor: category.color,
+          categoryIcon: category.icon,
+          accountName: account.name,
+          createdAt,
+          date,
+          amount,
+          comment,
+          type: "Expense",
+        })
+      );
+
+      dispatch(
+        accountsServices.actions.decrementBalance({
+          id: account.id,
+          amount,
+        })
+      );
+
+      hideModal();
+
+      setComment("");
+      setFirstValue("");
+      setSecondValue("");
     } catch (error) {
       console.error(error);
     }
@@ -221,6 +254,8 @@ const NewTransaction = ({
     return formatter.format(parseFloat(number));
   };
 
+  const isAccount = (item: IAccount | ICategory) => "currentBalance" in item;
+
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
       <TouchableOpacity
@@ -234,20 +269,26 @@ const NewTransaction = ({
 
             <ScrollView>
               <View className="flex-row mx-1 mt-4">
-                {account && (
+                {from && (
                   <TouchableOpacity
                     activeOpacity={0.75}
+                    onPress={() => {
+                      openSelector(
+                        isAccount(from) ? "Accounts" : "Categories",
+                        "from"
+                      );
+                    }}
                     className="bg-white rounded-2xl p-2 mx-1 flex-1"
                     style={{ ...styles.shadow }}
                   >
                     <View className="flex-row items-center">
                       <View
                         className={`justify-center items-center p-3 mr-2 rounded-full`}
-                        style={{ backgroundColor: "#" + account.color + "1A" }}
+                        style={{ backgroundColor: "#" + from.color + "1A" }}
                       >
                         <Ionicons
-                          name={account.icon}
-                          color={"#" + account.color}
+                          name={from.icon}
+                          color={"#" + from.color}
                           size={18}
                         />
                       </View>
@@ -257,7 +298,7 @@ const NewTransaction = ({
                           numberOfLines={1}
                           className="text-main font-[Rounded-Medium] text-lg"
                         >
-                          {account.name}
+                          {from.name}
                         </Text>
                       </View>
 
@@ -266,20 +307,26 @@ const NewTransaction = ({
                   </TouchableOpacity>
                 )}
 
-                {category && (
+                {to && (
                   <TouchableOpacity
                     activeOpacity={0.75}
                     className="bg-white rounded-2xl p-2 mx-2 flex-1"
+                    onPress={() => {
+                      openSelector(
+                        isAccount(to) ? "Accounts" : "Categories",
+                        "to"
+                      );
+                    }}
                     style={{ ...styles.shadow }}
                   >
                     <View className="flex-row items-center">
                       <View
                         className={`justify-center items-center p-3 mr-2 rounded-full`}
-                        style={{ backgroundColor: "#" + category.color + "1A" }}
+                        style={{ backgroundColor: "#" + to.color + "1A" }}
                       >
                         <Ionicons
-                          name={category.icon}
-                          color={"#" + category.color}
+                          name={to.icon}
+                          color={"#" + to.color}
                           size={18}
                         />
                       </View>
@@ -289,7 +336,7 @@ const NewTransaction = ({
                           numberOfLines={1}
                           className="text-main font-[Rounded-Medium] text-lg"
                         >
-                          {category.name}
+                          {to.name}
                         </Text>
                       </View>
 
@@ -662,7 +709,19 @@ const NewTransaction = ({
                           secondValue !== "" &&
                           secondValue !== "0"
                         ) {
-                          addTransaction();
+                          if (
+                            "currentBalance" in to &&
+                            !("currentBalance" in from)
+                          ) {
+                            addIncome(from, to);
+                          }
+
+                          if (
+                            "currentBalance" in from &&
+                            !("currentBalance" in to)
+                          ) {
+                            addExpense(from, to);
+                          }
                         }
                       }}
                       style={{ height: ((windowWidth - 48) / 5) * 2 + 8 }}

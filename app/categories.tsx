@@ -6,24 +6,44 @@ import OverallBalance from "@/components/OverallBalance";
 import TimeRange from "@/components/TimeRange";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import IconButton from "@/components/ui/IconButton";
-import { ICategory } from "@/interfaces";
+import { IAccount, ICategory } from "@/interfaces";
 import { Octicons } from "@expo/vector-icons";
 import { useSegments } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useCallback, useEffect, useState } from "react";
-import { Modal, StatusBar, View } from "react-native";
+import {
+  Modal,
+  StatusBar,
+  Text,
+  TouchableOpacity,
+  TouchableWithoutFeedback,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NewTransaction from "@/components/NewTransaction";
-import { useCategories } from "@/hooks";
+import { useAccounts, useCategories } from "@/hooks";
 import { useTypedSelector } from "@/store";
+import AccountCategorySelector from "@/components/AccountCategorySelector";
 
 function Categories() {
   const [type, setType] = useState<"Income" | "Expense">("Expense");
   const [activeModal, setActiveModal] = useState(false);
-  const [currentCategory, setCurrentCategory] = useState("");
+  const [activeSelector, setActiveSelector] = useState<
+    "Accounts" | "Categories" | ""
+  >("");
+  const [elementType, setElementType] = useState<"from" | "to">("from");
 
   const { categories } = useCategories();
+  const { accounts } = useAccounts();
   const { transactions } = useTypedSelector((state) => state.transactions);
+
+  const [transactionDetails, setTransactionDetails] = useState<{
+    from: ICategory | IAccount;
+    to: ICategory | IAccount;
+  }>({
+    from: accounts[0],
+    to: categories[0],
+  });
 
   return (
     <SafeAreaView className="flex flex-1">
@@ -39,8 +59,49 @@ function Categories() {
       >
         <NewTransaction
           hideModal={() => setActiveModal(false)}
-          categoryId={currentCategory}
+          openSelector={(
+            type: "" | "Accounts" | "Categories",
+            elementType: "from" | "to"
+          ) => {
+            setElementType(elementType);
+            setActiveSelector(type);
+          }}
+          from={transactionDetails.from}
+          to={transactionDetails.to}
         />
+      </Modal>
+
+      <Modal
+        visible={activeSelector !== ""}
+        onRequestClose={() => setActiveSelector("")}
+        animationType="slide"
+        transparent
+        statusBarTranslucent
+        presentationStyle="overFullScreen"
+      >
+        <TouchableOpacity
+          className="flex-[1] pt-24 justify-end bg-[#00000080]"
+          activeOpacity={1}
+          onPress={() => setActiveSelector("")}
+        >
+          <TouchableWithoutFeedback>
+            <View className="rounded-t-3xl overflow-hidden bg-white">
+              <BackgroundGradient />
+
+              <AccountCategorySelector
+                type={activeSelector || "Categories"}
+                hideModal={() => setActiveSelector("")}
+                elementType={elementType}
+                setTransactionDetails={(transaction: {
+                  from?: ICategory | IAccount;
+                  to?: ICategory | IAccount;
+                }) =>
+                  setTransactionDetails((prev) => ({ ...prev, ...transaction }))
+                }
+              />
+            </View>
+          </TouchableWithoutFeedback>
+        </TouchableOpacity>
       </Modal>
 
       <Header title="Categories">
@@ -76,7 +137,19 @@ function Categories() {
       <CategoriesGrid
         categories={categories.filter((item) => item.type === type)}
         openModal={() => setActiveModal(true)}
-        setCurrentCategory={setCurrentCategory}
+        setCurrentCategory={(category: ICategory) => {
+          setTransactionDetails((prev) =>
+            category.type === "Income"
+              ? {
+                  from: category,
+                  to: accounts[0],
+                }
+              : {
+                  from: accounts[0],
+                  to: category,
+                }
+          );
+        }}
       />
 
       <BottomTabNavigator />

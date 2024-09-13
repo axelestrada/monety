@@ -9,7 +9,7 @@ import { useTypedSelector } from "@/store";
 interface Props {
   categories: ICategory[];
   openModal: () => void;
-  setCurrentCategory: React.Dispatch<React.SetStateAction<string>>;
+  setCurrentCategory: (category: ICategory) => void;
 }
 
 const CategoriesGrid = ({
@@ -52,7 +52,7 @@ const CategoriesGrid = ({
             onPress={() => {
               openModal();
 
-              setCurrentCategory(item.id);
+              setCurrentCategory(item);
             }}
             category={item}
             summary={transactions
