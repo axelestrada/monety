@@ -61,12 +61,13 @@ const AddAccount = () => {
   );
 
   const saveCategory = async () => {
+    console.log(balance);
+
     const {
       name,
       icon,
       color,
       description,
-      currentBalance,
       includeInOverallBalance,
       type,
     } = account;
@@ -87,7 +88,7 @@ const AddAccount = () => {
             icon,
             color,
             type,
-            currentBalance,
+            parseFloat(parseFloat(balance).toFixed(2).toString()),
             includeInOverallBalance,
             id,
           ]
@@ -101,7 +102,7 @@ const AddAccount = () => {
             icon,
             color,
             type,
-            currentBalance,
+            currentBalance: parseFloat(parseFloat(balance).toFixed(2).toString()),
             includeInOverallBalance,
           })
         );
@@ -117,7 +118,7 @@ const AddAccount = () => {
             icon,
             color,
             type,
-            currentBalance,
+            parseFloat(parseFloat(balance).toFixed(2).toString()),
             includeInOverallBalance ? 1 : 0,
           ]
         );
@@ -130,7 +131,7 @@ const AddAccount = () => {
             icon,
             color,
             type,
-            currentBalance,
+            currentBalance: parseFloat(parseFloat(balance).toFixed(2).toString()),
             includeInOverallBalance,
           })
         );
