@@ -67,15 +67,24 @@ export default function useTransactions() {
         `
         SELECT Transactions.id, Transactions.created_at as createdAt, Transactions.comment, Transactions.date, Transactions.amount,
           Transactions.type, Categories.color AS categoryColor, Categories.icon AS categoryIcon,
-          Categories.name AS categoryName, Accounts.name as accountName, Accounts.id as accountId
+          Categories.name AS categoryName, A1.name as accountName, A1.id as accountId,
+          A2.name as categoryName, A2.color as categoryColor,
+          A2.icon as categoryIcon
         FROM Transactions
-        INNER JOIN Categories ON Categories.id = Transactions.category_id
-        INNER JOIN Accounts ON Accounts.id = Transactions.account_id
+        LEFT JOIN Categories ON Categories.id = Transactions.category_id
+        LEFT JOIN Accounts AS A1 ON A1.id = Transactions.account_id
+        LEFT JOIN Accounts AS A2 ON A2.id = Transactions.destination_account
         WHERE Transactions.created_at >= ? AND Transactions.created_at <= ?
         ORDER BY Transactions.date DESC;
       `,
         [timeRange.from, timeRange.to]
       );
+
+      const s = await db.getAllAsync("SELECT * FROM Transactions");
+
+      console.log(s);
+
+      console.log(result);
 
       dispatch(transactionServices.actions.updateTransactions(result));
     } catch (error) {

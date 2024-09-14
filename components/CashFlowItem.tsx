@@ -24,12 +24,12 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
       <View
         className={`${
           type === "Incomes" ? "bg-green-10" : "bg-red-10"
-        } justify-center items-center p-3.5 mr-1.5 rounded-full`}
+        } justify-center items-center p-4 mr-1.5 rounded-full`}
       >
         <Feather
           name={`${type === "Incomes" ? "arrow-down-left" : "arrow-up-right"}`}
-          color={`${type === "Incomes" ? "#6ce590" : "#FF8092"}`}
-          size={16}
+          color={`${type === "Incomes" ? "#00AD74" : "#FF8092"}`}
+          size={18}
         />
       </View>
 
@@ -37,12 +37,12 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
         <Text
           className={`${
             type === "Incomes" ? "text-green" : "text-red"
-          } text-base font-[Rounded-Bold] -mb-0.5`}
+          } text-lg font-[Rounded-Bold] -mb-0.5`}
         >
           {"L " + numberWithCommas(value)}
         </Text>
 
-        <Text className="text-main font-[Rounded-Bold] text-base">
+        <Text className="text-main font-[Rounded-Bold] text-lg">
           {type}
         </Text>
       </View>

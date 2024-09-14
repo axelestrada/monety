@@ -127,15 +127,17 @@ export default function Index() {
           await db.execAsync(`
             CREATE TABLE IF NOT EXISTS Transactions (
               id TEXT PRIMARY KEY NOT NULL,
-              category_id TEXT NOT NULL,
+              category_id TEXT,
               account_id TEXT NOT NULL,
+              destination_account TEXT,
               created_at INTEGER NOT NULL,
               date INTEGER NOT NULL,
               amount REAL NOT NULL,
               comment TEXT,
               type TEXT NOT NULL CHECK (type IN ('Income', 'Expense', 'Transfer')),
               FOREIGN KEY (category_id) REFERENCES Categories (id),
-              FOREIGN KEY (account_id) REFERENCES Accounts (id)
+              FOREIGN KEY (account_id) REFERENCES Accounts (id),
+              FOREIGN KEY (destination_account) REFERENCES Accounts (id)
           );`);
         } catch (error) {
           console.error(error);

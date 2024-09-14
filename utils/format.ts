@@ -14,5 +14,5 @@ export const numberWithSign = (
     Transfer: "",
   };
 
-  return signs[type] + "L" + numberWithCommas(num);
+  return signs[type] + "L " + numberWithCommas(num);
 };

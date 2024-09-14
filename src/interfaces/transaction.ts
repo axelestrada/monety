@@ -13,4 +13,9 @@ export default interface ITransaction {
   amount: number;
   comment: string;
   type: "Income" | "Expense" | "Transfer";
+  destinationAccount: {
+    name: string;
+    icon: (typeof icons)[number];
+    color: (typeof colors)[number];
+  };
 }

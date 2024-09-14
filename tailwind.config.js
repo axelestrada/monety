@@ -7,8 +7,8 @@ module.exports = {
         main: "#1B1D1C",
         "main-50": "#1B1D1C80",
         "main-500": "#939496",
-        green: "#6ce590",
-        "green-10": "#6ce5901A",
+        green: "#00AD74",
+        "green-10": "#00AD741A",
         red: "#FF8092",
         "red-10": "#FF80921A",
         yellow: "#FFE56E"

@@ -240,6 +240,77 @@ const NewTransaction = ({
     }
   };
 
+  const addTransfer = async (from: IAccount, to: IAccount) => {
+    try {
+      const id = uuid.v4().toString();
+
+      const createdAt = selectedDate;
+      const date = createdAt === timeRange.from ? moment().unix() : createdAt;
+
+      const amount = parseFloat(secondValue);
+
+      await db.runAsync(
+        `INSERT INTO Transactions (id, account_id, destination_account, created_at, date, amount, comment, type) VALUES (?, ?, ?, ?, ?, ?, ?, 'Transfer');`,
+        [id, from.id, to.id, createdAt, date, amount, comment]
+      );
+
+      await db.runAsync(
+        `
+      UPDATE Accounts SET currentBalance = ? WHERE id = ?
+    `,
+        from.currentBalance - amount,
+        from.id
+      );
+
+      await db.runAsync(
+        `
+      UPDATE Accounts SET currentBalance = ? WHERE id = ?
+    `,
+        to.currentBalance + amount,
+        to.id
+      );
+
+      dispatch(
+        transactionServices.actions.addTransaction({
+          id,
+          destinationAccount: {
+            name: to.name,
+            color: to.color,
+            icon: to.icon
+          },
+          accountName: from.name,
+          createdAt,
+          date,
+          amount,
+          comment,
+          type: "Transfer",
+        })
+      );
+
+      dispatch(
+        accountsServices.actions.incrementBalance({
+          id: to.id,
+          amount,
+        })
+      );
+
+      dispatch(
+        accountsServices.actions.decrementBalance({
+          id: from.id,
+          amount,
+        })
+      );
+
+      hideModal();
+
+      setComment("");
+      setFirstValue("");
+      setSecondValue("");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const formatNumber = (number: string) => {
     const formatter = Intl.NumberFormat("en-US");
 
@@ -721,6 +792,13 @@ const NewTransaction = ({
                             !("currentBalance" in to)
                           ) {
                             addExpense(from, to);
+                          }
+
+                          if (
+                            "currentBalance" in to &&
+                            "currentBalance" in from
+                          ) {
+                            addTransfer(from, to);
                           }
                         }
                       }}

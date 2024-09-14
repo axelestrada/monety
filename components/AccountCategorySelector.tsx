@@ -37,10 +37,10 @@ function AccountCategorySelector({
                     activeOpacity={0.75}
                     className="bg-white rounded-2xl p-2 mb-3 mx-1 flex-1"
                     onPress={() => {
-                      if(elementType === "from") {
-                        setTransactionDetails({from: category})
+                      if (elementType === "from") {
+                        setTransactionDetails({ from: category });
                       } else {
-                        setTransactionDetails({to: category})
+                        setTransactionDetails({ to: category });
                       }
 
                       hideModal();
@@ -79,10 +79,10 @@ function AccountCategorySelector({
                     className="bg-white rounded-2xl p-2 mb-3 mx-1 flex-1"
                     key={account.id + "AccountCategorySelector"}
                     onPress={() => {
-                      if(elementType === "from") {
-                        setTransactionDetails({from: account})
+                      if (elementType === "from") {
+                        setTransactionDetails({ from: account });
                       } else {
-                        setTransactionDetails({to: account})
+                        setTransactionDetails({ to: account });
                       }
 
                       hideModal();
@@ -100,12 +100,22 @@ function AccountCategorySelector({
                         />
                       </View>
 
-                      <View style={{ flex: 1 }}>
-                        <Text
-                          numberOfLines={1}
-                          className="text-main font-[Rounded-Medium] text-lg"
-                        >
+                      <View style={{flex: 1}}>
+                        <Text className="font-[Rounded-Medium] text-lg text-main">
                           {account.name}
+                        </Text>
+
+                        <Text
+                          className={`font-[Rounded-Regular] text-base ${
+                            account.currentBalance < 0
+                              ? "text-red"
+                              : "text-main-500"
+                          }`}
+                        >
+                          L{" "}
+                          {Intl.NumberFormat("en-US")
+                            .format(account.currentBalance)
+                            .replace("-", "")}
                         </Text>
                       </View>
                     </View>

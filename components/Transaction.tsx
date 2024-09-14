@@ -15,7 +15,6 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
     type,
     createdAt,
     comment,
-    id,
   } = transaction;
 
   const { deleteTransaction } = useTransactions();
@@ -54,7 +53,7 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
         <View className="items-end">
           <Text
             className="font-[Rounded-Medium] text-base"
-            style={{ color: type === "Income" ? "#6ce590" : "#FF8092" }}
+            style={{ color: type === "Income" ? "#00AD74" : type === "Expense" ? "#FF8092" : "#1B1D1C" }}
           >
             {numberWithSign(amount, type)}
           </Text>
