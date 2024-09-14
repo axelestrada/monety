@@ -31,14 +31,6 @@ export default function useAccounts() {
             type: "Regular",
             currentBalance: 0,
           },
-          {
-            id: "",
-            name: "",
-            icon: "accessibility-outline",
-            color: "623387",
-            type: "Savings",
-            currentBalance: 0,
-          },
         ])
       );
     } catch (error) {

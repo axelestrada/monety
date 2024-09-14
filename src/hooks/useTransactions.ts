@@ -18,12 +18,62 @@ export default function useTransactions() {
   const db = useSQLiteContext();
 
   const deleteTransaction = useCallback(
-    async ({ id, type, accountId, amount }: ITransaction) => {
+    async ({
+      id,
+      type,
+      accountId,
+      destinationAccountId,
+      amount,
+    }: ITransaction) => {
       const accountBalance =
         accounts.find((account) => accountId === account.id)?.currentBalance ||
         0;
+      const destinationAccountBalance =
+        accounts.find((account) => destinationAccountId === account.id)
+          ?.currentBalance || 0;
 
-      if (id) {
+      if (id && destinationAccountId) {
+        await db.runAsync(
+          `
+          DELETE FROM Transactions WHERE id = ?;
+          `,
+          id
+        );
+
+        await db.runAsync(
+          `
+          UPDATE Accounts SET currentBalance = ? WHERE id = ?
+        `,
+          accountBalance + amount,
+          accountId
+        );
+
+        await db.runAsync(
+          `
+          UPDATE Accounts SET currentBalance = ? WHERE id = ?
+        `,
+          accountBalance + amount,
+          destinationAccountId
+        );
+
+        dispatch(transactionServices.actions.deleteTransaction(id));
+
+        dispatch(
+          accountsServices.actions.incrementBalance({
+            id: accountId,
+            amount,
+          })
+        );
+
+        dispatch(
+          accountsServices.actions.decrementBalance({
+            id: destinationAccountId,
+            amount,
+          })
+        );
+      }
+
+      if (id && !destinationAccountId) {
         await db.runAsync(
           `
         DELETE FROM Transactions WHERE id = ?;
@@ -69,7 +119,7 @@ export default function useTransactions() {
           Transactions.type, Categories.color AS categoryColor, Categories.icon AS categoryIcon,
           Categories.name AS categoryName, A1.name as accountName, A1.id as accountId,
           A2.name as destinationAccountName, A2.color as destinationAccountColor,
-          A2.icon as destinationAccountIcon
+          A2.icon as destinationAccountIcon, A2.id as destinationAccountId
         FROM Transactions
         LEFT JOIN Categories ON Categories.id = Transactions.category_id
         LEFT JOIN Accounts AS A1 ON A1.id = Transactions.account_id

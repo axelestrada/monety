@@ -29,7 +29,7 @@ const CategoriesGrid = ({
         item.id === "" ? (
           <TouchableOpacity
             activeOpacity={0.5}
-            className="mb-3 mx-1.5 rounded-2xl justify-center items-center py-5"
+            className="mb-3 mx-1.5 rounded-2xl justify-center items-center py-[23]"
             onPress={() => {
               router.navigate(`/add-category?type=${item.type}`);
             }}

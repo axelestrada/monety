@@ -121,7 +121,11 @@ export default function Accounts() {
       </Modal>
 
       <Header title="Accounts">
-        <IconButton>
+        <IconButton
+          onPress={() => {
+            router.navigate("/add-account");
+          }}
+        >
           <Ionicons name="add" size={24} color="#1B1D1C" />
         </IconButton>
       </Header>
@@ -135,7 +139,9 @@ export default function Accounts() {
           </Text>
           <Text className="text-main font-[Rounded-Bold] text-lg">
             {format(
-              accounts.reduce((acc, curr) => acc + curr.currentBalance, 0)
+              accounts
+                .filter((account) => account.type === "Regular")
+                .reduce((acc, curr) => acc + curr.currentBalance, 0)
             )}
           </Text>
         </View>
@@ -145,28 +151,33 @@ export default function Accounts() {
           scrollEnabled={false}
           renderItem={({ item }) =>
             item.id === "" ? (
-              <TouchableOpacity
-                activeOpacity={0.5}
-                className="mx-3 rounded-2xl justify-center items-center py-5"
-                onPress={() => {
-                  router.navigate("/add-account");
-                }}
-                style={{
-                  width: windowWidth - 24,
-                  borderStyle: "dashed",
-                  borderWidth: 2,
-                  borderColor: "#1B1D1C",
-                }}
-              >
-                <Feather name="plus" color={"#1B1D1C"} size={18} />
-              </TouchableOpacity>
+              <>
+                {accounts.filter((account) => account.type === "Savings")
+                  .length === 0 && (
+                  <TouchableOpacity
+                    activeOpacity={0.5}
+                    className="mx-3 rounded-2xl justify-center items-center py-5"
+                    onPress={() => {
+                      router.navigate("/add-account");
+                    }}
+                    style={{
+                      width: windowWidth - 24,
+                      borderStyle: "dashed",
+                      borderWidth: 2,
+                      borderColor: "#1B1D1C",
+                    }}
+                  >
+                    <Feather name="plus" color={"#1B1D1C"} size={18} />
+                  </TouchableOpacity>
+                )}
+              </>
             ) : (
               <TouchableOpacity
                 activeOpacity={0.75}
                 className="bg-white px-2 py-3 mb-3 mx-3 rounded-2xl flex flex-row justify-between items-center"
                 style={styles.shadow}
                 onPress={() => {
-                  setActiveModal(true)
+                  setActiveModal(true);
                 }}
                 onLongPress={() => {
                   router.push({
@@ -212,63 +223,72 @@ export default function Accounts() {
         />
 
         {accounts.filter((account) => account.type === "Savings").length >
-          1 && (
+          0 && (
           <>
-            <View className="mx-4 flex-row justify-between items-center my-4">
+            <View className="mx-3 mt-4 flex-row justify-between items-center mb-3">
               <Text className="text-main font-[Rounded-Bold] text-lg">
                 Savings
               </Text>
-              <Text className="text-main font-[Rounded-Bold] text-lg">L 0</Text>
+              <Text className="text-main font-[Rounded-Bold] text-lg">
+                {format(
+                  accounts
+                    .filter((account) => account.type === "Savings")
+                    .reduce((acc, curr) => acc + curr.currentBalance, 0)
+                )}
+              </Text>
             </View>
 
             <FlatList
               data={accounts.filter((account) => account.type === "Savings")}
               scrollEnabled={false}
-              renderItem={({ item }) =>
-                item.id === "" ? (
-                  <TouchableOpacity
-                    activeOpacity={0.5}
-                    className="mx-4 rounded-2xl justify-center items-center py-6"
-                    style={{
-                      width: windowWidth - 32,
-                      borderStyle: "dashed",
-                      borderWidth: 2,
-                      borderColor: "#1B1D1C",
-                    }}
-                  >
-                    <Feather name="plus" color={"#1B1D1C"} size={20} />
-                  </TouchableOpacity>
-                ) : (
-                  <TouchableOpacity
-                    activeOpacity={0.75}
-                    className="bg-white p-4 mb-4 mx-4 rounded-2xl flex flex-row justify-between items-center"
-                    style={styles.shadow}
-                  >
-                    <View className="flex flex-row items-center">
-                      <View
-                        className={`justify-center items-center p-4 mr-2 rounded-full`}
-                        style={{ backgroundColor: "#" + item.color + "1A" }}
-                      >
-                        <Ionicons
-                          name={item.icon}
-                          color={"#" + item.color}
-                          size={18}
-                        />
-                      </View>
-
-                      <View>
-                        <Text className="font-[Rounded-Bold] text-lg text-main">
-                          {item.name}
-                        </Text>
-
-                        <Text className="font-[Rounded-Regular] text-sm text-main-500">
-                          {"L " + item.currentBalance}
-                        </Text>
-                      </View>
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  activeOpacity={0.75}
+                  className="bg-white px-2 py-3 mb-3 mx-3 rounded-2xl flex flex-row justify-between items-center"
+                  style={styles.shadow}
+                  onPress={() => {
+                    setActiveModal(true);
+                  }}
+                  onLongPress={() => {
+                    router.push({
+                      pathname: "/add-account",
+                      params: {
+                        id: item.id,
+                      },
+                    });
+                  }}
+                >
+                  <View className="flex flex-row items-center">
+                    <View
+                      className={`justify-center items-center p-3.5 mr-1.5 rounded-full`}
+                      style={{ backgroundColor: "#" + item.color + "1A" }}
+                    >
+                      <Ionicons
+                        name={item.icon}
+                        color={"#" + item.color}
+                        size={16}
+                      />
                     </View>
-                  </TouchableOpacity>
-                )
-              }
+
+                    <View>
+                      <Text className="font-[Rounded-Medium] text-lg text-main">
+                        {item.name}
+                      </Text>
+
+                      <Text
+                        className={`font-[Rounded-Regular] text-base ${
+                          item.currentBalance < 0 ? "text-red" : "text-main-500"
+                        }`}
+                      >
+                        L{" "}
+                        {Intl.NumberFormat("en-US")
+                          .format(item.currentBalance)
+                          .replace("-", "")}
+                      </Text>
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              )}
             />
           </>
         )}

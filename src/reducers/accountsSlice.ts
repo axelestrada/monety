@@ -26,15 +26,6 @@ const accountsSlice = createSlice({
           currentBalance: 0,
           includeInOverallBalance: 0,
         },
-        {
-          id: "",
-          name: "",
-          icon: "accessibility-outline",
-          color: "623387",
-          type: "Savings",
-          currentBalance: 0,
-          includeInOverallBalance: 0,
-        },
       ];
     },
     updateAccounts: (state, action) => {

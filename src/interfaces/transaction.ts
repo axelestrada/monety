@@ -6,6 +6,7 @@ export default interface ITransaction {
   categoryName?: string;
   categoryColor?: (typeof colors)[number];
   categoryIcon?: (typeof icons)[number];
+  destinationAccountId?: string;
   destinationAccountName?: string;
   destinationAccountColor?: (typeof colors)[number];
   destinationAccountIcon?: (typeof icons)[number];
