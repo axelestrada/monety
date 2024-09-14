@@ -1,7 +1,7 @@
-import { CategoryInterface } from "@/interfaces/category";
+import { ICategory } from "@/interfaces";
 import uuid from "react-native-uuid";
 
-export const defaultCategories: CategoryInterface[] = [
+export const defaultCategories: ICategory[] = [
   {
     id: uuid.v4().toString(),
     name: "Food",

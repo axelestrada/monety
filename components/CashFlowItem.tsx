@@ -28,7 +28,7 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
       >
         <Feather
           name={`${type === "Incomes" ? "arrow-down-left" : "arrow-up-right"}`}
-          color={`${type === "Incomes" ? "#00AD74" : "#FF8092"}`}
+          color={`${type === "Incomes" ? "#02AB5B" : "#FF8092"}`}
           size={18}
         />
       </View>

@@ -68,8 +68,8 @@ export default function useTransactions() {
         SELECT Transactions.id, Transactions.created_at as createdAt, Transactions.comment, Transactions.date, Transactions.amount,
           Transactions.type, Categories.color AS categoryColor, Categories.icon AS categoryIcon,
           Categories.name AS categoryName, A1.name as accountName, A1.id as accountId,
-          A2.name as categoryName, A2.color as categoryColor,
-          A2.icon as categoryIcon
+          A2.name as destinationAccountName, A2.color as destinationAccountColor,
+          A2.icon as destinationAccountIcon
         FROM Transactions
         LEFT JOIN Categories ON Categories.id = Transactions.category_id
         LEFT JOIN Accounts AS A1 ON A1.id = Transactions.account_id
@@ -79,12 +79,6 @@ export default function useTransactions() {
       `,
         [timeRange.from, timeRange.to]
       );
-
-      const s = await db.getAllAsync("SELECT * FROM Transactions");
-
-      console.log(s);
-
-      console.log(result);
 
       dispatch(transactionServices.actions.updateTransactions(result));
     } catch (error) {

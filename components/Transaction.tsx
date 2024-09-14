@@ -10,6 +10,9 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
     categoryName,
     categoryColor,
     categoryIcon,
+    destinationAccountName,
+    destinationAccountColor,
+    destinationAccountIcon,
     accountName,
     amount,
     type,
@@ -30,18 +33,18 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
         <View className="flex flex-row items-center">
           <View
             className={`justify-center items-center p-3.5 mr-1.5 rounded-full`}
-            style={{ backgroundColor: "#" + categoryColor + "1A" }}
+            style={{ backgroundColor: "#" + (categoryColor || destinationAccountColor) + "1A" }}
           >
             <Ionicons
-              name={categoryIcon}
-              color={"#" + categoryColor}
+              name={categoryIcon || destinationAccountIcon}
+              color={"#" + (categoryColor || destinationAccountColor)}
               size={16}
             />
           </View>
 
           <View>
             <Text className="font-[Rounded-Medium] text-lg text-main">
-              {categoryName}
+              {categoryName || destinationAccountName}
             </Text>
 
             <Text className="font-[Rounded-Regular] text-sm text-main-500">
@@ -53,7 +56,7 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
         <View className="items-end">
           <Text
             className="font-[Rounded-Medium] text-base"
-            style={{ color: type === "Income" ? "#00AD74" : type === "Expense" ? "#FF8092" : "#1B1D1C" }}
+            style={{ color: type === "Income" ? "#02AB5B" : type === "Expense" ? "#FF8092" : "#1B1D1C" }}
           >
             {numberWithSign(amount, type)}
           </Text>
@@ -65,7 +68,7 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
       </View>
 
       {comment && (
-        <Text className="font-[Rounded-Regular] text-sm text-main pt-2">
+        <Text className="font-[Rounded-Regular] text-sm text-main pt-1">
           {comment}
         </Text>
       )}
