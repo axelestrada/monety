@@ -26,7 +26,11 @@ const OverallBalance = ({ children }: Props) => {
       <Text className="text-[#1b1d1cbf] text-xs">Overall balance</Text>
       <Text className="text-main font-[Rounded-Bold] text-[34px]">
         {formatNumber(
-          accounts.reduce((acc, curr) => acc + curr.currentBalance, 0)
+          accounts.reduce(
+            (acc, curr) =>
+              curr.includeInOverallBalance ? acc + curr.currentBalance : acc,
+            0
+          )
         )}
       </Text>
 
