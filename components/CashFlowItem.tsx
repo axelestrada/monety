@@ -39,7 +39,7 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
             type === "Incomes" ? "text-green" : "text-red"
           } text-lg font-[Rounded-Bold] -mb-0.5`}
         >
-          {"L " + numberWithCommas(value)}
+          {"L " + Intl.NumberFormat("en-US").format(value)}
         </Text>
 
         <Text className="text-main font-[Rounded-Bold] text-lg">
