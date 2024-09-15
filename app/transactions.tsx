@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from "react-native";
+import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useTypedSelector } from "../store";
@@ -11,9 +11,21 @@ import TimeRange from "@/components/TimeRange";
 import Transaction from "@/components/Transaction";
 import NoTransactions from "@/components/NoTransactions";
 import BottomTabNavigator from "@/components/BottomTabNavigator";
+import { useAccounts, useTransactions } from "@/hooks";
+import { useCallback, useState } from "react";
 
 const Transactions = () => {
   const { transactions } = useTypedSelector((state) => state.transactions);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const { loadTransactions } = useTransactions();
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    loadTransactions();
+    setRefreshing(false);
+  }, []);
 
   const format = (number: number) => {
     const formattedNumber = Intl.NumberFormat("en-US").format(number);
@@ -45,7 +57,18 @@ const Transactions = () => {
         <TimeRange />
       </OverallBalance>
 
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }} className="-mb-6">
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1 }}
+        className="-mb-6"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#1B1D1C"]}
+            progressBackgroundColor={"#FFFFFF"}
+          />
+        }
+      >
         <View className="rounded-md grow mb-6">
           {transactions.length <= 0 ? (
             <NoTransactions />

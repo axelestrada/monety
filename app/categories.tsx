@@ -13,6 +13,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import { useCallback, useEffect, useState } from "react";
 import {
   Modal,
+  RefreshControl,
   StatusBar,
   Text,
   TouchableOpacity,
@@ -33,7 +34,7 @@ function Categories() {
   >("");
   const [elementType, setElementType] = useState<"from" | "to">("from");
 
-  const { categories } = useCategories();
+  const { categories, loadCategories } = useCategories();
   const { accounts } = useAccounts();
   const { transactions } = useTypedSelector((state) => state.transactions);
 
@@ -44,6 +45,14 @@ function Categories() {
     from: accounts[0],
     to: categories[0],
   });
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    loadCategories()
+    setRefreshing(false)
+  }, []);
 
   return (
     <SafeAreaView className="flex flex-1">
@@ -135,6 +144,9 @@ function Categories() {
       </View>
 
       <CategoriesGrid
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#1B1D1C"]} progressBackgroundColor={"#FFFFFF"} />
+        }
         categories={categories.filter((item) => item.type === type)}
         openModal={() => setActiveModal(true)}
         setCurrentCategory={(category: ICategory) => {

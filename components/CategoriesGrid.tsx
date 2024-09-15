@@ -1,21 +1,23 @@
-import { Dimensions, FlatList, TouchableOpacity } from "react-native";
+import { Dimensions, FlatList, RefreshControlProps, ScrollView, TouchableOpacity } from "react-native";
 import Category from "./Category";
 import { ICategory } from "@/interfaces";
 import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { ReactElement, useState } from "react";
 import { useTypedSelector } from "@/store";
 
 interface Props {
   categories: ICategory[];
   openModal: () => void;
   setCurrentCategory: (category: ICategory) => void;
+  refreshControl: ReactElement<RefreshControlProps, string | React.JSXElementConstructor<any>>
 }
 
 const CategoriesGrid = ({
   categories,
   openModal,
   setCurrentCategory,
+  refreshControl
 }: Props) => {
   const windowWidth = Dimensions.get("window").width;
   const router = useRouter();
@@ -25,6 +27,7 @@ const CategoriesGrid = ({
   return (
     <FlatList
       data={categories}
+      refreshControl={refreshControl}
       renderItem={({ item }) =>
         item.id === "" ? (
           <TouchableOpacity

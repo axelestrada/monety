@@ -10,6 +10,7 @@ function AccountCategorySelector({
   setTransactionDetails,
   elementType,
   hideModal,
+  callback
 }: {
   type: "Accounts" | "Categories";
   setTransactionDetails: (transaction: {
@@ -18,6 +19,7 @@ function AccountCategorySelector({
   }) => void;
   hideModal: () => void;
   elementType: "from" | "to";
+  callback?: () => void
 }) {
   const { categories } = useTypedSelector((state) => state.categories);
   const { accounts } = useTypedSelector((state) => state.accounts);
@@ -37,6 +39,8 @@ function AccountCategorySelector({
                     activeOpacity={0.75}
                     className="bg-white rounded-2xl p-2 mb-3 mx-1 flex-1"
                     onPress={() => {
+                      callback && callback();
+
                       if (elementType === "from") {
                         setTransactionDetails({ from: category });
                       } else {
@@ -79,6 +83,8 @@ function AccountCategorySelector({
                     className="bg-white rounded-2xl p-2 mb-3 mx-1 flex-1"
                     key={account.id + "AccountCategorySelector"}
                     onPress={() => {
+                      callback && callback();
+
                       if (elementType === "from") {
                         setTransactionDetails({ from: account });
                       } else {

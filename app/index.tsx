@@ -1,4 +1,4 @@
-import { ScrollView, Text, View } from "react-native";
+import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useFonts } from "expo-font";
@@ -33,6 +33,16 @@ export default function Index() {
 
   const { transactions } = useTypedSelector((state) => state.transactions);
   const { categories } = useTypedSelector((state) => state.categories);
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    loadAccounts();
+    loadTransactions();
+    loadCategories();
+      setRefreshing(false);
+  }, []);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -181,6 +191,9 @@ export default function Index() {
       <ScrollView
         className="mt-2 -mb-6"
         contentContainerStyle={{ flexGrow: 1 }}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#1B1D1C"]} progressBackgroundColor={"#FFFFFF"} />
+        }
       >
         <AnalyticsChart type={analyticsType} />
 

@@ -33,6 +33,7 @@ export default function useAccounts() {
           },
         ])
       );
+
     } catch (error) {
       console.error(error);
     }

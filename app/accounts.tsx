@@ -13,12 +13,13 @@ import { styles } from "@/styles/shadow";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import {
   Button,
   Dimensions,
   FlatList,
   Modal,
+  RefreshControl,
   ScrollView,
   Text,
   TouchableOpacity,
@@ -31,9 +32,12 @@ export default function Accounts() {
   const { accounts } = useAccounts();
 
   const [activeModal, setActiveModal] = useState(false);
-  const [activeSelector, setActiveSelector] = useState<
-    "" | "Accounts" | "Categories"
-  >("");
+  const [activeSelector, setActiveSelector] = useState<{
+    type: "" | "Accounts" | "Categories";
+    callback?: () => void;
+  }>({
+    type: "",
+  });
 
   const [transactionDetails, setTransactionDetails] = useState<{
     from: ICategory | IAccount;
@@ -42,6 +46,18 @@ export default function Accounts() {
     from: accounts[0],
     to: accounts[1],
   });
+
+  const { loadAccounts } = useAccounts();
+
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+
+    await loadAccounts();
+
+    setRefreshing(false);
+  }, []);
 
   const [elementType, setElementType] = useState<"from" | "to">("to");
 
@@ -80,7 +96,7 @@ export default function Accounts() {
             elementType: "from" | "to"
           ) => {
             setElementType(elementType);
-            setActiveSelector(type);
+            setActiveSelector({ type });
           }}
           from={transactionDetails.from}
           to={transactionDetails.to}
@@ -88,8 +104,13 @@ export default function Accounts() {
       </Modal>
 
       <Modal
-        visible={activeSelector !== ""}
-        onRequestClose={() => setActiveSelector("")}
+        visible={activeSelector.type !== ""}
+        onRequestClose={() =>
+          setActiveSelector({
+            type: "",
+            callback: () => {},
+          })
+        }
         animationType="slide"
         transparent
         statusBarTranslucent
@@ -98,15 +119,26 @@ export default function Accounts() {
         <TouchableOpacity
           className="flex-[1] pt-24 justify-end bg-[#00000080]"
           activeOpacity={1}
-          onPress={() => setActiveSelector("")}
+          onPress={() =>
+            setActiveSelector({
+              type: "",
+              callback: () => {},
+            })
+          }
         >
           <TouchableWithoutFeedback>
             <View className="rounded-t-3xl overflow-hidden bg-white">
               <BackgroundGradient />
 
               <AccountCategorySelector
-                type={activeSelector || "Categories"}
-                hideModal={() => setActiveSelector("")}
+                type={activeSelector.type || "Categories"}
+                callback={activeSelector.callback}
+                hideModal={() =>
+                  setActiveSelector({
+                    type: "",
+                    callback: () => {},
+                  })
+                }
                 elementType={elementType}
                 setTransactionDetails={(transaction: {
                   from?: ICategory | IAccount;
@@ -132,7 +164,17 @@ export default function Accounts() {
 
       <OverallBalance />
 
-      <ScrollView className="flex flex-1">
+      <ScrollView
+        className="flex flex-1"
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#1B1D1C"]}
+            progressBackgroundColor={"#FFFFFF"}
+          />
+        }
+      >
         <View className="mx-3 flex-row justify-between items-center mb-3">
           <Text className="text-main font-[Rounded-Bold] text-lg">
             Accounts
@@ -177,7 +219,17 @@ export default function Accounts() {
                 className="bg-white px-2 py-3 mb-3 mx-3 rounded-2xl flex flex-row justify-between items-center"
                 style={styles.shadow}
                 onPress={() => {
-                  setActiveModal(true);
+                  setActiveSelector({
+                    type: "Accounts",
+                    callback: () => {
+                      setActiveModal(true);
+                    },
+                  });
+                  setElementType("to");
+                  setTransactionDetails((prev) => ({
+                    ...prev,
+                    from: item,
+                  }));
                 }}
                 onLongPress={() => {
                   router.push({
