@@ -52,7 +52,7 @@ export default function useTransactions() {
           `
           UPDATE Accounts SET currentBalance = ? WHERE id = ?
         `,
-          accountBalance + amount,
+          destinationAccountBalance - amount,
           destinationAccountId
         );
 
@@ -113,7 +113,7 @@ export default function useTransactions() {
 
   const loadTransactions = useCallback(async () => {
     try {
-      const result = await db.getAllAsync<ITransaction[]>(
+      const result = await db.getAllAsync<ITransaction>(
         `
         SELECT Transactions.id, Transactions.created_at as createdAt, Transactions.comment, Transactions.date, Transactions.amount,
           Transactions.type, Categories.color AS categoryColor, Categories.icon AS categoryIcon,

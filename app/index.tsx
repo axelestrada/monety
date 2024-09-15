@@ -36,10 +36,6 @@ export default function Index() {
 
   useEffect(() => {
     if (categories.length === 0) {
-      loadAccounts();
-      loadTransactions();
-      loadCategories();
-
       const initializeDatabase = async () => {
         try {
           await db.execAsync(`
@@ -113,7 +109,7 @@ export default function Index() {
                 "00AD74",
                 "Regular",
                 0,
-                1
+                1,
               ]
             );
           } catch (error) {
@@ -146,6 +142,10 @@ export default function Index() {
 
       initializeDatabase();
     }
+
+    loadAccounts();
+    loadTransactions();
+    loadCategories();
   }, []);
 
   // #region Load Fonts

@@ -162,6 +162,7 @@ const NewTransaction = ({
           categoryIcon: category.icon,
           accountName: account.name,
           createdAt,
+          accountId: account.id,
           date,
           amount,
           comment,
@@ -215,6 +216,7 @@ const NewTransaction = ({
           categoryColor: category.color,
           categoryIcon: category.icon,
           accountName: account.name,
+          accountId: account.id,
           createdAt,
           date,
           amount,
@@ -273,12 +275,12 @@ const NewTransaction = ({
       dispatch(
         transactionServices.actions.addTransaction({
           id,
-          destinationAccount: {
-            name: to.name,
-            color: to.color,
-            icon: to.icon
-          },
+          destinationAccountId: to.id,
+          destinationAccountColor: to.color,
+          destinationAccountIcon: to.icon,
+          destinationAccountName: to.name,
           accountName: from.name,
+          accountId: from.id,
           createdAt,
           date,
           amount,
