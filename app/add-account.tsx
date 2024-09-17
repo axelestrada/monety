@@ -61,8 +61,6 @@ const AddAccount = () => {
   );
 
   const saveCategory = async () => {
-    console.log(balance);
-
     const {
       name,
       icon,

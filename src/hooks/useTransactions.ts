@@ -17,20 +17,21 @@ export default function useTransactions() {
 
   const db = useSQLiteContext();
 
-  const deleteTransaction = useCallback(
-    async ({
-      id,
-      type,
-      accountId,
-      destinationAccountId,
-      amount,
-    }: ITransaction) => {
+  const deleteTransaction = useCallback(async (tr: ITransaction) => {
+    try {
+      const { id, type, accountId, destinationAccountId, amount } = tr;
+
+      console.log(tr);
+
       const accountBalance =
         accounts.find((account) => accountId === account.id)?.currentBalance ||
         0;
       const destinationAccountBalance =
         accounts.find((account) => destinationAccountId === account.id)
           ?.currentBalance || 0;
+
+      console.log("AB:", accountBalance);
+      console.log("DAB", destinationAccountBalance);
 
       if (id && destinationAccountId) {
         await db.runAsync(
@@ -107,9 +108,10 @@ export default function useTransactions() {
           );
         }
       }
-    },
-    []
-  );
+    } catch (error) {
+      console.error(error);
+    }
+  }, [accounts]);
 
   const loadTransactions = useCallback(async () => {
     try {

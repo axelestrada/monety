@@ -143,7 +143,7 @@ const NewTransaction = ({
 
       await db.runAsync(
         `INSERT INTO Transactions (id, category_id, account_id, created_at, date, amount, comment, type) VALUES (?, ?, ?, ?, ?, ?, ?, 'Income');`,
-        [id, category.id, to.id, createdAt, date, amount, comment]
+        [id, category.id, account.id, createdAt, date, amount, comment]
       );
 
       await db.runAsync(

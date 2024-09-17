@@ -13,7 +13,12 @@ const accountsSlice = createSlice({
   name: "accountsSlice",
   initialState,
   reducers: {
-    addAccount: (state, action) => {
+    addAccount: (
+      state,
+      action: {
+        payload: IAccount;
+      }
+    ) => {
       state.accounts = [
         ...state.accounts.slice(0, -2),
         { ...action.payload },
@@ -28,15 +33,30 @@ const accountsSlice = createSlice({
         },
       ];
     },
-    updateAccounts: (state, action) => {
+    updateAccounts: (
+      state,
+      action: {
+        payload: IAccount[];
+      }
+    ) => {
       state.accounts = action.payload;
     },
-    updateAccount: (state, action) => {
+    updateAccount: (
+      state,
+      action: {
+        payload: IAccount;
+      }
+    ) => {
       state.accounts = state.accounts.map((account) =>
         account.id === action.payload.id ? action.payload : account
       );
     },
-    deleteAccount: (state, action) => {
+    deleteAccount: (
+      state,
+      action: {
+        payload: string;
+      }
+    ) => {
       state.accounts = state.accounts.filter(
         (account) => account.id !== action.payload
       );
