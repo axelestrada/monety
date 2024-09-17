@@ -216,7 +216,7 @@ export default function Accounts() {
             ) : (
               <TouchableOpacity
                 activeOpacity={0.75}
-                className="bg-white px-2 py-3 mb-3 mx-3 rounded-2xl flex flex-row justify-between items-center"
+                className="bg-white px-2 py-3 mb-3 mx-3 rounded-2xl"
                 style={styles.shadow}
                 onPress={() => {
                   setActiveSelector({
@@ -269,6 +269,12 @@ export default function Accounts() {
                     </Text>
                   </View>
                 </View>
+
+                {item.description && (
+                  <Text className="font-[Rounded-Regular] text-sm text-main pt-1">
+                    {item.description}
+                  </Text>
+                )}
               </TouchableOpacity>
             )
           }
