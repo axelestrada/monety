@@ -17,6 +17,7 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
     amount,
     type,
     createdAt,
+    date,
     comment,
   } = transaction;
 
@@ -62,7 +63,7 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
           </Text>
 
           <Text className="font-[Rounded-Regular] text-sm text-main-500">
-            {moment(createdAt * 1000).format("DD MMM YY")}
+            {moment(date * 1000).format("HH:mm A")}
           </Text>
         </View>
       </View>
