@@ -136,13 +136,13 @@ const AddCategory = () => {
       <Header title={params.id ? "Edit Category" : "New Category"} goBack />
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex flex-row justify-between bg-[#ffffff33] mt-3 mx-3 py-1.5 rounded-2xl">
+        <View className="flex flex-row justify-between bg-[#ffffff33] mt-3 mx-3 py-1.5 rounded-lg">
           <TouchableOpacity
             activeOpacity={0.75}
             onPress={() => setType("Income")}
             className={`${
               type === "Income" && "bg-white"
-            } flex flex-1 rounded-2xl p-3.5 mx-1.5 flex-row items-center justify-center`}
+            } flex flex-1 rounded-lg p-3.5 mx-1.5 flex-row items-center justify-center`}
             style={type === "Income" ? styles.shadow : {}}
           >
             <Text className="text-main font-[Rounded-Bold] text-base">
@@ -155,7 +155,7 @@ const AddCategory = () => {
             onPress={() => setType("Expense")}
             className={`${
               type === "Expense" && "bg-white"
-            } flex flex-1 rounded-2xl p-3.5 mx-1.5 flex-row items-center justify-center`}
+            } flex flex-1 rounded-lg p-3.5 mx-1.5 flex-row items-center justify-center`}
             style={type === "Expense" ? styles.shadow : {}}
           >
             <Text className="text-main font-[Rounded-Bold] text-base">
@@ -257,7 +257,7 @@ const AddCategory = () => {
         <TouchableOpacity
           activeOpacity={0.5}
           onPress={saveCategory}
-          className="bg-main mx-3 mb-3 rounded-2xl p-4 py-5"
+          className="bg-main mx-3 mb-3 rounded-lg p-4"
           style={styles.shadow}
         >
           <Text
@@ -272,7 +272,7 @@ const AddCategory = () => {
           <>
             <TouchableOpacity
               activeOpacity={0.5}
-              className="bg-white mx-3 mb-3 rounded-2xl p-4 py-5"
+              className="bg-white mx-3 mb-3 rounded-lg p-4"
               style={styles.shadow}
             >
               <Text
@@ -286,7 +286,7 @@ const AddCategory = () => {
             <TouchableOpacity
               activeOpacity={0.5}
               onPress={deleteCategory}
-              className="bg-[#E93043] mx-3 mb-3 rounded-2xl p-4 py-5"
+              className="bg-[#E93043] mx-3 mb-3 rounded-lg p-4"
               style={styles.shadow}
             >
               <Text
