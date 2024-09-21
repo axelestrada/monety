@@ -30,10 +30,10 @@ export default function useAccounts() {
             color: "623387",
             type: "Regular",
             currentBalance: 0,
+            includeInOverallBalance: 0,
           },
         ])
       );
-
     } catch (error) {
       console.error(error);
     }

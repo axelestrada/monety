@@ -12,6 +12,7 @@ import { useSegments } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useCallback, useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   Modal,
   RefreshControl,
   StatusBar,
@@ -22,7 +23,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NewTransaction from "@/components/NewTransaction";
-import { useAccounts, useCategories } from "@/hooks";
+import { useAccounts, useCategories, useTransactions } from "@/hooks";
 import { useTypedSelector } from "@/store";
 import AccountCategorySelector from "@/components/AccountCategorySelector";
 
@@ -35,8 +36,10 @@ function Categories() {
   const [elementType, setElementType] = useState<"from" | "to">("from");
 
   const { categories, loadCategories } = useCategories();
-  const { accounts } = useAccounts();
+  const { accounts, loadAccounts } = useAccounts();
+  const { loadTransactions } = useTransactions();
   const { transactions } = useTypedSelector((state) => state.transactions);
+  const { loading } = useTypedSelector((state) => state.userPreferences);
 
   const [transactionDetails, setTransactionDetails] = useState<{
     from: ICategory | IAccount;
@@ -50,13 +53,22 @@ function Categories() {
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    loadCategories()
-    setRefreshing(false)
-  }, []);
+    loadAccounts();
+    loadTransactions();
+    loadCategories();
+    setRefreshing(false);
+  }, [setRefreshing, loadTransactions, loadAccounts, loadCategories]);
+
 
   return (
     <SafeAreaView className="flex flex-1">
       <BackgroundGradient />
+
+      {loading && (
+        <View className="absolute top-0 left-0 right-0 bottom-0 z-50 bg-[#00000080] justify-center items-center">
+          <ActivityIndicator color={"#FFFFFF"} size={32} />
+        </View>
+      )}
 
       <Modal
         visible={activeModal}
@@ -67,6 +79,7 @@ function Categories() {
         presentationStyle="overFullScreen"
       >
         <NewTransaction
+          showModal={() => setActiveModal(true)}
           hideModal={() => setActiveModal(false)}
           openSelector={(
             type: "" | "Accounts" | "Categories",
@@ -120,7 +133,7 @@ function Categories() {
       </Header>
 
       <OverallBalance>
-        <TimeRange />
+        <TimeRange/>
       </OverallBalance>
 
       <View className="flex flex-row mx-3 py-1.5 bg-[#ffffff80] rounded-2xl">
@@ -145,7 +158,12 @@ function Categories() {
 
       <CategoriesGrid
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#1B1D1C"]} progressBackgroundColor={"#FFFFFF"} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#1B1D1C"]}
+            progressBackgroundColor={"#FFFFFF"}
+          />
         }
         categories={categories.filter((item) => item.type === type)}
         openModal={() => setActiveModal(true)}

@@ -5,7 +5,7 @@ import NewTransaction from "@/components/NewTransaction";
 import OverallBalance from "@/components/OverallBalance";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import IconButton from "@/components/ui/IconButton";
-import { useAccounts } from "@/hooks";
+import { useAccounts, useCategories, useTransactions } from "@/hooks";
 import { IAccount, ICategory } from "@/interfaces";
 import { accountsServices } from "@/reducers/accountsSlice";
 import { useAppDispatch, useTypedSelector } from "@/store";
@@ -47,17 +47,22 @@ export default function Accounts() {
     to: accounts[1],
   });
 
-  const { loadAccounts } = useAccounts();
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const onRefresh = useCallback(async () => {
+  const { loadAccounts } = useAccounts();
+  const { loadTransactions } = useTransactions();
+  const { loadCategories } = useCategories();
+
+  const { timeRange } = useTypedSelector((state) => state.userPreferences);
+
+  const onRefresh = useCallback(() => {
     setRefreshing(true);
-
-    await loadAccounts();
-
+    loadAccounts();
+    loadTransactions();
+    loadCategories();
     setRefreshing(false);
-  }, []);
+  }, [setRefreshing, loadTransactions, loadAccounts, loadCategories]);
 
   const [elementType, setElementType] = useState<"from" | "to">("to");
 
@@ -90,6 +95,7 @@ export default function Accounts() {
         presentationStyle="overFullScreen"
       >
         <NewTransaction
+          showModal={() => setActiveModal(true)}
           hideModal={() => setActiveModal(false)}
           openSelector={(
             type: "" | "Accounts" | "Categories",

@@ -1,7 +1,7 @@
-import { RefreshControl, ScrollView, Text, View } from "react-native";
+import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useTypedSelector } from "../store";
+import { useAppDispatch, useTypedSelector } from "../store";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import Header from "@/components/Header";
 import IconButton from "@/components/ui/IconButton";
@@ -11,21 +11,29 @@ import TimeRange from "@/components/TimeRange";
 import Transaction from "@/components/Transaction";
 import NoTransactions from "@/components/NoTransactions";
 import BottomTabNavigator from "@/components/BottomTabNavigator";
-import { useAccounts, useTransactions } from "@/hooks";
-import { useCallback, useState } from "react";
+import { useAccounts, useCategories, useTransactions } from "@/hooks";
+import { useCallback, useEffect, useState } from "react";
+import { ITransaction } from "@/interfaces";
+import { useSQLiteContext } from "expo-sqlite";
+import { transactionServices } from "@/reducers/transactionsSlice";
 
 const Transactions = () => {
   const { transactions } = useTypedSelector((state) => state.transactions);
+  const { loading } = useTypedSelector((state) => state.userPreferences);
 
   const [refreshing, setRefreshing] = useState(false);
 
+  const { loadAccounts } = useAccounts();
   const { loadTransactions } = useTransactions();
+  const { loadCategories } = useCategories();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
+    loadAccounts();
     loadTransactions();
+    loadCategories();
     setRefreshing(false);
-  }, []);
+  }, [setRefreshing, loadTransactions, loadAccounts, loadCategories]);
 
   const format = (number: number) => {
     const formattedNumber = Intl.NumberFormat("en-US").format(number);
@@ -46,6 +54,12 @@ const Transactions = () => {
   return (
     <SafeAreaView className="flex-1">
       <BackgroundGradient />
+
+      {loading && (
+        <View className="absolute top-0 left-0 right-0 bottom-0 z-50 bg-[#00000080] justify-center items-center">
+          <ActivityIndicator color={"#FFFFFF"} size={32} />
+        </View>
+      )}
 
       <Header title="Transactions">
         <IconButton>

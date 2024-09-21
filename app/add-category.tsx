@@ -114,9 +114,9 @@ const AddCategory = () => {
           `,
           params.id
         );
-      }
 
-      dispatch(categoriesServices.actions.deleteCategory(params.id));
+        dispatch(categoriesServices.actions.deleteCategory(params.id));
+      }
 
       router.back();
     } catch (error) {
@@ -164,7 +164,7 @@ const AddCategory = () => {
           </TouchableOpacity>
         </View>
 
-        <View className="grow" style={{minHeight: windowHeight - 235}}>
+        <View className="grow" style={{ minHeight: windowHeight - 235 }}>
           <View className="mx-3 mt-3">
             <Text className="font-[Rounded-Medium] text-base mb-2">
               Category name

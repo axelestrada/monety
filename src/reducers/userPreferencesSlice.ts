@@ -5,6 +5,7 @@ import moment from "moment";
 
 interface IInitialState {
   timeRange: ITimeRange;
+  loading: boolean;
 }
 
 const initialState: IInitialState = {
@@ -12,6 +13,7 @@ const initialState: IInitialState = {
     from: moment().startOf("day").unix(),
     to: moment().endOf("day").unix(),
   },
+  loading: true,
 };
 
 const userPreferencesSlice = createSlice({
@@ -20,6 +22,14 @@ const userPreferencesSlice = createSlice({
   reducers: {
     updateTimeRange: (state, action) => {
       state.timeRange = action.payload;
+    },
+    setLoading: (
+      state,
+      action: {
+        payload: boolean;
+      }
+    ) => {
+      state.loading = action.payload;
     },
   },
 });

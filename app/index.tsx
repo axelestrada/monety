@@ -19,7 +19,9 @@ import { useSQLiteContext } from "expo-sqlite";
 import uuid from "react-native-uuid";
 import { defaultCategories } from "@/constants/categories";
 import { useAccounts, useCategories, useTransactions } from "@/hooks";
-import { useTypedSelector } from "@/store";
+import { useAppDispatch, useTypedSelector } from "@/store";
+import { ITransaction } from "@/interfaces";
+import { transactionServices } from "@/reducers/transactionsSlice";
 
 export default function Index() {
   const [analyticsType, setAnalyticsType] = useState<"Incomes" | "Expenses">(
@@ -27,6 +29,8 @@ export default function Index() {
   );
 
   const db = useSQLiteContext();
+  const { timeRange } = useTypedSelector((state) => state.userPreferences);
+
   const { loadAccounts } = useAccounts();
   const { loadTransactions } = useTransactions();
   const { loadCategories } = useCategories();
@@ -41,8 +45,12 @@ export default function Index() {
     loadAccounts();
     loadTransactions();
     loadCategories();
-      setRefreshing(false);
-  }, []);
+    setRefreshing(false);
+  }, [setRefreshing, loadTransactions, loadAccounts, loadCategories, timeRange]);
+
+  useEffect(() => {
+    loadTransactions();
+  }, [timeRange, loadTransactions])
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -151,11 +159,11 @@ export default function Index() {
       };
 
       initializeDatabase();
-    }
 
-    loadAccounts();
-    loadTransactions();
-    loadCategories();
+      loadAccounts();
+      loadTransactions();
+      loadCategories();
+    }
   }, []);
 
   // #region Load Fonts
@@ -192,7 +200,12 @@ export default function Index() {
         className="mt-2 -mb-6"
         contentContainerStyle={{ flexGrow: 1 }}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={["#1B1D1C"]} progressBackgroundColor={"#FFFFFF"} />
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={["#1B1D1C"]}
+            progressBackgroundColor={"#FFFFFF"}
+          />
         }
       >
         <AnalyticsChart type={analyticsType} />

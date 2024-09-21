@@ -9,10 +9,11 @@ import {
   ScrollView,
   KeyboardAvoidingView,
   Modal,
+  ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import BackgroundGradient from "./ui/BackgroundGradient";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import Header from "./Header";
 import { styles } from "@/styles/shadow";
 import { useState } from "react";
@@ -28,11 +29,13 @@ import AccountCategorySelector from "./AccountCategorySelector";
 
 const NewTransaction = ({
   hideModal,
+  showModal,
   openSelector,
   from,
   to,
 }: {
   hideModal: () => void;
+  showModal: () => void;
   openSelector: (
     type: "" | "Accounts" | "Categories",
     elementType: "from" | "to"
@@ -41,6 +44,8 @@ const NewTransaction = ({
   to: ICategory | IAccount;
 }) => {
   const { timeRange } = useTypedSelector((state) => state.userPreferences);
+
+  const [loading, setLoading] = useState(false);
 
   const [selectedDate, setSelectedDate] = useState(timeRange.from);
 
@@ -133,184 +138,200 @@ const NewTransaction = ({
   const dispatch = useAppDispatch();
 
   const addIncome = async (category: ICategory, account: IAccount) => {
-    try {
-      const id = uuid.v4().toString();
+    setLoading(true);
 
-      const createdAt = selectedDate;
-      const date = createdAt === timeRange.from ? moment().unix() : createdAt;
+    const id = uuid.v4().toString();
 
-      const amount = parseFloat(secondValue);
+    const createdAt = selectedDate;
+    const date = createdAt === timeRange.from ? moment().unix() : createdAt;
 
-      await db.runAsync(
+    const amount = parseFloat(secondValue);
+
+    await Promise.all([
+      db.runAsync(
         `INSERT INTO Transactions (id, category_id, account_id, created_at, date, amount, comment, type) VALUES (?, ?, ?, ?, ?, ?, ?, 'Income');`,
         [id, category.id, account.id, createdAt, date, amount, comment]
-      );
+      ),
 
-      await db.runAsync(
+      db.runAsync(
         `
-      UPDATE Accounts SET currentBalance = ? WHERE id = ?
-    `,
+        UPDATE Accounts SET currentBalance = ? WHERE id = ?
+      `,
         account.currentBalance + amount,
         account.id
-      );
+      ),
+    ])
+      .then(() => {
+        dispatch(
+          transactionServices.actions.addTransaction({
+            id,
+            categoryName: category.name,
+            categoryColor: category.color,
+            categoryIcon: category.icon,
+            accountName: account.name,
+            createdAt,
+            accountId: account.id,
+            date,
+            amount,
+            comment,
+            type: "Income",
+          })
+        );
 
-      dispatch(
-        transactionServices.actions.addTransaction({
-          id,
-          categoryName: category.name,
-          categoryColor: category.color,
-          categoryIcon: category.icon,
-          accountName: account.name,
-          createdAt,
-          accountId: account.id,
-          date,
-          amount,
-          comment,
-          type: "Income",
-        })
-      );
+        dispatch(
+          accountsServices.actions.incrementBalance({
+            id: account.id,
+            amount,
+          })
+        );
 
-      dispatch(
-        accountsServices.actions.incrementBalance({
-          id: account.id,
-          amount,
-        })
-      );
+        hideModal();
 
-      hideModal();
+        setComment("");
+        setFirstValue("");
+        setSecondValue("");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
-      setComment("");
-      setFirstValue("");
-      setSecondValue("");
-    } catch (error) {
-      console.error(error);
-    }
+    setLoading(false);
   };
 
   const addExpense = async (account: IAccount, category: ICategory) => {
-    try {
-      const id = uuid.v4().toString();
+    setLoading(true);
 
-      const createdAt = selectedDate;
-      const date = createdAt === timeRange.from ? moment().unix() : createdAt;
+    const id = uuid.v4().toString();
 
-      const amount = parseFloat(secondValue);
+    const createdAt = selectedDate;
+    const date = createdAt === timeRange.from ? moment().unix() : createdAt;
 
-      await db.runAsync(
+    const amount = parseFloat(secondValue);
+
+    await Promise.all([
+      db.runAsync(
         `INSERT INTO Transactions (id, category_id, account_id, created_at, date, amount, comment, type) VALUES (?, ?, ?, ?, ?, ?, ?, 'Expense');`,
         [id, category.id, account.id, createdAt, date, amount, comment]
-      );
-
-      await db.runAsync(
+      ),
+      db.runAsync(
         `
-      UPDATE Accounts SET currentBalance = ? WHERE id = ?
-    `,
+        UPDATE Accounts SET currentBalance = ? WHERE id = ?
+      `,
         account.currentBalance - amount,
         account.id
-      );
+      ),
+    ])
+      .then(() => {
+        dispatch(
+          transactionServices.actions.addTransaction({
+            id,
+            categoryName: category.name,
+            categoryColor: category.color,
+            categoryIcon: category.icon,
+            accountName: account.name,
+            accountId: account.id,
+            createdAt,
+            date,
+            amount,
+            comment,
+            type: "Expense",
+          })
+        );
 
-      dispatch(
-        transactionServices.actions.addTransaction({
-          id,
-          categoryName: category.name,
-          categoryColor: category.color,
-          categoryIcon: category.icon,
-          accountName: account.name,
-          accountId: account.id,
-          createdAt,
-          date,
-          amount,
-          comment,
-          type: "Expense",
-        })
-      );
+        dispatch(
+          accountsServices.actions.decrementBalance({
+            id: account.id,
+            amount,
+          })
+        );
 
-      dispatch(
-        accountsServices.actions.decrementBalance({
-          id: account.id,
-          amount,
-        })
-      );
+        hideModal();
 
-      hideModal();
+        setComment("");
+        setFirstValue("");
+        setSecondValue("");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
-      setComment("");
-      setFirstValue("");
-      setSecondValue("");
-    } catch (error) {
-      console.error(error);
-    }
+    setLoading(false);
   };
 
   const addTransfer = async (from: IAccount, to: IAccount) => {
-    try {
-      const id = uuid.v4().toString();
+    setLoading(true);
+    const id = uuid.v4().toString();
 
-      const createdAt = selectedDate;
-      const date = createdAt === timeRange.from ? moment().unix() : createdAt;
+    const createdAt = selectedDate;
+    const date = createdAt === timeRange.from ? moment().unix() : createdAt;
 
-      const amount = parseFloat(secondValue);
+    const amount = parseFloat(secondValue);
 
-      await db.runAsync(
+    await Promise.all([
+      db.runAsync(
         `INSERT INTO Transactions (id, account_id, destination_account, created_at, date, amount, comment, type) VALUES (?, ?, ?, ?, ?, ?, ?, 'Transfer');`,
         [id, from.id, to.id, createdAt, date, amount, comment]
-      );
+      ),
 
-      await db.runAsync(
+      db.runAsync(
         `
-      UPDATE Accounts SET currentBalance = ? WHERE id = ?
-    `,
+        UPDATE Accounts SET currentBalance = ? WHERE id = ?
+      `,
         from.currentBalance - amount,
         from.id
-      );
+      ),
 
-      await db.runAsync(
+      db.runAsync(
         `
-      UPDATE Accounts SET currentBalance = ? WHERE id = ?
-    `,
+        UPDATE Accounts SET currentBalance = ? WHERE id = ?
+      `,
         to.currentBalance + amount,
         to.id
-      );
+      ),
+    ])
+      .then(() => {
+        dispatch(
+          transactionServices.actions.addTransaction({
+            id,
+            destinationAccountId: to.id,
+            destinationAccountColor: to.color,
+            destinationAccountIcon: to.icon,
+            destinationAccountName: to.name,
+            accountName: from.name,
+            accountId: from.id,
+            createdAt,
+            date,
+            amount,
+            comment,
+            type: "Transfer",
+          })
+        );
 
-      dispatch(
-        transactionServices.actions.addTransaction({
-          id,
-          destinationAccountId: to.id,
-          destinationAccountColor: to.color,
-          destinationAccountIcon: to.icon,
-          destinationAccountName: to.name,
-          accountName: from.name,
-          accountId: from.id,
-          createdAt,
-          date,
-          amount,
-          comment,
-          type: "Transfer",
-        })
-      );
+        dispatch(
+          accountsServices.actions.incrementBalance({
+            id: to.id,
+            amount,
+          })
+        );
 
-      dispatch(
-        accountsServices.actions.incrementBalance({
-          id: to.id,
-          amount,
-        })
-      );
+        dispatch(
+          accountsServices.actions.decrementBalance({
+            id: from.id,
+            amount,
+          })
+        );
 
-      dispatch(
-        accountsServices.actions.decrementBalance({
-          id: from.id,
-          amount,
-        })
-      );
+        hideModal();
 
-      hideModal();
+        setComment("");
+        setFirstValue("");
+        setSecondValue("");
+      })
+      .catch((error) => {
+        console.error(error);
+      });
 
-      setComment("");
-      setFirstValue("");
-      setSecondValue("");
-    } catch (error) {
-      console.error(error);
-    }
+    setLoading(false);
   };
 
   const formatNumber = (number: string) => {
@@ -331,6 +352,11 @@ const NewTransaction = ({
 
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
+      {loading && (
+        <View className="absolute top-0 left-0 right-0 bottom-0 z-50 bg-[#00000080] justify-center items-center">
+          <ActivityIndicator color={"#FFFFFF"} size={32} />
+        </View>
+      )}
       <TouchableOpacity
         className="flex-[1] pt-24 justify-end bg-[#00000080]"
         activeOpacity={1}

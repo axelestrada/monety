@@ -65,7 +65,7 @@ const AddAccount = () => {
       name,
       icon,
       color,
-      description,
+      description = "",
       includeInOverallBalance,
       type,
     } = account;
