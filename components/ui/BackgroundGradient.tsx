@@ -1,4 +1,5 @@
 import { LinearGradient } from "expo-linear-gradient";
+import { useColorScheme } from "nativewind";
 import { View } from "react-native";
 import {
   Defs,
@@ -9,6 +10,7 @@ import {
 } from "react-native-svg";
 
 const BackgroundGradient = () => {
+  const { colorScheme } = useColorScheme();
   return (
     <LinearGradient
     start={{ x: 1, y: 0 }}

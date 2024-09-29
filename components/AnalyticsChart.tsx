@@ -1,7 +1,7 @@
 import { firstLetterUppercase } from "@/utils/format";
 import { AntDesign, Entypo } from "@expo/vector-icons";
 import moment, { Moment } from "moment";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -12,6 +12,7 @@ import {
 import { BarChart, barDataItem } from "react-native-gifted-charts";
 import Dropdown from "./ui/Dropdown";
 import { styles } from "@/styles/shadow";
+import { useColorScheme } from "nativewind";
 
 // TODO: Replace data with real information
 
@@ -61,21 +62,59 @@ const AnalyticsChart = ({ type }: Props) => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [dropdownSelectedOption, setDropdownSelectedOption] = useState("Today");
 
+  const { colorScheme } = useColorScheme();
+
+  const [chartData, setChartData] = useState<barDataItem[]>(data);
+
   const dropdownOptions = ["Today", "This week", "This month", "This year"];
 
+  useEffect(() => {
+    setChartData((data) =>
+      data.map((item) =>
+        item.value !== 850
+          ? item
+          : {
+              ...item,
+              frontColor: colorScheme === "dark" ? "#E95A5C" : "#1B1D1C",
+              labelTextStyle: {
+                color: colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C",
+                fontFamily: "Rounded-Bold",
+              },
+              topLabelComponent: () => (
+                <Text
+                  style={{
+                    color: colorScheme === "dark" ? "#1B1D1C" : "#ffffff",
+                    fontFamily: "Rounded-Bold",
+                  }}
+                >
+                  L1,525
+                </Text>
+              ),
+              topLabelContainerStyle: {
+                ...item.topLabelContainerStyle,
+                backgroundColor: colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C",
+              }
+            }
+      )
+    );
+  }, [colorScheme]);
+
   return (
-    <View className="bg-white rounded-2xl p-2 mx-3" style={styles.shadow}>
+    <View
+      className="bg-white dark:bg-[#131416] rounded-2xl p-2 mx-3"
+      style={styles.shadow}
+    >
       <View className="flex flex-row justify-between items-center pb-2">
         <View className="flex flex-row items-center">
-          <Text className="text-main text-base font-[Rounded-Bold] mr-1">
+          <Text className="text-main dark:text-white text-base font-[Rounded-Bold] mr-1">
             Analytics
           </Text>
 
           <Text
             className={`${
               type === "Incomes"
-                ? "text-green bg-green-10"
-                : "text-red bg-red-10"
+                ? "text-green bg-green-10 dark:text-[#4EC871] dark:bg-[#4EC8711A]"
+                : "text-red bg-red-10 dark:text-[#E95A5C] dark:bg-[#E95A5C1A]"
             } rounded-md px-1.5 py-1 text-sm`}
           >
             {type}
@@ -97,11 +136,11 @@ const AnalyticsChart = ({ type }: Props) => {
             activeOpacity={0.5}
             className="flex flex-row justify-between items-center pr-2 -m-2"
           >
-            <Text className="text-main-500 font-[Rounded-Medium] mr-1 text-sm">
+            <Text className="text-main-500 dark:text-[#FFFFFF80] font-[Rounded-Medium] mr-1 text-sm">
               {dropdownSelectedOption}
             </Text>
 
-            <View className="bg-yellow rounded-full w-4 h-4 justify-center items-center">
+            <View className="bg-yellow dark:bg-[#FAE16C] rounded-full w-4 h-4 justify-center items-center">
               <Entypo name="chevron-down" color="#1B1D1C" />
             </View>
           </TouchableOpacity>
@@ -110,14 +149,14 @@ const AnalyticsChart = ({ type }: Props) => {
 
       <View className="-mx-2">
         <BarChart
-          data={data}
-          frontColor="#FFE56E"
+          data={chartData}
+          frontColor={colorScheme === "dark" ? "#FAE16C" : "#FFE56E"}
           barBorderRadius={100}
           barWidth={16}
           hideRules
           adjustToWidth
           xAxisLabelTextStyle={{
-            color: "#939496",
+            color: colorScheme === "dark" ? "#FFFFFF80" : "#939496",
             fontFamily: "Rounded-Regular",
             fontSize: 14,
           }}

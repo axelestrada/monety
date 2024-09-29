@@ -23,6 +23,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import { useCategories } from "@/hooks";
 import { useAppDispatch } from "@/store";
 import { categoriesServices } from "@/reducers/categoriesSlice";
+import { useColorScheme } from "nativewind";
 
 const AddCategory = () => {
   const params: {
@@ -52,6 +53,8 @@ const AddCategory = () => {
   const db = useSQLiteContext();
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const { colorScheme } = useColorScheme();
 
   const saveCategory = async () => {
     const { name, icon, color } = category;
@@ -130,22 +133,22 @@ const AddCategory = () => {
   const itemSize = (windowWidth - 12 * 6) / 5;
 
   return (
-    <SafeAreaView className="flex flex-1">
-      <BackgroundGradient />
+    <SafeAreaView className="flex flex-1 bg-[#1E1F22]">
+      {colorScheme === "light" && <BackgroundGradient />}
 
       <Header title={params.id ? "Edit Category" : "New Category"} goBack />
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex flex-row justify-between bg-[#ffffff33] mt-3 mx-3 py-1.5 rounded-lg">
+        <View className="flex flex-row justify-between bg-[#ffffff33] dark:bg-[#FFFFFF0d] mt-3 mx-3 py-1.5 rounded-lg">
           <TouchableOpacity
             activeOpacity={0.75}
             onPress={() => setType("Income")}
             className={`${
-              type === "Income" && "bg-white"
+              type === "Income" && "bg-white dark:bg-[#131416]"
             } flex flex-1 rounded-lg p-3.5 mx-1.5 flex-row items-center justify-center`}
             style={type === "Income" ? styles.shadow : {}}
           >
-            <Text className="text-main font-[Rounded-Bold] text-base">
+            <Text className="text-main dark:text-white font-[Rounded-Bold] text-base">
               Income
             </Text>
           </TouchableOpacity>
@@ -154,11 +157,11 @@ const AddCategory = () => {
             activeOpacity={0.75}
             onPress={() => setType("Expense")}
             className={`${
-              type === "Expense" && "bg-white"
+              type === "Expense" && "bg-white dark:bg-[#131416]"
             } flex flex-1 rounded-lg p-3.5 mx-1.5 flex-row items-center justify-center`}
             style={type === "Expense" ? styles.shadow : {}}
           >
-            <Text className="text-main font-[Rounded-Bold] text-base">
+            <Text className="text-main dark:text-white font-[Rounded-Bold] text-base">
               Expense
             </Text>
           </TouchableOpacity>
@@ -166,7 +169,7 @@ const AddCategory = () => {
 
         <View className="grow" style={{ minHeight: windowHeight - 235 }}>
           <View className="mx-3 mt-3">
-            <Text className="font-[Rounded-Medium] text-base mb-2">
+            <Text className="font-[Rounded-Medium] text-base mb-2 text-main dark:text-white">
               Category name
             </Text>
             <TextInput
@@ -175,13 +178,13 @@ const AddCategory = () => {
               onChangeText={(text) =>
                 setCategory((prev) => ({ ...prev, name: text }))
               }
-              className="bg-white rounded-lg p-3 text-base"
+              className="bg-white rounded-lg p-3 text-base text-main"
               style={{ fontFamily: "Rounded-Medium", ...styles.shadow }}
             />
           </View>
 
           <View className="mx-1.5 mt-3 -mb-4">
-            <Text className="font-[Rounded-Medium] text-base mx-1.5 mb-2">
+            <Text className="font-[Rounded-Medium] text-base mx-1.5 mb-2 text-main dark:text-white">
               Choose icon
             </Text>
 
@@ -199,14 +202,26 @@ const AddCategory = () => {
                     setCategory((prev) => ({ ...prev, icon: item.name }))
                   }
                   className={`${
-                    category.icon === item.name ? "bg-white" : "bg-[#FFFFFF33]"
+                    category.icon === item.name
+                      ? "bg-white"
+                      : "bg-[#FFFFFF33] dark:bg-[#FFFFFF0d]"
                   } rounded-lg p-3 mb-3 mx-1.5 justify-center items-center`}
                   style={[
                     { width: itemSize, height: itemSize },
                     category.icon === item.name ? styles.shadow : {},
                   ]}
                 >
-                  <Ionicons name={item.name} size={28} color="#1B1D1C" />
+                  <Ionicons
+                    name={item.name}
+                    size={28}
+                    color={
+                      colorScheme === "dark"
+                        ? category.icon === item.name
+                          ? "#1B1D1C"
+                          : "#FFFFFF"
+                        : "#1B1D1C"
+                    }
+                  />
                 </TouchableOpacity>
               )}
               numColumns={5}
@@ -219,7 +234,7 @@ const AddCategory = () => {
           </View>
 
           <View className="mx-1.5 -mb-4">
-            <Text className="font-[Rounded-Medium] text-base mx-1.5 mb-2">
+            <Text className="font-[Rounded-Medium] text-base mx-1.5 mb-2 text-main dark:text-white">
               Choose color
             </Text>
             <FlatList
@@ -237,7 +252,7 @@ const AddCategory = () => {
                     setCategory((prev) => ({ ...prev, color: item.code }))
                   }
                   className={`${
-                    category.color === item.code ? "bg-white" : "bg-[#FFFFFF33]"
+                    category.color === item.code ? "bg-white" : "bg-[#FFFFFF33] dark:bg-[#FFFFFF0D]"
                   } rounded-lg p-3 mx-1.5 justify-center items-center`}
                   style={[
                     { width: itemSize, height: itemSize },
@@ -257,7 +272,7 @@ const AddCategory = () => {
         <TouchableOpacity
           activeOpacity={0.5}
           onPress={saveCategory}
-          className="bg-main mx-3 mb-3 rounded-lg p-4"
+          className="bg-main dark:bg-[#131416] mx-3 mb-3 rounded-lg p-4 mt-8"
           style={styles.shadow}
         >
           <Text

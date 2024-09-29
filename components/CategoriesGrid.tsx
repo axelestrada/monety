@@ -5,6 +5,7 @@ import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ReactElement, useState } from "react";
 import { useTypedSelector } from "@/store";
+import { useColorScheme } from "nativewind";
 
 interface Props {
   categories: ICategory[];
@@ -21,6 +22,7 @@ const CategoriesGrid = ({
 }: Props) => {
   const windowWidth = Dimensions.get("window").width;
   const router = useRouter();
+  const {colorScheme} = useColorScheme()
 
   const { transactions } = useTypedSelector((state) => state.transactions);
 
@@ -40,10 +42,10 @@ const CategoriesGrid = ({
               width: (windowWidth - 36) / 2,
               borderStyle: "dashed",
               borderWidth: 2,
-              borderColor: "#1B1D1C",
+              borderColor: colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C",
             }}
           >
-            <Feather name="plus" color={"#1B1D1C"} size={18} />
+            <Feather name="plus" color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"} size={18} />
           </TouchableOpacity>
         ) : (
           <Category

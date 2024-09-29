@@ -31,6 +31,7 @@ import { categoriesServices } from "@/reducers/categoriesSlice";
 import { LinearGradient } from "expo-linear-gradient";
 import { LocalRouteParamsContext } from "expo-router/build/Route";
 import { accountsServices } from "@/reducers/accountsSlice";
+import { useColorScheme } from "nativewind";
 
 const AddAccount = () => {
   const params: {
@@ -55,6 +56,8 @@ const AddAccount = () => {
   const db = useSQLiteContext();
   const router = useRouter();
   const dispatch = useAppDispatch();
+
+  const { colorScheme } = useColorScheme();
 
   const [balance, setBalance] = useState(
     account.currentBalance.toString() || ""
@@ -100,7 +103,9 @@ const AddAccount = () => {
             icon,
             color,
             type,
-            currentBalance: parseFloat(parseFloat(balance).toFixed(2).toString()),
+            currentBalance: parseFloat(
+              parseFloat(balance).toFixed(2).toString()
+            ),
             includeInOverallBalance,
           })
         );
@@ -129,7 +134,9 @@ const AddAccount = () => {
             icon,
             color,
             type,
-            currentBalance: parseFloat(parseFloat(balance).toFixed(2).toString()),
+            currentBalance: parseFloat(
+              parseFloat(balance).toFixed(2).toString()
+            ),
             includeInOverallBalance,
           })
         );
@@ -168,22 +175,22 @@ const AddAccount = () => {
   const itemSize = (windowWidth - 12 * 6) / 5;
 
   return (
-    <SafeAreaView className="flex flex-1">
-      <BackgroundGradient />
+    <SafeAreaView className="flex flex-1 dark:bg-[#1E1F22]">
+      {colorScheme === "light" && <BackgroundGradient />}
 
       <Header title={params.id ? "Edit Account" : "New Account"} goBack />
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
-        <View className="flex flex-row justify-between bg-[#ffffff33] mt-3 mx-3 py-1.5 rounded-lg">
+        <View className="flex flex-row justify-between bg-[#ffffff33] dark:bg-[#FFFFFF0d] mt-3 mx-3 py-1.5 rounded-lg">
           <TouchableOpacity
             activeOpacity={0.75}
             onPress={() => setAccount((prev) => ({ ...prev, type: "Regular" }))}
             className={`${
-              account.type === "Regular" && "bg-white"
+              account.type === "Regular" && "bg-white dark:bg-[#131416]"
             } flex flex-1 rounded-lg p-3.5 mx-1.5 flex-row items-center justify-center`}
             style={account.type === "Regular" ? styles.shadow : {}}
           >
-            <Text className="text-main font-[Rounded-Bold] text-base">
+            <Text className="text-main dark:text-white font-[Rounded-Bold] text-base">
               Regular
             </Text>
           </TouchableOpacity>
@@ -192,11 +199,11 @@ const AddAccount = () => {
             activeOpacity={0.75}
             onPress={() => setAccount((prev) => ({ ...prev, type: "Savings" }))}
             className={`${
-              account.type === "Savings" && "bg-white"
+              account.type === "Savings" && "bg-white dark:bg-[#131416]"
             } flex flex-1 rounded-lg p-3.5 mx-1.5 flex-row items-center justify-center`}
             style={account.type === "Savings" ? styles.shadow : {}}
           >
-            <Text className="text-main font-[Rounded-Bold] text-base">
+            <Text className="text-main dark:text-white font-[Rounded-Bold] text-base">
               Savings
             </Text>
           </TouchableOpacity>
@@ -204,7 +211,7 @@ const AddAccount = () => {
 
         <View className="grow" style={{ minHeight: windowHeight - 235 }}>
           <View className="mx-3 mt-3">
-            <Text className="font-[Rounded-Medium] text-base mb-2">
+            <Text className="font-[Rounded-Medium] text-base mb-2 text-main dark:text-white">
               Account name
             </Text>
             <TextInput
@@ -213,13 +220,13 @@ const AddAccount = () => {
               onChangeText={(text) =>
                 setAccount((prev) => ({ ...prev, name: text }))
               }
-              className="bg-white rounded-lg p-3 text-base"
+              className="bg-white rounded-lg p-3 text-base text-main"
               style={{ fontFamily: "Rounded-Medium", ...styles.shadow }}
             />
           </View>
 
           <View className="mx-3 mt-3">
-            <Text className="font-[Rounded-Medium] text-base mb-2">
+            <Text className="font-[Rounded-Medium] text-base mb-2 text-main dark:text-white">
               Description
             </Text>
 
@@ -229,13 +236,13 @@ const AddAccount = () => {
               onChangeText={(text) =>
                 setAccount((prev) => ({ ...prev, description: text }))
               }
-              className="bg-white rounded-lg p-3 text-base"
+              className="bg-white rounded-lg p-3 text-base text-main"
               style={{ fontFamily: "Rounded-Medium", ...styles.shadow }}
             />
           </View>
 
           <View className="mx-1.5 mt-3 -mb-4">
-            <Text className="font-[Rounded-Medium] text-base mx-1.5 mb-2">
+            <Text className="font-[Rounded-Medium] text-base mx-1.5 mb-2 text-main dark:text-white">
               Choose icon
             </Text>
 
@@ -253,14 +260,26 @@ const AddAccount = () => {
                     setAccount((prev) => ({ ...prev, icon: item.name }))
                   }
                   className={`${
-                    account.icon === item.name ? "bg-white" : "bg-[#FFFFFF33]"
+                    account.icon === item.name
+                      ? "bg-white"
+                      : "bg-[#FFFFFF33] dark:bg-[#FFFFFF0D]"
                   } rounded-lg p-3 mb-3 mx-1.5 justify-center items-center`}
                   style={[
                     { width: itemSize, height: itemSize },
                     account.icon === item.name ? styles.shadow : {},
                   ]}
                 >
-                  <Ionicons name={item.name} size={28} color="#1B1D1C" />
+                  <Ionicons
+                    name={item.name}
+                    size={28}
+                    color={
+                      colorScheme === "dark"
+                        ? account.icon === item.name
+                          ? "#1B1D1C"
+                          : "#FFFFFF"
+                        : "#1B1D1C"
+                    }
+                  />
                 </TouchableOpacity>
               )}
               numColumns={5}
@@ -273,7 +292,7 @@ const AddAccount = () => {
           </View>
 
           <View className="mx-1.5">
-            <Text className="font-[Rounded-Medium] text-base mx-1.5 mb-2">
+            <Text className="font-[Rounded-Medium] text-base mx-1.5 mb-2 text-main dark:text-white">
               Choose color
             </Text>
             <FlatList
@@ -291,7 +310,7 @@ const AddAccount = () => {
                     setAccount((prev) => ({ ...prev, color: item.code }))
                   }
                   className={`${
-                    account.color === item.code ? "bg-white" : "bg-[#FFFFFF33]"
+                    account.color === item.code ? "bg-white" : "bg-[#FFFFFF33] dark:bg-[#FFFFFF0D]"
                   } rounded-lg p-3 mx-1.5 justify-center items-center`}
                   style={[
                     { width: itemSize, height: itemSize },
@@ -308,7 +327,7 @@ const AddAccount = () => {
           </View>
 
           <View className="mx-3">
-            <Text className="font-[Rounded-Medium] text-base mb-2">
+            <Text className="font-[Rounded-Medium] text-base mb-2 text-main dark:text-white">
               Current Balance
             </Text>
 
@@ -323,7 +342,7 @@ const AddAccount = () => {
               onChangeText={(text) => {
                 setBalance(text.replace("L ", ""));
               }}
-              className="bg-white rounded-lg p-3 text-base"
+              className="bg-white rounded-lg p-3 text-base text-main"
               style={{
                 fontFamily: "Rounded-Medium",
                 ...styles.shadow,
@@ -336,7 +355,7 @@ const AddAccount = () => {
             className="bg-white rounded-lg mx-3 my-4 p-2.5 flex-row justify-between items-center"
             style={styles.shadow}
           >
-            <Text className="font-[Rounded-Medium] text-base">
+            <Text className="font-[Rounded-Medium] text-base text-main">
               Include in overall balance
             </Text>
 
@@ -367,7 +386,7 @@ const AddAccount = () => {
         <TouchableOpacity
           activeOpacity={0.5}
           onPress={saveCategory}
-          className="bg-main mx-3 mb-3 mt-6 rounded-lg p-4"
+          className="bg-main dark:bg-[#131416] mx-3 mb-3 mt-6 rounded-lg p-4"
           style={styles.shadow}
         >
           <Text

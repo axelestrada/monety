@@ -15,7 +15,6 @@ import {
   ActivityIndicator,
   Modal,
   RefreshControl,
-  StatusBar,
   Text,
   TouchableOpacity,
   TouchableWithoutFeedback,
@@ -26,6 +25,8 @@ import NewTransaction from "@/components/NewTransaction";
 import { useAccounts, useCategories, useTransactions } from "@/hooks";
 import { useTypedSelector } from "@/store";
 import AccountCategorySelector from "@/components/AccountCategorySelector";
+import { useColorScheme } from "nativewind";
+import { StatusBar } from "expo-status-bar";
 
 function Categories() {
   const [type, setType] = useState<"Income" | "Expense">("Expense");
@@ -51,6 +52,8 @@ function Categories() {
 
   const [refreshing, setRefreshing] = useState(false);
 
+  const {colorScheme} = useColorScheme()
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     loadAccounts();
@@ -61,8 +64,10 @@ function Categories() {
 
 
   return (
-    <SafeAreaView className="flex flex-1">
-      <BackgroundGradient />
+    <SafeAreaView className="flex flex-1 dark:bg-[#1E1F22]">
+      {colorScheme === "light" && <BackgroundGradient />}
+
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"}/>
 
       {loading && (
         <View className="absolute top-0 left-0 right-0 bottom-0 z-50 bg-[#00000080] justify-center items-center">
@@ -107,8 +112,8 @@ function Categories() {
           onPress={() => setActiveSelector("")}
         >
           <TouchableWithoutFeedback>
-            <View className="rounded-t-3xl overflow-hidden bg-white">
-              <BackgroundGradient />
+            <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#1E1F22]">
+            {colorScheme === "light" && <BackgroundGradient />}
 
               <AccountCategorySelector
                 type={activeSelector || "Categories"}
@@ -128,7 +133,9 @@ function Categories() {
 
       <Header title="Categories">
         <IconButton>
-          <Octicons name="pencil" size={20} color="#1B1D1C" />
+          <Octicons name="pencil" size={20} color={colorScheme === "dark"
+                ? "#FFFFFF"
+                : "#1B1D1C"} />
         </IconButton>
       </Header>
 
@@ -136,7 +143,7 @@ function Categories() {
         <TimeRange/>
       </OverallBalance>
 
-      <View className="flex flex-row mx-3 py-1.5 bg-[#ffffff80] rounded-2xl">
+      <View className="flex flex-row mx-3 py-1.5 bg-[#ffffff80] dark:bg-[#ffffff0d] rounded-2xl">
         <CashFlowItem
           type="Incomes"
           value={transactions
@@ -161,8 +168,8 @@ function Categories() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={["#1B1D1C"]}
-            progressBackgroundColor={"#FFFFFF"}
+            colors={[colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"]}
+            progressBackgroundColor={colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"}
           />
         }
         categories={categories.filter((item) => item.type === type)}

@@ -13,6 +13,8 @@ import { styles } from "@/styles/shadow";
 import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
+import { StatusBar } from "expo-status-bar";
+import { useColorScheme } from "nativewind";
 import { useCallback, useEffect, useState } from "react";
 import {
   Button,
@@ -47,7 +49,6 @@ export default function Accounts() {
     to: accounts[1],
   });
 
-
   const [refreshing, setRefreshing] = useState(false);
 
   const { loadAccounts } = useAccounts();
@@ -69,6 +70,7 @@ export default function Accounts() {
   const windowWidth = Dimensions.get("window").width;
 
   const router = useRouter();
+  const { colorScheme } = useColorScheme();
 
   const format = (number: number) => {
     const formattedNumber = Intl.NumberFormat("en-US").format(number);
@@ -83,8 +85,10 @@ export default function Accounts() {
   };
 
   return (
-    <SafeAreaView className="flex flex-1">
-      <BackgroundGradient />
+    <SafeAreaView className="flex flex-1 dark:bg-[#1E1F22]">
+      {colorScheme === "light" && <BackgroundGradient />}
+
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
       <Modal
         visible={activeModal}
@@ -133,8 +137,8 @@ export default function Accounts() {
           }
         >
           <TouchableWithoutFeedback>
-            <View className="rounded-t-3xl overflow-hidden bg-white">
-              <BackgroundGradient />
+            <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#1E1F22]">
+              {colorScheme === "light" && <BackgroundGradient />}
 
               <AccountCategorySelector
                 type={activeSelector.type || "Categories"}
@@ -164,7 +168,11 @@ export default function Accounts() {
             router.navigate("/add-account");
           }}
         >
-          <Ionicons name="add" size={24} color="#1B1D1C" />
+          <Ionicons
+            name="add"
+            size={24}
+            color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
+          />
         </IconButton>
       </Header>
 
@@ -176,16 +184,18 @@ export default function Accounts() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={["#1B1D1C"]}
-            progressBackgroundColor={"#FFFFFF"}
+            colors={[colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"]}
+            progressBackgroundColor={
+              colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"
+            }
           />
         }
       >
         <View className="mx-3 flex-row justify-between items-center mb-3">
-          <Text className="text-main font-[Rounded-Bold] text-lg">
+          <Text className="text-main dark:text-white font-[Rounded-Bold] text-lg">
             Accounts
           </Text>
-          <Text className="text-main font-[Rounded-Bold] text-lg">
+          <Text className="text-main dark:text-white font-[Rounded-Bold] text-lg">
             {format(
               accounts
                 .filter((account) => account.type === "Regular")
@@ -212,17 +222,22 @@ export default function Accounts() {
                       width: windowWidth - 24,
                       borderStyle: "dashed",
                       borderWidth: 2,
-                      borderColor: "#1B1D1C",
+                      borderColor:
+                        colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C",
                     }}
                   >
-                    <Feather name="plus" color={"#1B1D1C"} size={18} />
+                    <Feather
+                      name="plus"
+                      color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
+                      size={18}
+                    />
                   </TouchableOpacity>
                 )}
               </>
             ) : (
               <TouchableOpacity
                 activeOpacity={0.75}
-                className="bg-white px-2 py-3 mb-3 mx-3 rounded-2xl"
+                className="bg-white dark:bg-[#131416] px-2 py-3 mb-3 mx-3 rounded-2xl"
                 style={styles.shadow}
                 onPress={() => {
                   setActiveSelector({
@@ -259,13 +274,15 @@ export default function Accounts() {
                   </View>
 
                   <View>
-                    <Text className="font-[Rounded-Medium] text-lg text-main">
+                    <Text className="font-[Rounded-Medium] text-lg text-main dark:text-white">
                       {item.name}
                     </Text>
 
                     <Text
                       className={`font-[Rounded-Regular] text-base ${
-                        item.currentBalance < 0 ? "text-red" : "text-main-500"
+                        item.currentBalance < 0
+                          ? "text-red dark:text-[#E95A5C]"
+                          : "text-main-500 dark:text-[#FFFFFF80]"
                       }`}
                     >
                       L{" "}
@@ -277,7 +294,7 @@ export default function Accounts() {
                 </View>
 
                 {item.description && (
-                  <Text className="font-[Rounded-Regular] text-sm text-main pt-1">
+                  <Text className="font-[Rounded-Regular] text-sm text-main dark:text-white pt-1">
                     {item.description}
                   </Text>
                 )}
@@ -290,10 +307,10 @@ export default function Accounts() {
           0 && (
           <>
             <View className="mx-3 mt-4 flex-row justify-between items-center mb-3">
-              <Text className="text-main font-[Rounded-Bold] text-lg">
+              <Text className="text-main dark:text-white font-[Rounded-Bold] text-lg">
                 Savings
               </Text>
-              <Text className="text-main font-[Rounded-Bold] text-lg">
+              <Text className="text-main dark:text-white font-[Rounded-Bold] text-lg">
                 {format(
                   accounts
                     .filter((account) => account.type === "Savings")
@@ -308,7 +325,7 @@ export default function Accounts() {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   activeOpacity={0.75}
-                  className="bg-white px-2 py-3 mb-3 mx-3 rounded-2xl flex flex-row justify-between items-center"
+                  className="bg-white dark:bg-[#131416] px-2 py-3 mb-3 mx-3 rounded-2xl flex flex-row justify-between items-center"
                   style={styles.shadow}
                   onPress={() => {
                     setActiveModal(true);
@@ -335,13 +352,15 @@ export default function Accounts() {
                     </View>
 
                     <View>
-                      <Text className="font-[Rounded-Medium] text-lg text-main">
+                      <Text className="font-[Rounded-Medium] text-lg text-main dark:text-white">
                         {item.name}
                       </Text>
 
                       <Text
                         className={`font-[Rounded-Regular] text-base ${
-                          item.currentBalance < 0 ? "text-red" : "text-main-500"
+                          item.currentBalance < 0
+                            ? "text-red dark:text-[#E95A5C]"
+                            : "text-main-500 dark:text-[#FFFFFF80]"
                         }`}
                       >
                         L{" "}
@@ -351,6 +370,12 @@ export default function Accounts() {
                       </Text>
                     </View>
                   </View>
+
+                  {item.description && (
+                    <Text className="font-[Rounded-Regular] text-sm text-main dark:text-white pt-1">
+                      {item.description}
+                    </Text>
+                  )}
                 </TouchableOpacity>
               )}
             />

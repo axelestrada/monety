@@ -16,6 +16,8 @@ import { useCallback, useEffect, useState } from "react";
 import { ITransaction } from "@/interfaces";
 import { useSQLiteContext } from "expo-sqlite";
 import { transactionServices } from "@/reducers/transactionsSlice";
+import { useColorScheme } from "nativewind";
+import { StatusBar } from "expo-status-bar";
 
 const Transactions = () => {
   const { transactions } = useTypedSelector((state) => state.transactions);
@@ -35,6 +37,8 @@ const Transactions = () => {
     setRefreshing(false);
   }, [setRefreshing, loadTransactions, loadAccounts, loadCategories]);
 
+  const {colorScheme} = useColorScheme()
+
   const format = (number: number) => {
     const formattedNumber = Intl.NumberFormat("en-US").format(number);
 
@@ -52,8 +56,10 @@ const Transactions = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1">
-      <BackgroundGradient />
+    <SafeAreaView className="flex-1 dark:bg-[#1E1F22]">
+      {colorScheme === "light" && <BackgroundGradient />}
+
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"}/>
 
       {loading && (
         <View className="absolute top-0 left-0 right-0 bottom-0 z-50 bg-[#00000080] justify-center items-center">
@@ -63,7 +69,7 @@ const Transactions = () => {
 
       <Header title="Transactions">
         <IconButton>
-          <Feather name="filter" color="#1B1D1C" size={20} />
+          <Feather name="filter" color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}size={20} />
         </IconButton>
       </Header>
 
@@ -78,8 +84,8 @@ const Transactions = () => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={["#1B1D1C"]}
-            progressBackgroundColor={"#FFFFFF"}
+            colors={[colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"]}
+            progressBackgroundColor={colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"}
           />
         }
       >
@@ -89,11 +95,11 @@ const Transactions = () => {
           ) : (
             <>
               <View className="flex flex-row justify-between items-center mb-2 mx-3">
-                <Text className="font-[Rounded-Bold] text-lg text-main">
+                <Text className="font-[Rounded-Bold] text-lg text-main dark:text-white">
                   Today
                 </Text>
 
-                <Text className="font-[Rounded-Bold] text-lg text-main">
+                <Text className="font-[Rounded-Bold] text-lg text-main dark:text-white">
                   {format(
                     transactions.reduce((acc, cur) => {
                       if (cur.type === "Income") {

@@ -22,7 +22,7 @@ const Category = ({ category, summary = 0, ...params }: Props) => {
   return (
     <TouchableOpacity
       activeOpacity={0.75}
-      className="bg-white rounded-2xl py-3 px-2 mb-3 mx-1.5 flex-row items-center"
+      className="bg-white dark:bg-[#131416] rounded-2xl py-3 px-2 mb-3 mx-1.5 flex-row items-center"
       style={{ width: (windowWidth - 36) / 2, ...styles.shadow }}
       {...params}
     >
@@ -36,7 +36,7 @@ const Category = ({ category, summary = 0, ...params }: Props) => {
       <View style={{ flex: 1 }}>
         <Text
           numberOfLines={1}
-          className="text-main font-[Rounded-Medium] text-lg"
+          className="text-main dark:text-white font-[Rounded-Medium] text-lg"
         >
           {name}
         </Text>

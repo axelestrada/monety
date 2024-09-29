@@ -26,6 +26,7 @@ import { transactionServices } from "@/reducers/transactionsSlice";
 import moment from "moment";
 import { accountsServices } from "@/reducers/accountsSlice";
 import AccountCategorySelector from "./AccountCategorySelector";
+import { useColorScheme } from "nativewind";
 
 const NewTransaction = ({
   hideModal,
@@ -350,6 +351,8 @@ const NewTransaction = ({
 
   const isAccount = (item: IAccount | ICategory) => "currentBalance" in item;
 
+  const { colorScheme } = useColorScheme();
+
   return (
     <KeyboardAvoidingView behavior="padding" style={{ flex: 1 }}>
       {loading && (
@@ -363,8 +366,8 @@ const NewTransaction = ({
         onPress={hideModal}
       >
         <TouchableWithoutFeedback>
-          <View className="rounded-t-3xl overflow-hidden bg-white">
-            <BackgroundGradient />
+          <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#1E1F22]">
+            {colorScheme === "light" && <BackgroundGradient />}
 
             <ScrollView>
               <View className="flex-row mx-1 mt-4">
@@ -377,12 +380,12 @@ const NewTransaction = ({
                         "from"
                       );
                     }}
-                    className="bg-white rounded-2xl p-2 mx-1 flex-1"
+                    className="bg-white dark:bg-[#131416] rounded-2xl p-2 mx-1 flex-1"
                     style={{ ...styles.shadow }}
                   >
                     <View className="flex-row items-center">
                       <View
-                        className={`justify-center items-center p-3 mr-2 rounded-full`}
+                        className={`justify-center items-center p-3 mr-1.5 rounded-full`}
                         style={{ backgroundColor: "#" + from.color + "1A" }}
                       >
                         <Ionicons
@@ -395,13 +398,17 @@ const NewTransaction = ({
                       <View style={{ flex: 1 }}>
                         <Text
                           numberOfLines={1}
-                          className="text-main font-[Rounded-Medium] text-lg"
+                          className="text-main dark:text-white font-[Rounded-Medium] text-lg"
                         >
                           {from.name}
                         </Text>
                       </View>
 
-                      <Ionicons name="chevron-down" color="#1b1d1c" size={14} />
+                      <Ionicons
+                        name="chevron-down"
+                        color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
+                        size={14}
+                      />
                     </View>
                   </TouchableOpacity>
                 )}
@@ -409,7 +416,7 @@ const NewTransaction = ({
                 {to && (
                   <TouchableOpacity
                     activeOpacity={0.75}
-                    className="bg-white rounded-2xl p-2 mx-2 flex-1"
+                    className="bg-white dark:bg-[#131416] rounded-2xl p-2 mx-2 flex-1"
                     onPress={() => {
                       openSelector(
                         isAccount(to) ? "Accounts" : "Categories",
@@ -420,7 +427,7 @@ const NewTransaction = ({
                   >
                     <View className="flex-row items-center">
                       <View
-                        className={`justify-center items-center p-3 mr-2 rounded-full`}
+                        className={`justify-center items-center p-3 mr-1.5 rounded-full`}
                         style={{ backgroundColor: "#" + to.color + "1A" }}
                       >
                         <Ionicons
@@ -433,20 +440,24 @@ const NewTransaction = ({
                       <View style={{ flex: 1 }}>
                         <Text
                           numberOfLines={1}
-                          className="text-main font-[Rounded-Medium] text-lg"
+                          className="text-main dark:text-white font-[Rounded-Medium] text-lg"
                         >
                           {to.name}
                         </Text>
                       </View>
 
-                      <Ionicons name="chevron-down" color="#1b1d1c" size={14} />
+                      <Ionicons
+                        name="chevron-down"
+                        color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
+                        size={14}
+                      />
                     </View>
                   </TouchableOpacity>
                 )}
               </View>
 
               <View className="py-8 justify-center items-center">
-                <Text className="text-main font-[Rounded-Bold] text-4.5xl">
+                <Text className="text-main dark:text-white font-[Rounded-Bold] text-4.5xl">
                   {operator === ""
                     ? "L " +
                       (secondValue !== "" ? formatNumber(secondValue) : "0")
@@ -461,9 +472,12 @@ const NewTransaction = ({
                 </Text>
               </View>
 
-              <View className="bg-[#ffffff4d] rounded-3xl">
+              <View className="bg-[#ffffff0d] rounded-3xl">
                 <TextInput
-                  className="text-center mt-4 font-[Rounded-Medium] text-base text-main"
+                  className="text-center mt-4 font-[Rounded-Medium] text-base text-main dark:text-white"
+                  placeholderTextColor={
+                    colorScheme === "dark" ? "#FFFFFF80" : "#1B1D1C80"
+                  }
                   placeholder="Add comment..."
                   value={comment}
                   onChangeText={(value) => setComment(value)}
@@ -474,7 +488,7 @@ const NewTransaction = ({
                     <View className="flex flex-row mb-1 justify-between mx-1">
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() => {
                           makeOperation(operator || "÷", false);
 
@@ -485,14 +499,14 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           ÷
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() =>
                           setSecondValue((prev) =>
                             prev === "0" ? "7" : prev + "7"
@@ -503,14 +517,14 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           7
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() =>
                           setSecondValue((prev) =>
                             prev === "0" ? "8" : prev + "8"
@@ -521,14 +535,14 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           8
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() =>
                           setSecondValue((prev) =>
                             prev === "0" ? "9" : prev + "9"
@@ -539,7 +553,7 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           9
                         </Text>
                       </TouchableOpacity>
@@ -548,7 +562,7 @@ const NewTransaction = ({
                     <View className="flex flex-row my-1 justify-between mx-1">
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() => {
                           makeOperation(operator || "×", false);
 
@@ -559,14 +573,14 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           ×
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() =>
                           setSecondValue((prev) =>
                             prev === "0" ? "4" : prev + "4"
@@ -577,14 +591,14 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           4
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() =>
                           setSecondValue((prev) =>
                             prev === "0" ? "5" : prev + "5"
@@ -595,14 +609,14 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           5
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() =>
                           setSecondValue((prev) =>
                             prev === "0" ? "6" : prev + "6"
@@ -613,7 +627,7 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           6
                         </Text>
                       </TouchableOpacity>
@@ -622,7 +636,7 @@ const NewTransaction = ({
                     <View className="flex flex-row my-1 justify-between mx-1">
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() => {
                           makeOperation(operator || "-", false);
 
@@ -633,14 +647,14 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           -
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() =>
                           setSecondValue((prev) =>
                             prev === "0" ? "1" : prev + "1"
@@ -651,14 +665,14 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           1
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() =>
                           setSecondValue((prev) =>
                             prev === "0" ? "2" : prev + "2"
@@ -669,14 +683,14 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           2
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() =>
                           setSecondValue((prev) =>
                             prev === "0" ? "3" : prev + "3"
@@ -687,7 +701,7 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           3
                         </Text>
                       </TouchableOpacity>
@@ -696,7 +710,7 @@ const NewTransaction = ({
                     <View className="flex flex-row mt-1 justify-between mx-1">
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() => {
                           makeOperation(operator || "+", false);
 
@@ -707,14 +721,14 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           +
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() =>
                           setSecondValue((prev) =>
                             prev === "0" ? "0" : prev + "0"
@@ -725,14 +739,14 @@ const NewTransaction = ({
                           width: ((windowWidth - 48) / 5) * 2 + 8,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           0
                         </Text>
                       </TouchableOpacity>
 
                       <TouchableOpacity
                         activeOpacity={0.5}
-                        className="bg-white rounded-lg justify-center items-center"
+                        className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center"
                         onPress={() =>
                           setSecondValue((prev) => {
                             if (
@@ -750,7 +764,7 @@ const NewTransaction = ({
                           width: (windowWidth - 48) / 5,
                         }}
                       >
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           .
                         </Text>
                       </TouchableOpacity>
@@ -760,7 +774,7 @@ const NewTransaction = ({
                   <View className="flex-[1]">
                     <TouchableOpacity
                       activeOpacity={0.5}
-                      className="bg-white rounded-lg justify-center items-center mb-1 mx-1"
+                      className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center mb-1 mx-1"
                       onPress={() => {
                         setSecondValue((prev) => prev.slice(0, -1));
 
@@ -775,25 +789,25 @@ const NewTransaction = ({
                       <Ionicons
                         name="backspace-outline"
                         size={20}
-                        color={"#1b1d1c"}
+                        color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
                       />
                     </TouchableOpacity>
 
                     <TouchableOpacity
                       activeOpacity={0.5}
-                      className="bg-white rounded-lg justify-center items-center my-1 mx-1"
+                      className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center my-1 mx-1"
                       style={{ height: (windowWidth - 48) / 5 }}
                     >
                       <Ionicons
                         name="calendar-outline"
                         size={20}
-                        color={"#1b1d1c"}
+                        color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
                       />
                     </TouchableOpacity>
 
                     <TouchableOpacity
                       activeOpacity={0.5}
-                      className="bg-white rounded-lg justify-center items-center mt-1 mx-1"
+                      className="bg-white dark:bg-[#131416] rounded-lg justify-center items-center mt-1 mx-1"
                       onPress={() => {
                         if (operator !== "") makeOperation(operator, true);
 
@@ -833,9 +847,13 @@ const NewTransaction = ({
                       style={{ height: ((windowWidth - 48) / 5) * 2 + 8 }}
                     >
                       {operator === "" ? (
-                        <Feather name="check" size={20} color={"#1b1d1c"} />
+                        <Feather
+                          name="check"
+                          size={20}
+                          color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
+                        />
                       ) : (
-                        <Text className="font-[Rounded-Medium] text-2xl text-main">
+                        <Text className="font-[Rounded-Medium] text-2xl text-main dark:text-white">
                           =
                         </Text>
                       )}
@@ -843,7 +861,7 @@ const NewTransaction = ({
                   </View>
                 </View>
 
-                <Text className="font-[Rounded-Medium] text-main text-center mb-2">
+                <Text className="font-[Rounded-Medium] text-main dark:text-white text-center mb-2">
                   {formatDate(selectedDate)}
                 </Text>
               </View>

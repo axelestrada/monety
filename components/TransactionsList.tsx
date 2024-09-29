@@ -10,7 +10,7 @@ const TransactionsList = () => {
   return (
     <View className="grow mb-6">
       <View className="flex flex-row justify-between items-center mt-3 mb-2 mx-3">
-        <Text className="font-[Rounded-Bold] text-lg text-main">
+        <Text className="font-[Rounded-Bold] text-lg text-main dark:text-white">
           Latest Transactions
         </Text>
 

@@ -1,7 +1,9 @@
 import { RefreshControl, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useColorScheme } from "nativewind";
 
 import { useFonts } from "expo-font";
+import {  StatusBar} from "expo-status-bar";
 import { Link, SplashScreen } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 
@@ -40,17 +42,25 @@ export default function Index() {
 
   const [refreshing, setRefreshing] = useState(false);
 
+  const { colorScheme, toggleColorScheme } = useColorScheme();
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     loadAccounts();
     loadTransactions();
     loadCategories();
     setRefreshing(false);
-  }, [setRefreshing, loadTransactions, loadAccounts, loadCategories, timeRange]);
+  }, [
+    setRefreshing,
+    loadTransactions,
+    loadAccounts,
+    loadCategories,
+    timeRange,
+  ]);
 
   useEffect(() => {
     loadTransactions();
-  }, [timeRange, loadTransactions])
+  }, [timeRange, loadTransactions]);
 
   useEffect(() => {
     if (categories.length === 0) {
@@ -185,12 +195,21 @@ export default function Index() {
   //#endregion
 
   return (
-    <SafeAreaView className="flex flex-1" onLayout={onLayoutRootView}>
-      <BackgroundGradient />
+    <SafeAreaView
+      className="flex flex-1 dark:bg-[#1E1F22]"
+      onLayout={onLayoutRootView}
+    >
+      {colorScheme === "light" && <BackgroundGradient />}
+
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"}/>
 
       <Header title="Home">
-        <IconButton>
-          <Octicons name="gear" size={18} color="#1B1D1C" />
+        <IconButton onPress={toggleColorScheme}>
+          <Octicons
+            name="gear"
+            size={18}
+            color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
+          />
         </IconButton>
       </Header>
 
@@ -203,8 +222,8 @@ export default function Index() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={["#1B1D1C"]}
-            progressBackgroundColor={"#FFFFFF"}
+            colors={[colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"]}
+            progressBackgroundColor={colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"}
           />
         }
       >
