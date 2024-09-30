@@ -12,7 +12,7 @@ const BottomTabNavigator = () => {
   const { colorScheme } = useColorScheme();
 
   return (
-    <View className="bg-white dark:bg-[#131416] rounded-t-3xl py-6 flex flex-row justify-evenly items-center">
+    <View className="bg-white dark:bg-[#1E1E1E] rounded-t-3xl py-7 flex flex-row justify-evenly items-center">
       <IconButton onPress={() => router.navigate("/")}>
         <Octicons
           name="home"
@@ -20,10 +20,10 @@ const BottomTabNavigator = () => {
           color={
             pathname === "/"
               ? colorScheme === "dark"
-                ? "#FFFFFF"
+                ? "#E0E2EE"
                 : "#1B1D1C"
               : colorScheme === "dark"
-              ? "#FFFFFF80"
+              ? "#E0E2EE80"
               : "#939496"
           }
         />
@@ -36,10 +36,10 @@ const BottomTabNavigator = () => {
           color={
             pathname === "/accounts"
               ? colorScheme === "dark"
-                ? "#FFFFFF"
+                ? "#E0E2EE"
                 : "#1B1D1C"
               : colorScheme === "dark"
-              ? "#FFFFFF80"
+              ? "#E0E2EE80"
               : "#939496"
           }
         />
@@ -58,10 +58,10 @@ const BottomTabNavigator = () => {
           color={
             pathname === "/transactions"
               ? colorScheme === "dark"
-                ? "#FFFFFF"
+                ? "#E0E2EE"
                 : "#1B1D1C"
               : colorScheme === "dark"
-              ? "#FFFFFF80"
+              ? "#E0E2EE80"
               : "#939496"
           }
         />
@@ -74,10 +74,10 @@ const BottomTabNavigator = () => {
           color={
             pathname === "/"
               ? colorScheme === "dark"
-                ? "#FFFFFF"
+                ? "#E0E2EE"
                 : "#1B1D1C"
               : colorScheme === "dark"
-              ? "#FFFFFF80"
+              ? "#E0E2EE80"
               : "#939496"
           }
         />

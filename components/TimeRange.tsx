@@ -53,10 +53,10 @@ const TimeRange = () => {
           previousDay();
         }}
       >
-        <Feather name="chevron-left"color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"} size={22} />
+        <Feather name="chevron-left"color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"} size={22} />
       </IconButton>
 
-      <Text className="text-main dark:text-white text-base font-[Rounded-Medium]">
+      <Text className="text-main dark:text-[#E0E2EE] text-base font-[Rounded-Medium]">
         {moment(timeRange.from * 1000).format("MMMM DD YYYY")}
       </Text>
 
@@ -65,7 +65,7 @@ const TimeRange = () => {
           nextDay();
         }}
       >
-        <Feather name="chevron-right"color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"} size={22} />
+        <Feather name="chevron-right"color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"} size={22} />
       </IconButton>
     </View>
   );

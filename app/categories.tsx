@@ -64,7 +64,7 @@ function Categories() {
 
 
   return (
-    <SafeAreaView className="flex flex-1 dark:bg-[#1E1F22]">
+    <SafeAreaView className="flex flex-1 dark:bg-[#121212]">
       {colorScheme === "light" && <BackgroundGradient />}
 
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"}/>
@@ -112,7 +112,7 @@ function Categories() {
           onPress={() => setActiveSelector("")}
         >
           <TouchableWithoutFeedback>
-            <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#1E1F22]">
+            <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#121212]">
             {colorScheme === "light" && <BackgroundGradient />}
 
               <AccountCategorySelector
@@ -134,7 +134,7 @@ function Categories() {
       <Header title="Categories">
         <IconButton>
           <Octicons name="pencil" size={20} color={colorScheme === "dark"
-                ? "#FFFFFF"
+                ? "#E0E2EE"
                 : "#1B1D1C"} />
         </IconButton>
       </Header>
@@ -143,7 +143,7 @@ function Categories() {
         <TimeRange/>
       </OverallBalance>
 
-      <View className="flex flex-row mx-3 py-1.5 bg-[#ffffff80] dark:bg-[#ffffff0d] rounded-2xl">
+      <View className="flex flex-row mx-3 py-1.5 bg-[#ffffff80] dark:bg-[#E0E2EE00] dark:mx-1.5 rounded-2xl">
         <CashFlowItem
           type="Incomes"
           value={transactions
@@ -168,7 +168,7 @@ function Categories() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"]}
+            colors={[colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"]}
             progressBackgroundColor={colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"}
           />
         }

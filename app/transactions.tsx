@@ -56,7 +56,7 @@ const Transactions = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 dark:bg-[#1E1F22]">
+    <SafeAreaView className="flex-1 dark:bg-[#121212]">
       {colorScheme === "light" && <BackgroundGradient />}
 
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"}/>
@@ -69,7 +69,7 @@ const Transactions = () => {
 
       <Header title="Transactions">
         <IconButton>
-          <Feather name="filter" color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}size={20} />
+          <Feather name="filter" color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}size={20} />
         </IconButton>
       </Header>
 
@@ -84,7 +84,7 @@ const Transactions = () => {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"]}
+            colors={[colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"]}
             progressBackgroundColor={colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"}
           />
         }
@@ -95,11 +95,11 @@ const Transactions = () => {
           ) : (
             <>
               <View className="flex flex-row justify-between items-center mb-2 mx-3">
-                <Text className="font-[Rounded-Bold] text-lg text-main dark:text-white">
+                <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#E0E2EE]">
                   Today
                 </Text>
 
-                <Text className="font-[Rounded-Bold] text-lg text-main dark:text-white">
+                <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#E0E2EE]">
                   {format(
                     transactions.reduce((acc, cur) => {
                       if (cur.type === "Income") {

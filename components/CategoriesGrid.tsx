@@ -42,10 +42,10 @@ const CategoriesGrid = ({
               width: (windowWidth - 36) / 2,
               borderStyle: "dashed",
               borderWidth: 2,
-              borderColor: colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C",
+              borderColor: colorScheme === "dark" ? "#6F717D" : "#1B1D1C",
             }}
           >
-            <Feather name="plus" color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"} size={18} />
+            <Feather name="plus" color={colorScheme === "dark" ? "#6F717D" : "#1B1D1C"} size={18} />
           </TouchableOpacity>
         ) : (
           <Category

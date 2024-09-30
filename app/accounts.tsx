@@ -85,7 +85,7 @@ export default function Accounts() {
   };
 
   return (
-    <SafeAreaView className="flex flex-1 dark:bg-[#1E1F22]">
+    <SafeAreaView className="flex flex-1 dark:bg-[#121212]">
       {colorScheme === "light" && <BackgroundGradient />}
 
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
@@ -137,7 +137,7 @@ export default function Accounts() {
           }
         >
           <TouchableWithoutFeedback>
-            <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#1E1F22]">
+            <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#121212]">
               {colorScheme === "light" && <BackgroundGradient />}
 
               <AccountCategorySelector
@@ -171,7 +171,7 @@ export default function Accounts() {
           <Ionicons
             name="add"
             size={24}
-            color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
+            color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}
           />
         </IconButton>
       </Header>
@@ -184,7 +184,7 @@ export default function Accounts() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"]}
+            colors={[colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"]}
             progressBackgroundColor={
               colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"
             }
@@ -192,10 +192,10 @@ export default function Accounts() {
         }
       >
         <View className="mx-3 flex-row justify-between items-center mb-3">
-          <Text className="text-main dark:text-white font-[Rounded-Bold] text-lg">
+          <Text className="text-main dark:text-[#E0E2EE] font-[Rounded-Bold] text-lg">
             Accounts
           </Text>
-          <Text className="text-main dark:text-white font-[Rounded-Bold] text-lg">
+          <Text className="text-main dark:text-[#E0E2EE] font-[Rounded-Bold] text-lg">
             {format(
               accounts
                 .filter((account) => account.type === "Regular")
@@ -223,12 +223,12 @@ export default function Accounts() {
                       borderStyle: "dashed",
                       borderWidth: 2,
                       borderColor:
-                        colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C",
+                        colorScheme === "dark" ? "#6F717D" : "#1B1D1C",
                     }}
                   >
                     <Feather
                       name="plus"
-                      color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
+                      color={colorScheme === "dark" ? "#6F717D" : "#1B1D1C"}
                       size={18}
                     />
                   </TouchableOpacity>
@@ -237,7 +237,7 @@ export default function Accounts() {
             ) : (
               <TouchableOpacity
                 activeOpacity={0.75}
-                className="bg-white dark:bg-[#131416] px-2 py-3 mb-3 mx-3 rounded-2xl"
+                className="bg-white dark:bg-[#1E1E1E] px-2 py-3 mb-3 mx-3 rounded-2xl"
                 style={styles.shadow}
                 onPress={() => {
                   setActiveSelector({
@@ -274,15 +274,15 @@ export default function Accounts() {
                   </View>
 
                   <View>
-                    <Text className="font-[Rounded-Medium] text-lg text-main dark:text-white">
+                    <Text className="font-[Rounded-Medium] text-lg text-main dark:text-[#E0E2EE]">
                       {item.name}
                     </Text>
 
                     <Text
                       className={`font-[Rounded-Regular] text-base ${
                         item.currentBalance < 0
-                          ? "text-red dark:text-[#E95A5C]"
-                          : "text-main-500 dark:text-[#FFFFFF80]"
+                          ? "text-red dark:text-[#FF8092]"
+                          : "text-main-500 dark:text-[#E0E2EE80]"
                       }`}
                     >
                       L{" "}
@@ -294,7 +294,7 @@ export default function Accounts() {
                 </View>
 
                 {item.description && (
-                  <Text className="font-[Rounded-Regular] text-sm text-main dark:text-white pt-1">
+                  <Text className="font-[Rounded-Regular] text-sm text-main dark:text-[#E0E2EE] pt-1">
                     {item.description}
                   </Text>
                 )}
@@ -307,10 +307,10 @@ export default function Accounts() {
           0 && (
           <>
             <View className="mx-3 mt-4 flex-row justify-between items-center mb-3">
-              <Text className="text-main dark:text-white font-[Rounded-Bold] text-lg">
+              <Text className="text-main dark:text-[#E0E2EE] font-[Rounded-Bold] text-lg">
                 Savings
               </Text>
-              <Text className="text-main dark:text-white font-[Rounded-Bold] text-lg">
+              <Text className="text-main dark:text-[#E0E2EE] font-[Rounded-Bold] text-lg">
                 {format(
                   accounts
                     .filter((account) => account.type === "Savings")
@@ -325,7 +325,7 @@ export default function Accounts() {
               renderItem={({ item }) => (
                 <TouchableOpacity
                   activeOpacity={0.75}
-                  className="bg-white dark:bg-[#131416] px-2 py-3 mb-3 mx-3 rounded-2xl flex flex-row justify-between items-center"
+                  className="bg-white dark:bg-[#1E1E1E] px-2 py-3 mb-3 mx-3 rounded-2xl flex flex-row justify-between items-center"
                   style={styles.shadow}
                   onPress={() => {
                     setActiveModal(true);
@@ -342,7 +342,7 @@ export default function Accounts() {
                   <View className="flex flex-row items-center">
                     <View
                       className={`justify-center items-center p-3.5 mr-1.5 rounded-full`}
-                      style={{ backgroundColor: "#" + item.color + "1A" }}
+                      style={{ backgroundColor: "#" + item.color + "1a" }}
                     >
                       <Ionicons
                         name={item.icon}
@@ -352,15 +352,15 @@ export default function Accounts() {
                     </View>
 
                     <View>
-                      <Text className="font-[Rounded-Medium] text-lg text-main dark:text-white">
+                      <Text className="font-[Rounded-Medium] text-lg text-main dark:text-[#E0E2EE]">
                         {item.name}
                       </Text>
 
                       <Text
                         className={`font-[Rounded-Regular] text-base ${
                           item.currentBalance < 0
-                            ? "text-red dark:text-[#E95A5C]"
-                            : "text-main-500 dark:text-[#FFFFFF80]"
+                            ? "text-red dark:text-[#FF8092]"
+                            : "text-main-500 dark:text-[#E0E2EE80]"
                         }`}
                       >
                         L{" "}
@@ -372,7 +372,7 @@ export default function Accounts() {
                   </View>
 
                   {item.description && (
-                    <Text className="font-[Rounded-Regular] text-sm text-main dark:text-white pt-1">
+                    <Text className="font-[Rounded-Regular] text-sm text-main dark:text-[#E0E2EE] pt-1">
                       {item.description}
                     </Text>
                   )}

@@ -75,15 +75,15 @@ const AnalyticsChart = ({ type }: Props) => {
           ? item
           : {
               ...item,
-              frontColor: colorScheme === "dark" ? "#E95A5C" : "#1B1D1C",
+              frontColor: colorScheme === "dark" ? "#FF8092" : "#1B1D1C",
               labelTextStyle: {
-                color: colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C",
+                color: colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C",
                 fontFamily: "Rounded-Bold",
               },
               topLabelComponent: () => (
                 <Text
                   style={{
-                    color: colorScheme === "dark" ? "#1B1D1C" : "#ffffff",
+                    color: colorScheme === "dark" ? "#1B1D1C" : "#E0E2EE",
                     fontFamily: "Rounded-Bold",
                   }}
                 >
@@ -92,7 +92,7 @@ const AnalyticsChart = ({ type }: Props) => {
               ),
               topLabelContainerStyle: {
                 ...item.topLabelContainerStyle,
-                backgroundColor: colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C",
+                backgroundColor: colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C",
               }
             }
       )
@@ -101,20 +101,20 @@ const AnalyticsChart = ({ type }: Props) => {
 
   return (
     <View
-      className="bg-white dark:bg-[#131416] rounded-2xl p-2 mx-3"
+      className="bg-white dark:bg-[#1E1E1E] rounded-2xl p-2 mx-3"
       style={styles.shadow}
     >
       <View className="flex flex-row justify-between items-center pb-2">
         <View className="flex flex-row items-center">
-          <Text className="text-main dark:text-white text-base font-[Rounded-Bold] mr-1">
+          <Text className="text-main dark:text-[#E0E2EE] text-base font-[Rounded-Bold] mr-1">
             Analytics
           </Text>
 
           <Text
             className={`${
               type === "Incomes"
-                ? "text-green bg-green-10 dark:text-[#4EC871] dark:bg-[#4EC8711A]"
-                : "text-red bg-red-10 dark:text-[#E95A5C] dark:bg-[#E95A5C1A]"
+                ? "text-green bg-green-10 dark:text-[#5bbe77] dark:bg-[#5bbe771a]"
+                : "text-red bg-red-10 dark:text-[#FF8092] dark:bg-[#FF80921A]"
             } rounded-md px-1.5 py-1 text-sm`}
           >
             {type}
@@ -140,7 +140,7 @@ const AnalyticsChart = ({ type }: Props) => {
               {dropdownSelectedOption}
             </Text>
 
-            <View className="bg-yellow dark:bg-[#FAE16C] rounded-full w-4 h-4 justify-center items-center">
+            <View className="bg-yellow dark:bg-[#f2db73] rounded-full w-4 h-4 justify-center items-center">
               <Entypo name="chevron-down" color="#1B1D1C" />
             </View>
           </TouchableOpacity>
@@ -150,13 +150,13 @@ const AnalyticsChart = ({ type }: Props) => {
       <View className="-mx-2">
         <BarChart
           data={chartData}
-          frontColor={colorScheme === "dark" ? "#FAE16C" : "#FFE56E"}
+          frontColor={colorScheme === "dark" ? "#f2db73" : "#FFE56E"}
           barBorderRadius={100}
           barWidth={16}
           hideRules
           adjustToWidth
           xAxisLabelTextStyle={{
-            color: colorScheme === "dark" ? "#FFFFFF80" : "#939496",
+            color: colorScheme === "dark" ? "#E0E2EE80" : "#939496",
             fontFamily: "Rounded-Regular",
             fontSize: 14,
           }}

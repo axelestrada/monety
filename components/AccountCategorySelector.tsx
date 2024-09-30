@@ -27,7 +27,7 @@ function AccountCategorySelector({
   return (
     <ScrollView className="p-3 h-[400]">
       <View className="mb-3">
-        <Text className="text-center mb-4 mt-2 text-xl font-[Rounded-Bold] text-main dark:text-white">
+        <Text className="text-center mb-4 mt-2 text-xl font-[Rounded-Bold] text-main dark:text-[#E0E2EE]">
           Select {type === "Accounts" ? "Account" : "Category"}
         </Text>
 
@@ -37,7 +37,7 @@ function AccountCategorySelector({
                 category.id && (
                   <TouchableOpacity
                     activeOpacity={0.75}
-                    className="bg-white dark:bg-[#131416] rounded-2xl p-2 mb-3 mx-1 flex-1"
+                    className="bg-white dark:bg-[#1E1E1E] rounded-2xl p-2 mb-3 mx-1 flex-1"
                     onPress={() => {
                       callback && callback();
 
@@ -66,7 +66,7 @@ function AccountCategorySelector({
                       <View style={{ flex: 1 }}>
                         <Text
                           numberOfLines={1}
-                          className="text-main dark:text-white font-[Rounded-Medium] text-lg"
+                          className="text-main dark:text-[#E0E2EE] font-[Rounded-Medium] text-lg"
                         >
                           {category.name}
                         </Text>
@@ -80,7 +80,7 @@ function AccountCategorySelector({
                 account.id && (
                   <TouchableOpacity
                     activeOpacity={0.75}
-                    className="bg-white dark:bg-[#131416] rounded-2xl p-2 mb-3 mx-1 flex-1"
+                    className="bg-white dark:bg-[#1E1E1E] rounded-2xl p-2 mb-3 mx-1 flex-1"
                     key={account.id + "AccountCategorySelector"}
                     onPress={() => {
                       callback && callback();
@@ -107,15 +107,15 @@ function AccountCategorySelector({
                       </View>
 
                       <View style={{flex: 1}}>
-                        <Text className="font-[Rounded-Medium] text-lg text-main dark:text-white">
+                        <Text className="font-[Rounded-Medium] text-lg text-main dark:text-[#E0E2EE]">
                           {account.name}
                         </Text>
 
                         <Text
                           className={`font-[Rounded-Regular] text-base ${
                             account.currentBalance < 0
-                              ? "text-red dark:text-[#E95A5C]"
-                              : "text-main-500 dark:text-[#FFFFFF80]"
+                              ? "text-red"
+                              : "text-main-500 dark:text-[#E0E2EE80]"
                           }`}
                         >
                           L{" "}

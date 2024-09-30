@@ -196,7 +196,7 @@ export default function Index() {
 
   return (
     <SafeAreaView
-      className="flex flex-1 dark:bg-[#1E1F22]"
+      className="flex flex-1 dark:bg-[#121212]"
       onLayout={onLayoutRootView}
     >
       {colorScheme === "light" && <BackgroundGradient />}
@@ -208,7 +208,7 @@ export default function Index() {
           <Octicons
             name="gear"
             size={18}
-            color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
+            color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}
           />
         </IconButton>
       </Header>
@@ -222,7 +222,7 @@ export default function Index() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"]}
+            colors={[colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"]}
             progressBackgroundColor={colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"}
           />
         }

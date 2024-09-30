@@ -20,13 +20,13 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
       onPress={onPress}
       activeOpacity={0.75}
       className={`${
-        active && "bg-white dark:bg-[#131416]"
+        active && "bg-white dark:bg-[#1E1E1E]"
       } flex flex-1 rounded-2xl py-3 px-2 mx-1.5 flex-row items-center`}
       style={active ? styles.shadow : {}}
     >
       <View
         className={`${
-          type === "Incomes" ? "bg-green-10" : "bg-red-10"
+          type === "Incomes" ? "bg-green-10 dark:bg-[#5bbe771a]" : "bg-red-10 dark:bg-[#FF80921a]"
         } justify-center items-center p-4 mr-1.5 rounded-full`}
       >
         <Feather
@@ -34,10 +34,10 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
           color={`${
             type === "Incomes"
               ? colorScheme === "dark"
-                ? "#4EC871"
+                ? "#5bbe77"
                 : "#02AB5B"
               : colorScheme === "dark"
-              ? "#E95A5C"
+              ? "#FF8092"
               : "#FF8092"
           }`}
           size={18}
@@ -48,14 +48,14 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
         <Text
           className={`${
             type === "Incomes"
-              ? "text-green dark:text-[#4EC871]"
-              : "text-red dark:text-[#E95A5C]"
+              ? "text-green dark:text-[#5bbe77]"
+              : "text-red dark:text-[#FF8092]"
           } text-lg font-[Rounded-Bold] -mb-0.5`}
         >
           {"L " + Intl.NumberFormat("en-US").format(value)}
         </Text>
 
-        <Text className="text-main dark:text-white font-[Rounded-Bold] text-lg">{type}</Text>
+        <Text className="text-main dark:text-[#E0E2EE] font-[Rounded-Bold] text-lg">{type}</Text>
       </View>
     </TouchableOpacity>
   );

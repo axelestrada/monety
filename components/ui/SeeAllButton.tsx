@@ -13,12 +13,12 @@ const SeeAllButton = () => {
       className="flex flex-row justify-between items-center"
       onPress={() => router.navigate("/transactions")}
     >
-      <Text className="font-[Rounded-Medium] text-main dark:text-white text-base">
+      <Text className="font-[Rounded-Medium] text-main dark:text-[#E0E2EE] text-base">
         See All
       </Text>
       <Feather
         name="chevron-right"
-        color={colorScheme === "dark" ? "#FFFFFF" : "#1B1D1C"}
+        color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}
       />
     </TouchableOpacity>
   );
