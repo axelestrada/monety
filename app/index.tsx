@@ -1,9 +1,15 @@
-import { RefreshControl, ScrollView, Text, View } from "react-native";
+import {
+  Dimensions,
+  RefreshControl,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useColorScheme } from "nativewind";
 
 import { useFonts } from "expo-font";
-import {  StatusBar} from "expo-status-bar";
+import { StatusBar } from "expo-status-bar";
 import { Link, SplashScreen } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 
@@ -17,6 +23,8 @@ import TransactionsList from "@/components/TransactionsList";
 import IconButton from "@/components/ui/IconButton";
 import { Octicons } from "@expo/vector-icons";
 import { useSQLiteContext } from "expo-sqlite";
+
+import { LineChart } from "react-native-gifted-charts";
 
 import uuid from "react-native-uuid";
 import { defaultCategories } from "@/constants/categories";
@@ -43,6 +51,28 @@ export default function Index() {
   const [refreshing, setRefreshing] = useState(false);
 
   const { colorScheme, toggleColorScheme } = useColorScheme();
+
+  const lineData = [
+    { value: 0, dataPointText: "0" },
+    { value: 10, dataPointText: "10" },
+    { value: 8, dataPointText: "8" },
+    { value: 58, dataPointText: "58" },
+    { value: 56, dataPointText: "56" },
+    { value: 78, dataPointText: "78" },
+    { value: 74, dataPointText: "74" },
+    { value: 98, dataPointText: "98" },
+  ];
+
+  const lineData2 = [
+    { value: 15, dataPointText: "15" },
+    { value: 20, dataPointText: "20" },
+    { value: 18, dataPointText: "18" },
+    { value: 40, dataPointText: "40" },
+    { value: 36, dataPointText: "36" },
+    { value: 60, dataPointText: "60" },
+    { value: 54, dataPointText: "54" },
+    { value: 85, dataPointText: "85" },
+  ];
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -194,21 +224,23 @@ export default function Index() {
   }
   //#endregion
 
+  const windowWidth = Dimensions.get("window").width;
+
   return (
     <SafeAreaView
-      className="flex flex-1 dark:bg-[#121212]"
+      className="flex flex-1 dark:bg-[#0D0D0D]"
       onLayout={onLayoutRootView}
     >
       {colorScheme === "light" && <BackgroundGradient />}
 
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"}/>
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
       <Header title="Home">
         <IconButton onPress={toggleColorScheme}>
           <Octicons
             name="gear"
             size={18}
-            color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}
+            color={colorScheme === "dark" ? "#F5F5F5" : "#1B1D1C"}
           />
         </IconButton>
       </Header>
@@ -222,12 +254,62 @@ export default function Index() {
           <RefreshControl
             refreshing={refreshing}
             onRefresh={onRefresh}
-            colors={[colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"]}
-            progressBackgroundColor={colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"}
+            colors={[colorScheme === "dark" ? "#F5F5F5" : "#1B1D1C"]}
+            progressBackgroundColor={
+              colorScheme === "dark" ? "#0d0d0d" : "#FFFFFF"
+            }
           />
         }
       >
-        <AnalyticsChart type={analyticsType} />
+        <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mx-3 overflow-hidden">
+          <View className="mx-2 flex-row justify-between">
+            <Text className="text-main dark:text-[#F5F5F5] text-lg font-[Rounded-Bold]">
+              Statistics
+            </Text>
+
+            <View className="flex-row gap-[4]">
+              <View className="flex-row items-center gap-[4]">
+                <View className="bg-green dark:bg-[#5bbe77] w-2 h-2 rounded-full"></View>
+                <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium]">
+                  Incomes
+                </Text>
+              </View>
+
+              <View className="flex-row items-center gap-[4]">
+                <View className="bg-red dark:bg-[#ff8092] w-2 h-2 rounded-full"></View>
+                <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium]">
+                  Incomes
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View className="-mx-[10]">
+            <LineChart
+              isAnimated
+              curved
+              color1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
+              color2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
+              data={lineData}
+              data2={lineData2}
+              initialSpacing={0}
+              endSpacing={0}
+              hideDataPoints
+              thickness={5}
+              curvature={0.2}
+              hideRules
+              hideYAxisText
+              hideOrigin
+              yAxisThickness={0}
+              xAxisThickness={0}
+              adjustToWidth
+              disableScroll
+              width={windowWidth - 21}
+            />
+          </View>
+        </View>
+
+        {/* <AnalyticsChart type={analyticsType} /> */}
 
         <View className="flex flex-row mt-3 mx-1.5">
           <CashFlowItem

@@ -25,27 +25,6 @@ const data: barDataItem[] = [
     label: "Wed",
     frontColor: "#1B1D1C",
     labelTextStyle: { color: "#1B1D1C", fontFamily: "Rounded-Bold" },
-    topLabelComponent: () => (
-      <Text style={{ color: "#FFFFFF", fontFamily: "Rounded-Bold" }}>
-        L1,525
-      </Text>
-    ),
-    topLabelContainerStyle: {
-      width: 6 * 9,
-      height: 30,
-      borderRadius: 10,
-      position: "absolute",
-      top: -35,
-      left: "50%",
-      backgroundColor: "#1B1D1C",
-      justifyContent: "center",
-      alignItems: "center",
-      transform: [
-        {
-          translateX: -(6 * 9) / 2,
-        },
-      ],
-    },
   },
   { value: 300, label: "Thu" },
   { value: 450, label: "Fri" },
@@ -77,23 +56,9 @@ const AnalyticsChart = ({ type }: Props) => {
               ...item,
               frontColor: colorScheme === "dark" ? "#FF8092" : "#1B1D1C",
               labelTextStyle: {
-                color: colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C",
+                color: colorScheme === "dark" ? "#F5F5F5" : "#1B1D1C",
                 fontFamily: "Rounded-Bold",
               },
-              topLabelComponent: () => (
-                <Text
-                  style={{
-                    color: colorScheme === "dark" ? "#1B1D1C" : "#E0E2EE",
-                    fontFamily: "Rounded-Bold",
-                  }}
-                >
-                  L1,525
-                </Text>
-              ),
-              topLabelContainerStyle: {
-                ...item.topLabelContainerStyle,
-                backgroundColor: colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C",
-              }
             }
       )
     );
@@ -101,12 +66,12 @@ const AnalyticsChart = ({ type }: Props) => {
 
   return (
     <View
-      className="bg-white dark:bg-[#1E1E1E] rounded-2xl p-2 mx-3"
+      className="bg-white dark:bg-[#1A1A1A] rounded-2xl p-2 mx-3"
       style={styles.shadow}
     >
       <View className="flex flex-row justify-between items-center pb-2">
         <View className="flex flex-row items-center">
-          <Text className="text-main dark:text-[#E0E2EE] text-base font-[Rounded-Bold] mr-1">
+          <Text className="text-main dark:text-[#F5F5F5] text-base font-[Rounded-Bold] mr-1">
             Analytics
           </Text>
 
@@ -156,7 +121,7 @@ const AnalyticsChart = ({ type }: Props) => {
           hideRules
           adjustToWidth
           xAxisLabelTextStyle={{
-            color: colorScheme === "dark" ? "#E0E2EE80" : "#939496",
+            color: colorScheme === "dark" ? "#F5F5F580" : "#939496",
             fontFamily: "Rounded-Regular",
             fontSize: 14,
           }}

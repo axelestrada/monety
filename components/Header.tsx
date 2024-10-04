@@ -22,12 +22,12 @@ const Header = ({ title, children, goBack }: Props) => {
           <Ionicons
             name="arrow-back"
             size={18}
-            color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}
+            color={colorScheme === "dark" ? "#F5F5F5" : "#1B1D1C"}
           />
         </IconButton>
       )}
 
-      <Text className="text-main dark:text-[#E0E2EE] text-xl font-[Rounded-Bold]">
+      <Text className="text-main dark:text-[#F5F5F5] text-xl font-[Rounded-Bold]">
         {title}
       </Text>
 

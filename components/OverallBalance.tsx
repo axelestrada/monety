@@ -23,8 +23,8 @@ const OverallBalance = ({ children }: Props) => {
 
   return (
     <View className={`justify-center items-center p-2 pb-4`}>
-      <Text className="text-[#1b1d1cbf] dark:text-[#E0E2EEbf] text-xs">Overall balance</Text>
-      <Text className="text-main dark:text-[#E0E2EE] font-[Rounded-Bold] text-[34px]">
+      <Text className="text-[#1b1d1cbf] dark:text-[#F5F5F5bf] text-xs">Overall balance</Text>
+      <Text className="text-main dark:text-[#F5F5F5] font-[Rounded-Bold] text-[34px]">
         {formatNumber(
           accounts.reduce(
             (acc, curr) =>

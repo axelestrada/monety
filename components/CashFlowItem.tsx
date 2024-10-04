@@ -20,7 +20,7 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
       onPress={onPress}
       activeOpacity={0.75}
       className={`${
-        active && "bg-white dark:bg-[#1E1E1E]"
+        active && "bg-white dark:bg-[#1A1A1A]"
       } flex flex-1 rounded-2xl py-3 px-2 mx-1.5 flex-row items-center`}
       style={active ? styles.shadow : {}}
     >
@@ -55,7 +55,7 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
           {"L " + Intl.NumberFormat("en-US").format(value)}
         </Text>
 
-        <Text className="text-main dark:text-[#E0E2EE] font-[Rounded-Bold] text-lg">{type}</Text>
+        <Text className="text-main dark:text-[#F5F5F5] font-[Rounded-Bold] text-lg">{type}</Text>
       </View>
     </TouchableOpacity>
   );

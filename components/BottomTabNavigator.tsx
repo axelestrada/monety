@@ -12,7 +12,7 @@ const BottomTabNavigator = () => {
   const { colorScheme } = useColorScheme();
 
   return (
-    <View className="bg-white dark:bg-[#1E1E1E] rounded-t-3xl py-7 flex flex-row justify-evenly items-center">
+    <View className="bg-white dark:bg-[#1A1A1A] rounded-t-3xl py-7 flex flex-row justify-evenly items-center">
       <IconButton onPress={() => router.navigate("/")}>
         <Octicons
           name="home"
@@ -20,10 +20,10 @@ const BottomTabNavigator = () => {
           color={
             pathname === "/"
               ? colorScheme === "dark"
-                ? "#E0E2EE"
+                ? "#F5F5F5"
                 : "#1B1D1C"
               : colorScheme === "dark"
-              ? "#E0E2EE80"
+              ? "#F5F5F580"
               : "#939496"
           }
         />
@@ -36,10 +36,10 @@ const BottomTabNavigator = () => {
           color={
             pathname === "/accounts"
               ? colorScheme === "dark"
-                ? "#E0E2EE"
+                ? "#F5F5F5"
                 : "#1B1D1C"
               : colorScheme === "dark"
-              ? "#E0E2EE80"
+              ? "#F5F5F580"
               : "#939496"
           }
         />
@@ -58,10 +58,10 @@ const BottomTabNavigator = () => {
           color={
             pathname === "/transactions"
               ? colorScheme === "dark"
-                ? "#E0E2EE"
+                ? "#F5F5F5"
                 : "#1B1D1C"
               : colorScheme === "dark"
-              ? "#E0E2EE80"
+              ? "#F5F5F580"
               : "#939496"
           }
         />
@@ -72,12 +72,12 @@ const BottomTabNavigator = () => {
           name="bar-chart-2"
           size={20}
           color={
-            pathname === "/"
+            pathname === "/statistics"
               ? colorScheme === "dark"
-                ? "#E0E2EE"
+                ? "#F5F5F5"
                 : "#1B1D1C"
               : colorScheme === "dark"
-              ? "#E0E2EE80"
+              ? "#F5F5F580"
               : "#939496"
           }
         />

@@ -28,7 +28,7 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
   return (
     <TouchableOpacity
       activeOpacity={0.75}
-      className="bg-white dark:bg-[#1E1E1E] py-3 px-2 mb-3 mx-3 rounded-2xl"
+      className="bg-white dark:bg-[#1A1A1A] py-3 px-2 mb-3 mx-3 rounded-2xl"
       style={styles.shadow}
       onLongPress={() => deleteTransaction(transaction)}
     >
@@ -49,11 +49,11 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
           </View>
 
           <View>
-            <Text className="font-[Rounded-Medium] text-lg text-main dark:text-[#E0E2EE]">
+            <Text className="font-[Rounded-Medium] text-lg text-main dark:text-[#F5F5F5]">
               {categoryName || destinationAccountName}
             </Text>
 
-            <Text className="font-[Rounded-Regular] text-sm text-main-500 dark:text-[#E0E2EE80]">
+            <Text className="font-[Rounded-Regular] text-sm text-main-500 dark:text-[#F5F5F580]">
               {accountName}
             </Text>
           </View>
@@ -66,28 +66,28 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
               color:
                 type === "Income"
                   ? colorScheme === "dark"
-                    ? "#4EC871"
+                    ? "#5bbe77"
                     : "#02AB5B"
                   : type === "Expense"
                   ? colorScheme === "dark"
-                    ? "#E95A5C"
+                    ? "#FF8092"
                     : "#FF8092"
                   : colorScheme === "dark"
-                  ? "#E0E2EE"
+                  ? "#F5F5F5"
                   : "#1B1D1C",
             }}
           >
             {numberWithSign(amount, type)}
           </Text>
 
-          <Text className="font-[Rounded-Regular] text-sm text-main-500 dark:text-[#E0E2EE80]">
+          <Text className="font-[Rounded-Regular] text-sm text-main-500 dark:text-[#F5F5F580]">
             {moment(date * 1000).format("hh:mm A")}
           </Text>
         </View>
       </View>
 
       {comment && (
-        <Text className="font-[Rounded-Regular] text-sm text-main dark:text-[#E0E2EE] pt-1">
+        <Text className="font-[Rounded-Regular] text-sm text-main dark:text-[#F5F5F5] pt-1">
           {comment}
         </Text>
       )}
