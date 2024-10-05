@@ -193,9 +193,9 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    const reversedTransactions = [...transactions]
-      .reverse()
-      .filter((transaction) => transaction.type !== "Transfer");
+    const reversedTransactions = [...transactions].filter(
+      (transaction) => transaction.type !== "Transfer"
+    );
 
     if (reversedTransactions.length > 0) {
       const newIncomes: lineDataItem[] = [];
@@ -216,16 +216,13 @@ export default function Index() {
           ...reversedTransactions.map((transaction) => transaction.date * 1000)
         )
       )
-        .add(1, "hour")
-        .startOf("hour")
+        .endOf("hour")
         .unix();
 
       const hoursOfDifference = moment(maxDate * 1000).diff(
         minDate * 1000,
         "hours"
       );
-
-      console.log(hoursOfDifference);
 
       let newBreakPoints: number[] = [0, 0, 0, 0, 0];
 
@@ -286,11 +283,17 @@ export default function Index() {
       setBreakpoints(newBreakPoints);
 
       newBreakPoints.forEach((value, idx) => {
-        const rangeTransactions = transactions.filter(
-          (transaction) =>
+        const rangeTransactions = transactions.filter((transaction) => {
+          return (
             transaction.date >= value &&
-            transaction.date <= newBreakPoints[idx + 1]
-        );
+            transaction.date <=
+              (idx === 4
+                ? maxDate
+                : moment((newBreakPoints[idx + 1] - 1) * 1000)
+                    .endOf("hour")
+                    .unix())
+          );
+        });
 
         const incomesAmount = Math.round(
           rangeTransactions
