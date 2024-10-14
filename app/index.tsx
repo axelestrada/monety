@@ -74,6 +74,7 @@ export default function Index() {
   ]);
 
   const [maxValue, setMaxValue] = useState(100);
+  const [minValue, setMinValue] = useState(0);
   const [breakpoints, setBreakpoints] = useState<number[]>([]);
 
   const { colorScheme, toggleColorScheme } = useColorScheme();
@@ -239,25 +240,29 @@ export default function Index() {
     for (let i = 0; i <= hoursOfDifference; i++) {
       const currentDate = moment(startDate).add(i, "hour");
 
-      const incomesAmount = Math.round(transactions
-        .filter((tr) => tr.type !== "Transfer")
-        .filter((tr) => tr.type === "Income")
-        .filter(
-          (tr) =>
-            tr.date >= moment(currentDate).startOf("hour").unix() &&
-            tr.date <= moment(currentDate).endOf("hour").unix()
-        )
-        .reduce((acc, curr) => acc + curr.amount, 0));
+      const incomesAmount = Math.round(
+        transactions
+          .filter((tr) => tr.type !== "Transfer")
+          .filter((tr) => tr.type === "Income")
+          .filter(
+            (tr) =>
+              tr.date >= moment(currentDate).startOf("hour").unix() &&
+              tr.date <= moment(currentDate).endOf("hour").unix()
+          )
+          .reduce((acc, curr) => acc + curr.amount, 0)
+      );
 
-      const expensesAmount = Math.round(transactions
-        .filter((tr) => tr.type !== "Transfer")
-        .filter((tr) => tr.type === "Expense")
-        .filter(
-          (tr) =>
-            tr.date >= moment(currentDate).startOf("hour").unix() &&
-            tr.date <= moment(currentDate).endOf("hour").unix()
-        )
-        .reduce((acc, curr) => acc + curr.amount, 0));
+      const expensesAmount = Math.round(
+        transactions
+          .filter((tr) => tr.type !== "Transfer")
+          .filter((tr) => tr.type === "Expense")
+          .filter(
+            (tr) =>
+              tr.date >= moment(currentDate).startOf("hour").unix() &&
+              tr.date <= moment(currentDate).endOf("hour").unix()
+          )
+          .reduce((acc, curr) => acc + curr.amount, 0)
+      );
 
       const incomesLabelSize = (incomesAmount.toString().length + 1) * 14;
 
@@ -376,6 +381,7 @@ export default function Index() {
         moment().add(1, "hour").startOf("hour").unix(),
       ]);
       setMaxValue(100);
+      setMinValue(0);
       return;
     } else {
       setIncomes(
@@ -385,7 +391,8 @@ export default function Index() {
         newExpenses.length === 1 ? [...newExpenses, { value: 0 }] : newExpenses
       );
 
-      setMaxValue(newMaxValue);
+      setMaxValue(Math.ceil(newMaxValue / 10) * 10);
+      setMinValue(newIncomes.length === 1 || newExpenses.length === 1 ? 0 : (Math.ceil((Math.min(...[...newIncomes, ...newExpenses].map(item => item.value)))) / 10) * 10)
     }
 
     let newBreakPoints: number[] = [];
@@ -492,25 +499,14 @@ export default function Index() {
 
             <View className="mt-5 mb-2">
               <LineChart
-                height={180}
-                maxValue={
-                  (3 *
-                    (maxValue -
-                      (Math.min(
-                        ...[...incomes, ...expenses].map((item) => item.value)
-                      ) || 0))) /
-                  3
-                }
+                height={150}
+                maxValue={3 * Math.ceil(Math.ceil(((maxValue - minValue) / 3)) / 10) * 10}
                 curved
                 overflowTop={100}
                 horizontalRulesStyle={{
                   paddingLeft: 5,
                 }}
-                yAxisOffset={
-                  Math.min(
-                    ...[...incomes, ...expenses].map((item) => item.value)
-                  ) || 0
-                }
+                yAxisOffset={minValue}
                 curveType={1}
                 color1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
                 color2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
@@ -521,24 +517,12 @@ export default function Index() {
                 focusEnabled
                 customDataPoint={() => {}}
                 delayBeforeUnFocus={2000}
-                noOfSections={3}
-                stepValue={
-                  (maxValue -
-                    (Math.min(
-                      ...[...incomes, ...expenses].map((item) => item.value)
-                    ) || 0)) /
-                  3
-                }
+                stepValue={Math.ceil(Math.ceil(((maxValue - minValue) / 3)) / 10) * 10}
                 yAxisThickness={0}
                 xAxisThickness={0}
                 yAxisLabelPrefix="L "
                 rulesColor={colorScheme === "dark" ? "#f5f5f51a" : "#1B1D1C1a"}
                 yAxisTextStyle={{
-                  color: colorScheme === "dark" ? "#F5F5F580" : "#1B1D1C80",
-                  fontFamily: "Rounded-Regular",
-                  fontSize: 12,
-                }}
-                xAxisLabelTextStyle={{
                   color: colorScheme === "dark" ? "#F5F5F580" : "#1B1D1C80",
                   fontFamily: "Rounded-Regular",
                   fontSize: 12,
