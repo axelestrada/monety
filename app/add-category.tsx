@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
-import { colors } from "@/constants/colors";
+import { colors, darkColors } from "@/constants/colors";
 import { icons } from "@/constants/icons";
 import { ICategory } from "@/interfaces";
 import { styles } from "@/styles/shadow";
@@ -133,7 +133,7 @@ const AddCategory = () => {
   const itemSize = (windowWidth - 12 * 6) / 5;
 
   return (
-    <SafeAreaView className="flex flex-1 bg-[#1E1F22]">
+    <SafeAreaView className="flex flex-1 dark:bg-[#1E1F22]">
       {colorScheme === "light" && <BackgroundGradient />}
 
       <Header title={params.id ? "Edit Category" : "New Category"} goBack />
@@ -203,7 +203,7 @@ const AddCategory = () => {
                   }
                   className={`${
                     category.icon === item.name
-                      ? "bg-white"
+                      ? "bg-white dark:bg-[#1A1A1A]"
                       : "bg-[#FFFFFF33] dark:bg-[#FFFFFF0d]"
                   } rounded-lg p-3 mb-3 mx-1.5 justify-center items-center`}
                   style={[
@@ -217,7 +217,9 @@ const AddCategory = () => {
                     color={
                       colorScheme === "dark"
                         ? category.icon === item.name
-                          ? "#1B1D1C"
+                          ? colorScheme === "dark"
+                            ? "#FFFFFF"
+                            : "#1B1D1C"
                           : "#FFFFFF"
                         : "#1B1D1C"
                     }
@@ -252,7 +254,9 @@ const AddCategory = () => {
                     setCategory((prev) => ({ ...prev, color: item.code }))
                   }
                   className={`${
-                    category.color === item.code ? "bg-white" : "bg-[#FFFFFF33] dark:bg-[#FFFFFF0D]"
+                    category.color === item.code
+                      ? "bg-white dark:bg-[#1A1A1A]"
+                      : "bg-[#FFFFFF33] dark:bg-[#FFFFFF0D]"
                   } rounded-lg p-3 mx-1.5 justify-center items-center`}
                   style={[
                     { width: itemSize, height: itemSize },
@@ -261,7 +265,13 @@ const AddCategory = () => {
                 >
                   <View
                     className="w-8 h-8 rounded-full"
-                    style={{ backgroundColor: "#" + item.code }}
+                    style={{
+                      backgroundColor:
+                        "#" +
+                        (colorScheme === "dark"
+                          ? darkColors[item.code]
+                          : item.code),
+                    }}
                   />
                 </TouchableOpacity>
               )}

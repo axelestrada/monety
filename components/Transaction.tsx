@@ -6,6 +6,7 @@ import moment from "moment";
 import { styles } from "@/styles/shadow";
 import { useTransactions } from "@/hooks";
 import { useColorScheme } from "nativewind";
+import { darkColors } from "@/constants/colors";
 const Transaction = ({ transaction }: { transaction: ITransaction }) => {
   const {
     categoryName,
@@ -38,12 +39,25 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
             className={`justify-center items-center p-3.5 mr-1.5 rounded-full`}
             style={{
               backgroundColor:
-                "#" + (categoryColor || destinationAccountColor) + "1A",
+                "#" +
+                (colorScheme === "dark"
+                  ? darkColors[
+                      categoryColor || destinationAccountColor || "623387"
+                    ]
+                  : categoryColor || destinationAccountColor) +
+                "1A",
             }}
           >
             <Ionicons
               name={categoryIcon || destinationAccountIcon}
-              color={"#" + (categoryColor || destinationAccountColor)}
+              color={
+                "#" +
+                (colorScheme === "dark"
+                  ? darkColors[
+                      categoryColor || destinationAccountColor || "623387"
+                    ]
+                  : categoryColor || destinationAccountColor)
+              }
               size={16}
             />
           </View>

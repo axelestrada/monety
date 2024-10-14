@@ -27,6 +27,7 @@ import moment from "moment";
 import { accountsServices } from "@/reducers/accountsSlice";
 import AccountCategorySelector from "./AccountCategorySelector";
 import { useColorScheme } from "nativewind";
+import { darkColors } from "@/constants/colors";
 
 const NewTransaction = ({
   hideModal,
@@ -386,11 +387,23 @@ const NewTransaction = ({
                     <View className="flex-row items-center">
                       <View
                         className={`justify-center items-center p-3 mr-1.5 rounded-full`}
-                        style={{ backgroundColor: "#" + from.color + "1A" }}
+                        style={{
+                          backgroundColor:
+                            "#" +
+                            (colorScheme === "dark"
+                              ? darkColors[from.color]
+                              : from.color) +
+                            "1A",
+                        }}
                       >
                         <Ionicons
                           name={from.icon}
-                          color={"#" + from.color}
+                          color={
+                            "#" +
+                            (colorScheme === "dark"
+                              ? darkColors[from.color]
+                              : from.color)
+                          }
                           size={18}
                         />
                       </View>
@@ -428,11 +441,23 @@ const NewTransaction = ({
                     <View className="flex-row items-center">
                       <View
                         className={`justify-center items-center p-3 mr-1.5 rounded-full`}
-                        style={{ backgroundColor: "#" + to.color + "1A" }}
+                        style={{
+                          backgroundColor:
+                            "#" +
+                            (colorScheme === "dark"
+                              ? darkColors[to.color]
+                              : to.color) +
+                            "1A",
+                        }}
                       >
                         <Ionicons
                           name={to.icon}
-                          color={"#" + to.color}
+                          color={
+                            "#" +
+                            (colorScheme === "dark"
+                              ? darkColors[to.color]
+                              : to.color)
+                          }
                           size={18}
                         />
                       </View>

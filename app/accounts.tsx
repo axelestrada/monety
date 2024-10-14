@@ -5,6 +5,7 @@ import NewTransaction from "@/components/NewTransaction";
 import OverallBalance from "@/components/OverallBalance";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import IconButton from "@/components/ui/IconButton";
+import { darkColors } from "@/constants/colors";
 import { useAccounts, useCategories, useTransactions } from "@/hooks";
 import { IAccount, ICategory } from "@/interfaces";
 import { accountsServices } from "@/reducers/accountsSlice";
@@ -264,11 +265,23 @@ export default function Accounts() {
                 <View className="flex flex-row items-center">
                   <View
                     className={`justify-center items-center p-3.5 mr-1.5 rounded-full`}
-                    style={{ backgroundColor: "#" + item.color + "1A" }}
+                    style={{
+                      backgroundColor:
+                        "#" +
+                        (colorScheme === "dark"
+                          ? darkColors[item.color]
+                          : item.color) +
+                        "1A",
+                    }}
                   >
                     <Ionicons
                       name={item.icon}
-                      color={"#" + item.color}
+                      color={
+                        "#" +
+                        (colorScheme === "dark"
+                          ? darkColors[item.color]
+                          : item.color)
+                      }
                       size={16}
                     />
                   </View>
@@ -342,11 +355,23 @@ export default function Accounts() {
                   <View className="flex flex-row items-center">
                     <View
                       className={`justify-center items-center p-3.5 mr-1.5 rounded-full`}
-                      style={{ backgroundColor: "#" + item.color + "1a" }}
+                      style={{
+                        backgroundColor:
+                          "#" +
+                          (colorScheme === "dark"
+                            ? darkColors[item.color]
+                            : item.color) +
+                          "1a",
+                      }}
                     >
                       <Ionicons
                         name={item.icon}
-                        color={"#" + item.color}
+                        color={
+                          "#" +
+                          (colorScheme === "dark"
+                            ? darkColors[item.color]
+                            : item.color)
+                        }
                         size={16}
                       />
                     </View>

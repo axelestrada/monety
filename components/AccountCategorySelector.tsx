@@ -1,7 +1,9 @@
+import { darkColors } from "@/constants/colors";
 import { IAccount, ICategory } from "@/interfaces";
 import { useTypedSelector } from "@/store";
 import { styles } from "@/styles/shadow";
 import { Ionicons } from "@expo/vector-icons";
+import { useColorScheme } from "nativewind";
 import React from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 
@@ -10,7 +12,7 @@ function AccountCategorySelector({
   setTransactionDetails,
   elementType,
   hideModal,
-  callback
+  callback,
 }: {
   type: "Accounts" | "Categories";
   setTransactionDetails: (transaction: {
@@ -19,10 +21,12 @@ function AccountCategorySelector({
   }) => void;
   hideModal: () => void;
   elementType: "from" | "to";
-  callback?: () => void
+  callback?: () => void;
 }) {
   const { categories } = useTypedSelector((state) => state.categories);
   const { accounts } = useTypedSelector((state) => state.accounts);
+
+  const { colorScheme } = useColorScheme();
 
   return (
     <ScrollView className="p-3 h-[400]">
@@ -54,11 +58,23 @@ function AccountCategorySelector({
                     <View className="flex-row items-center">
                       <View
                         className={`justify-center items-center p-3 mr-1.5 rounded-full`}
-                        style={{ backgroundColor: "#" + category.color + "1A" }}
+                        style={{
+                          backgroundColor:
+                            "#" +
+                            (colorScheme === "dark"
+                              ? darkColors[category.color]
+                              : category.color) +
+                            "1A",
+                        }}
                       >
                         <Ionicons
                           name={category.icon}
-                          color={"#" + category.color}
+                          color={
+                            "#" +
+                            (colorScheme === "dark"
+                              ? darkColors[category.color]
+                              : category.color)
+                          }
                           size={18}
                         />
                       </View>
@@ -97,16 +113,28 @@ function AccountCategorySelector({
                     <View className="flex-row items-center">
                       <View
                         className={`justify-center items-center p-3 mr-1.5 rounded-full`}
-                        style={{ backgroundColor: "#" + account.color + "1A" }}
+                        style={{
+                          backgroundColor:
+                            "#" +
+                            (colorScheme === "dark"
+                              ? darkColors[account.color]
+                              : account.color) +
+                            "1A",
+                        }}
                       >
                         <Ionicons
                           name={account.icon}
-                          color={"#" + account.color}
+                          color={
+                            "#" +
+                            (colorScheme === "dark"
+                              ? darkColors[account.color]
+                              : account.color)
+                          }
                           size={18}
                         />
                       </View>
 
-                      <View style={{flex: 1}}>
+                      <View style={{ flex: 1 }}>
                         <Text className="font-[Rounded-Medium] text-lg text-main dark:text-[#E0E2EE]">
                           {account.name}
                         </Text>

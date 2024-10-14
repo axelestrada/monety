@@ -1,6 +1,6 @@
 import Header from "@/components/Header";
 import BackgroundGradient from "@/components/ui/BackgroundGradient";
-import { colors } from "@/constants/colors";
+import { colors, darkColors } from "@/constants/colors";
 import { icons } from "@/constants/icons";
 import { IAccount, ICategory } from "@/interfaces";
 import { styles } from "@/styles/shadow";
@@ -310,7 +310,9 @@ const AddAccount = () => {
                     setAccount((prev) => ({ ...prev, color: item.code }))
                   }
                   className={`${
-                    account.color === item.code ? "bg-white" : "bg-[#FFFFFF33] dark:bg-[#FFFFFF0D]"
+                    account.color === item.code
+                      ? "bg-white"
+                      : "bg-[#FFFFFF33] dark:bg-[#FFFFFF0D]"
                   } rounded-lg p-3 mx-1.5 justify-center items-center`}
                   style={[
                     { width: itemSize, height: itemSize },
@@ -319,7 +321,13 @@ const AddAccount = () => {
                 >
                   <View
                     className="w-8 h-8 rounded-full"
-                    style={{ backgroundColor: "#" + item.code }}
+                    style={{
+                      backgroundColor:
+                        "#" +
+                        (colorScheme === "dark"
+                          ? darkColors[item.code]
+                          : item.code),
+                    }}
                   />
                 </TouchableOpacity>
               )}

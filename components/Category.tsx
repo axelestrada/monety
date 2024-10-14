@@ -1,6 +1,8 @@
+import { darkColors } from "@/constants/colors";
 import { ICategory } from "@/interfaces";
 import { styles } from "@/styles/shadow";
 import { Ionicons } from "@expo/vector-icons";
+import { useColorScheme } from "nativewind";
 import {
   Dimensions,
   Text,
@@ -17,6 +19,8 @@ interface Props extends TouchableOpacityProps {
 const Category = ({ category, summary = 0, ...params }: Props) => {
   const windowWidth = Dimensions.get("window").width;
 
+  const { colorScheme } = useColorScheme();
+
   const { name, icon, color } = category;
 
   return (
@@ -28,9 +32,16 @@ const Category = ({ category, summary = 0, ...params }: Props) => {
     >
       <View
         className={`justify-center items-center p-3.5 mr-1.5 rounded-full`}
-        style={{ backgroundColor: "#" + color + "1A" }}
+        style={{
+          backgroundColor:
+            "#" + (colorScheme === "dark" ? darkColors[color] : color) + "1A",
+        }}
       >
-        <Ionicons name={icon} color={"#" + color} size={16} />
+        <Ionicons
+          name={icon}
+          color={"#" + (colorScheme === "dark" ? darkColors[color] : color)}
+          size={16}
+        />
       </View>
 
       <View style={{ flex: 1 }}>
@@ -43,7 +54,9 @@ const Category = ({ category, summary = 0, ...params }: Props) => {
 
         <Text
           className="text-base font-[Rounded-Regular]"
-          style={{ color: "#" + color }}
+          style={{
+            color: "#" + (colorScheme === "dark" ? darkColors[color] : color),
+          }}
         >
           L {Intl.NumberFormat("en-US").format(summary)}
         </Text>

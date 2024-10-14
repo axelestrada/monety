@@ -8,7 +8,7 @@ import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import IconButton from "@/components/ui/IconButton";
 import { IAccount, ICategory } from "@/interfaces";
 import { Octicons } from "@expo/vector-icons";
-import { useSegments } from "expo-router";
+import { useLocalSearchParams, useSegments } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -29,7 +29,13 @@ import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
 
 function Categories() {
-  const [type, setType] = useState<"Income" | "Expense">("Expense");
+  const params: {
+    type?: "Income" | "Expense";
+  } = useLocalSearchParams();
+
+  const [type, setType] = useState<"Income" | "Expense">(
+    params.type || "Expense"
+  );
   const [activeModal, setActiveModal] = useState(false);
   const [activeSelector, setActiveSelector] = useState<
     "Accounts" | "Categories" | ""
@@ -52,7 +58,7 @@ function Categories() {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const {colorScheme} = useColorScheme()
+  const { colorScheme } = useColorScheme();
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
@@ -62,12 +68,11 @@ function Categories() {
     setRefreshing(false);
   }, [setRefreshing, loadTransactions, loadAccounts, loadCategories]);
 
-
   return (
     <SafeAreaView className="flex flex-1 dark:bg-[#121212]">
       {colorScheme === "light" && <BackgroundGradient />}
 
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"}/>
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
       {loading && (
         <View className="absolute top-0 left-0 right-0 bottom-0 z-50 bg-[#00000080] justify-center items-center">
@@ -113,7 +118,7 @@ function Categories() {
         >
           <TouchableWithoutFeedback>
             <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#121212]">
-            {colorScheme === "light" && <BackgroundGradient />}
+              {colorScheme === "light" && <BackgroundGradient />}
 
               <AccountCategorySelector
                 type={activeSelector || "Categories"}
@@ -133,14 +138,16 @@ function Categories() {
 
       <Header title="Categories">
         <IconButton>
-          <Octicons name="pencil" size={20} color={colorScheme === "dark"
-                ? "#E0E2EE"
-                : "#1B1D1C"} />
+          <Octicons
+            name="pencil"
+            size={20}
+            color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}
+          />
         </IconButton>
       </Header>
 
       <OverallBalance>
-        <TimeRange/>
+        <TimeRange />
       </OverallBalance>
 
       <View className="flex flex-row mx-3 py-1.5 bg-[#ffffff80] dark:bg-[#E0E2EE00] dark:mx-1.5 rounded-2xl">
@@ -169,7 +176,9 @@ function Categories() {
             refreshing={refreshing}
             onRefresh={onRefresh}
             colors={[colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"]}
-            progressBackgroundColor={colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"}
+            progressBackgroundColor={
+              colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"
+            }
           />
         }
         categories={categories.filter((item) => item.type === type)}
