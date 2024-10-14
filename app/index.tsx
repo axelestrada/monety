@@ -239,7 +239,7 @@ export default function Index() {
     for (let i = 0; i <= hoursOfDifference; i++) {
       const currentDate = moment(startDate).add(i, "hour");
 
-      const incomesAmount = transactions
+      const incomesAmount = Math.round(transactions
         .filter((tr) => tr.type !== "Transfer")
         .filter((tr) => tr.type === "Income")
         .filter(
@@ -247,9 +247,9 @@ export default function Index() {
             tr.date >= moment(currentDate).startOf("hour").unix() &&
             tr.date <= moment(currentDate).endOf("hour").unix()
         )
-        .reduce((acc, curr) => acc + curr.amount, 0);
+        .reduce((acc, curr) => acc + curr.amount, 0));
 
-      const expensesAmount = transactions
+      const expensesAmount = Math.round(transactions
         .filter((tr) => tr.type !== "Transfer")
         .filter((tr) => tr.type === "Expense")
         .filter(
@@ -257,7 +257,7 @@ export default function Index() {
             tr.date >= moment(currentDate).startOf("hour").unix() &&
             tr.date <= moment(currentDate).endOf("hour").unix()
         )
-        .reduce((acc, curr) => acc + curr.amount, 0);
+        .reduce((acc, curr) => acc + curr.amount, 0));
 
       const incomesLabelSize = (incomesAmount.toString().length + 1) * 14;
 
