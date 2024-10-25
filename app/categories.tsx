@@ -27,6 +27,8 @@ import { useTypedSelector } from "@/store";
 import AccountCategorySelector from "@/components/AccountCategorySelector";
 import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
+import DateTimePicker from "react-native-ui-datepicker";
+import moment from "moment";
 
 function Categories() {
   const params: {
@@ -37,6 +39,7 @@ function Categories() {
     params.type || "Expense"
   );
   const [activeModal, setActiveModal] = useState(false);
+  const [showDateTimePicker, setShowDateTimePicker] = useState(false);
   const [activeSelector, setActiveSelector] = useState<
     "Accounts" | "Categories" | ""
   >("");
@@ -57,6 +60,7 @@ function Categories() {
   });
 
   const [refreshing, setRefreshing] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(moment().unix());
 
   const { colorScheme } = useColorScheme();
 
@@ -89,8 +93,15 @@ function Categories() {
         presentationStyle="overFullScreen"
       >
         <NewTransaction
-          showModal={() => setActiveModal(true)}
-          hideModal={() => setActiveModal(false)}
+          showModal={() => {
+            setActiveModal(true);
+            setSelectedDate(moment().unix());
+          }}
+          hideModal={() => {
+            setActiveModal(false);
+            setSelectedDate(moment().unix());
+          }}
+          openDateTimePicker={() => setShowDateTimePicker(true)}
           openSelector={(
             type: "" | "Accounts" | "Categories",
             elementType: "from" | "to"
@@ -100,6 +111,7 @@ function Categories() {
           }}
           from={transactionDetails.from}
           to={transactionDetails.to}
+          selectedDate={selectedDate}
         />
       </Modal>
 
@@ -134,6 +146,30 @@ function Categories() {
             </View>
           </TouchableWithoutFeedback>
         </TouchableOpacity>
+      </Modal>
+
+      <Modal
+        visible={showDateTimePicker}
+        onRequestClose={() => {
+          setShowDateTimePicker(false);
+        }}
+        animationType="slide"
+        transparent
+        statusBarTranslucent
+        presentationStyle="overFullScreen"
+      >
+        <View className="flex-[1] bg-[#00000080] justify-center items-center">
+          <View className="bg-white mx-3 rounded-2xl p-2">
+            <DateTimePicker
+              mode="single"
+              date={selectedDate * 1000}
+              onChange={({ date }) => {
+                setSelectedDate(moment(date?.toString()).unix());
+              }}
+              timePicker
+            />
+          </View>
+        </View>
       </Modal>
 
       <Header title="Categories">
@@ -182,7 +218,10 @@ function Categories() {
           />
         }
         categories={categories.filter((item) => item.type === type)}
-        openModal={() => setActiveModal(true)}
+        openModal={() => {
+          setActiveModal(true);
+          setSelectedDate(moment().unix());
+        }}
         setCurrentCategory={(category: ICategory) => {
           setTransactionDetails((prev) =>
             category.type === "Income"

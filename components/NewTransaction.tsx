@@ -28,28 +28,31 @@ import { accountsServices } from "@/reducers/accountsSlice";
 import AccountCategorySelector from "./AccountCategorySelector";
 import { useColorScheme } from "nativewind";
 import { darkColors } from "@/constants/colors";
+import DatePicker from "react-native-ui-datepicker";
 
 const NewTransaction = ({
   hideModal,
   showModal,
+  openDateTimePicker,
   openSelector,
   from,
   to,
+  selectedDate,
 }: {
   hideModal: () => void;
   showModal: () => void;
+  openDateTimePicker: () => void;
   openSelector: (
     type: "" | "Accounts" | "Categories",
     elementType: "from" | "to"
   ) => void;
   from: ICategory | IAccount;
   to: ICategory | IAccount;
+  selectedDate: number;
 }) => {
   const { timeRange } = useTypedSelector((state) => state.userPreferences);
 
   const [loading, setLoading] = useState(false);
-
-  const [selectedDate, setSelectedDate] = useState(timeRange.from);
 
   const [operator, setOperator] = useState<"+" | "-" | "÷" | "×" | "">("");
   const [firstValue, setFirstValue] = useState("");
@@ -121,19 +124,19 @@ const NewTransaction = ({
     const tomorrowEnd = moment().add(1, "day").endOf("day");
 
     if (date > tomorrowEnd.unix() || date < yesterday.unix()) {
-      return moment(date * 1000).format("dddd, MMMM DD");
+      return moment(date * 1000).format("dddd, MMMM DD • hh:mm A");
     }
 
     if (date >= tomorrow.unix()) {
-      return "Tomorrow, " + moment(date * 1000).format("MMMM DD");
+      return "Tomorrow, " + moment(date * 1000).format("MMMM DD • hh:mm A");
     }
 
     if (date >= today.unix()) {
-      return "Today, " + moment(date * 1000).format("MMMM DD");
+      return "Today, " + moment(date * 1000).format("MMMM DD • hh:mm A");
     }
 
     if (date >= yesterday.unix()) {
-      return "Yesterday, " + moment(date * 1000).format("MMMM DD");
+      return "Yesterday, " + moment(date * 1000).format("MMMM DD • hh:mm A");
     }
   };
 
@@ -144,8 +147,8 @@ const NewTransaction = ({
 
     const id = uuid.v4().toString();
 
-    const createdAt = selectedDate;
-    const date = createdAt === timeRange.from ? moment().unix() : createdAt;
+    const createdAt = timeRange.from;
+    const date = selectedDate;
 
     const amount = parseFloat(secondValue);
 
@@ -205,9 +208,9 @@ const NewTransaction = ({
 
     const id = uuid.v4().toString();
 
-    const createdAt = selectedDate;
-    const date = createdAt === timeRange.from ? moment().unix() : createdAt;
-
+    const createdAt = timeRange.from;
+    const date = selectedDate;
+    
     const amount = parseFloat(secondValue);
 
     await Promise.all([
@@ -264,8 +267,8 @@ const NewTransaction = ({
     setLoading(true);
     const id = uuid.v4().toString();
 
-    const createdAt = selectedDate;
-    const date = createdAt === timeRange.from ? moment().unix() : createdAt;
+    const createdAt = timeRange.from;
+    const date = selectedDate;
 
     const amount = parseFloat(secondValue);
 
@@ -369,7 +372,6 @@ const NewTransaction = ({
         <TouchableWithoutFeedback>
           <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#121212]">
             {colorScheme === "light" && <BackgroundGradient />}
-
             <ScrollView>
               <View className="flex-row mx-1 mt-4">
                 {from && (
@@ -822,6 +824,7 @@ const NewTransaction = ({
                       activeOpacity={0.5}
                       className="bg-white dark:bg-[#383838] rounded-lg justify-center items-center my-1 mx-1"
                       style={{ height: (windowWidth - 48) / 5 }}
+                      onPress={openDateTimePicker}
                     >
                       <Ionicons
                         name="calendar-outline"
