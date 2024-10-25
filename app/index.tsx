@@ -29,7 +29,7 @@ import { defaultCategories } from "@/constants/categories";
 import { useAccounts, useCategories, useTransactions } from "@/hooks";
 import { useAppDispatch, useTypedSelector } from "@/store";
 import TimeRange from "@/components/TimeRange";
-import moment from "moment";
+import moment, { max } from "moment";
 import {
   Gesture,
   GestureDetector,
@@ -58,24 +58,13 @@ export default function Index() {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const [incomes, setIncomes] = useState<lineDataItem[]>([
-    { value: 0 },
-    { value: 0 },
-    { value: 0 },
-    { value: 0 },
-    { value: 0 },
-  ]);
-  const [expenses, setExpenses] = useState<lineDataItem[]>([
-    { value: 0 },
-    { value: 0 },
-    { value: 0 },
-    { value: 0 },
-    { value: 0 },
-  ]);
+  const [incomes, setIncomes] = useState<lineDataItem[]>([{ value: 0 }]);
+  const [expenses, setExpenses] = useState<lineDataItem[]>([{ value: 0 }]);
 
   const [maxValue, setMaxValue] = useState(100);
   const [minValue, setMinValue] = useState(0);
   const [breakpoints, setBreakpoints] = useState<number[]>([]);
+  const [startDate, setStartDate] = useState<number>(0);
 
   const { colorScheme, toggleColorScheme } = useColorScheme();
 
@@ -222,6 +211,8 @@ export default function Index() {
       )
     ).startOf("hour");
 
+    setStartDate(startDate.unix());
+
     const endDate = moment(
       Math.max(
         ...transactions
@@ -270,52 +261,6 @@ export default function Index() {
 
       newIncomes.push({
         value: incomesAmount,
-        focusedDataPointLabelComponent: () => (
-          <View
-            className="dark:bg-[#5bbe77] bg-green rounded py-0.5 items-center absolute"
-            style={{
-              width: incomesLabelSize,
-              top:
-                incomesAmount === expensesAmount
-                  ? 11
-                  : incomesAmount > expensesAmount
-                  ? 11
-                  : 48,
-              left: 24,
-              transform: [
-                {
-                  translateX:
-                    i === 0
-                      ? -5
-                      : i === hoursOfDifference
-                      ? -(incomesLabelSize - 4)
-                      : -(incomesLabelSize / 2),
-                },
-              ],
-            }}
-          >
-            <Text className="font-[Rounded-Medium] text-white dark:text-[#F5F5F5]">
-              L{incomesAmount}
-            </Text>
-          </View>
-        ),
-        focusedCustomDataPoint: () => (
-          <View
-            className="bg-green dark:bg-[#5bbe77] justify-center items-center w-[12] h-[12] absolute bottom-0 right-0 rounded-full"
-            style={{
-              transform: [
-                {
-                  translateY: 2,
-                },
-                {
-                  translateX: i === 0 ? 7 : i === hoursOfDifference ? 3 : 5,
-                },
-              ],
-            }}
-          >
-            <View className="bg-white dark:bg-[#F5F5F5] w-[6] h-[6] rounded-full"></View>
-          </View>
-        ),
       });
 
       const expensesLabelSize = (expensesAmount.toString().length + 1) * 14;
@@ -324,75 +269,46 @@ export default function Index() {
 
       newExpenses.push({
         value: expensesAmount,
-        focusedDataPointLabelComponent: () => (
-          <View
-            className="bg-[#ff8092] py-0.5 rounded items-center absolute"
-            style={{
-              width: expensesLabelSize,
-              top:
-                incomesAmount === expensesAmount
-                  ? 48
-                  : incomesAmount > expensesAmount
-                  ? 48
-                  : 11,
-              left: 24,
-              transform: [
-                {
-                  translateX:
-                    i === 0
-                      ? -5
-                      : i === hoursOfDifference
-                      ? -(expensesLabelSize - 4)
-                      : -(expensesLabelSize / 2),
-                },
-              ],
-            }}
-          >
-            <Text className="font-[Rounded-Medium] text-white dark:text-[#F5F5F5]">
-              L{expensesAmount}
-            </Text>
-          </View>
-        ),
-        focusedCustomDataPoint: () => (
-          <View
-            className="bg-[#ff8092] justify-center items-center w-[12] h-[12] right-0 bottom-0 absolute rounded-full"
-            style={{
-              transform: [
-                {
-                  translateY: 2,
-                },
-                {
-                  translateX: i === 0 ? 7 : i === hoursOfDifference ? 3 : 5,
-                },
-              ],
-            }}
-          >
-            <View className="dark:bg-[#F5F5F5] bg-white w-[6] h-[6] rounded-full"></View>
-          </View>
-        ),
       });
     }
 
     if (newIncomes.length === 0 && newExpenses.length === 0) {
       setIncomes([{ value: 0 }]);
       setExpenses([{ value: 0 }]);
-      setBreakpoints([
-        moment().startOf("hour").unix(),
-        moment().add(1, "hour").startOf("hour").unix(),
-      ]);
       setMaxValue(100);
       setMinValue(0);
       return;
     } else {
-      setIncomes(
-        newIncomes.length === 1 ? [...newIncomes, { value: 0 }] : newIncomes
-      );
-      setExpenses(
-        newExpenses.length === 1 ? [...newExpenses, { value: 0 }] : newExpenses
-      );
+      if (newIncomes.length === 0) {
+        setIncomes([{ value: 0 }]);
+      } else {
+        setIncomes(
+          newIncomes.length === 1
+            ? [...newIncomes, { value: 0 }]
+            : [...newIncomes]
+        );
+      }
 
-      setMaxValue(Math.ceil(newMaxValue / 10) * 10);
-      setMinValue(newIncomes.length === 1 || newExpenses.length === 1 ? 0 : (Math.ceil((Math.min(...[...newIncomes, ...newExpenses].map(item => item.value)))) / 10) * 10)
+      if (newExpenses.length === 0) {
+        setExpenses([{ value: 0 }]);
+      } else {
+        setExpenses(
+          newExpenses.length === 1
+            ? [...newExpenses, { value: 0 }]
+            : [...newExpenses]
+        );
+      }
+
+      setMaxValue(
+        Math.max(...[...newIncomes, ...newExpenses].map((item) => item.value))
+      );
+      setMinValue(
+        newIncomes.length === 1 || newExpenses.length === 1
+          ? 0
+          : Math.min(
+              ...[...newIncomes, ...newExpenses].map((item) => item.value)
+            )
+      );
     }
 
     let newBreakPoints: number[] = [];
@@ -474,7 +390,7 @@ export default function Index() {
             />
           }
         >
-          <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl py-2 mx-3 overflow-hidden">
+          <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mx-3 overflow-hidden">
             <View className="mx-2 flex-row justify-between">
               <Text className="text-main dark:text-[#F5F5F5] text-lg font-[Rounded-Bold]">
                 Statistics
@@ -491,58 +407,157 @@ export default function Index() {
                 <View className="flex-row items-center gap-[4]">
                   <View className="bg-red dark:bg-[#ff8092] w-2 h-2 rounded-full"></View>
                   <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium]">
-                    Incomes
+                    Expenses
                   </Text>
                 </View>
               </View>
             </View>
 
-            <View className="mt-5 mb-2">
+            <View className="mt-3">
               <LineChart
-                height={150}
-                maxValue={3 * Math.ceil(Math.ceil(((maxValue - minValue) / 3)) / 10) * 10}
-                curved
-                overflowTop={100}
-                horizontalRulesStyle={{
-                  paddingLeft: 5,
-                }}
-                yAxisOffset={minValue}
-                curveType={1}
-                color1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
-                color2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
                 data={incomes}
                 data2={expenses}
-                initialSpacing={5}
-                thickness={4}
-                focusEnabled
-                customDataPoint={() => {}}
-                delayBeforeUnFocus={2000}
-                stepValue={Math.ceil(Math.ceil(((maxValue - minValue) / 3)) / 10) * 10}
-                yAxisThickness={0}
+                overflowTop={100}
+                isAnimated
+                height={150}
+                pointerConfig={{
+                  activatePointersOnLongPress: true,
+                  pointer1Color: colorScheme === "dark" ? "#5bbe77" : "#02AB5B",
+                  pointer2Color: colorScheme === "dark" ? "#FF8092" : "#FF8092",
+                  pointerStripWidth: 2,
+                  strokeDashArray: [2, 5],
+                  pointerStripUptoDataPoint: true,
+                  autoAdjustPointerLabelPosition: true,
+                  pointerLabelHeight: 45,
+                  radius: 5,
+                  pointerVanishDelay: 500,
+                  pointerLabelComponent: (items: any, si: any, idx: number) => {
+                    return idx >= 0 ? (
+                      <View
+                        className="z-20"
+                        style={{
+                          width: 80,
+                          height: 40,
+                          backgroundColor:
+                            colorScheme === "light" ? "#FFFFFF" : "#383838",
+                          borderRadius: 8,
+                          paddingVertical: 4,
+                          elevation: colorScheme === "dark" ? 0 : 8,
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          left:
+                            idx === 0
+                              ? 10
+                              : idx === incomes.length - 1
+                              ? 0
+                              : idx === incomes.length - 2 &&
+                                (screenWidth - 82) / (incomes.length - 1) < 90
+                              ? -50
+                              : 50,
+                        }}
+                      >
+                        <Text
+                          style={{
+                            color:
+                              colorScheme === "dark" ? "#F5F5F5" : "#1B1D1C",
+                            fontFamily: "Rounded-Medium",
+                            fontSize: 12,
+                          }}
+                        >
+                          {moment(startDate * 1000)
+                            .add(idx, "hour")
+                            .format("hh:mm A")}
+                        </Text>
+                        <View className="flex-row items-center justify-center flex-[1] w-full px-1">
+                          <Text
+                            className="pr-1"
+                            style={{
+                              color:
+                                colorScheme === "dark" ? "#5bbe77" : "#02AB5B",
+                              fontFamily: "Rounded-Medium",
+                              fontSize: 12,
+                            }}
+                          >
+                            +L{items[0].value}
+                          </Text>
+                          <Text
+                            style={{
+                              color:
+                                colorScheme === "dark" ? "#FF8092" : "#FF8092",
+                              fontFamily: "Rounded-Medium",
+                              fontSize: 12,
+                            }}
+                          >
+                            -L{items[1].value}
+                          </Text>
+                        </View>
+                      </View>
+                    ) : (
+                      <></>
+                    );
+                  },
+                  pointerLabelWidth: 80,
+                  showPointerStrip: false,
+                  resetPointerOnDataChange: false,
+                  pointerEvents: "auto",
+                }}
+                hideRules
+                areaChart={colorScheme === "light"}
+                color1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
+                color2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
+                startFillColor1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
+                startFillColor2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
+                endFillColor1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
+                endFillColor2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
+                startOpacity={0.3}
+                endOpacity={0}
+                curved
+                curveType={1}
+                initialSpacing={12}
+                spacing={
+                  incomes.length === 1
+                    ? screenWidth - 82
+                    : (screenWidth - 82) / (incomes.length - 1) > 50
+                    ? (screenWidth - 82) / (incomes.length - 1)
+                    : 50
+                }
+                endSpacing={
+                  incomes.length === 1
+                    ? -(screenWidth - 82)
+                    : -((screenWidth - 82) / (incomes.length - 1) - 12)
+                }
+                hideDataPoints
+                stepValue={
+                  incomes.length === 1
+                    ? maxValue
+                    : minValue === 0
+                    ? maxValue / 3
+                    : (maxValue - minValue) / 3
+                }
+                maxValue={
+                  incomes.length === 1
+                    ? maxValue
+                    : minValue === 0
+                    ? maxValue + 10
+                    : maxValue - (minValue - 10)
+                }
+                yAxisOffset={
+                  incomes.length === 1
+                    ? 0
+                    : minValue === 0
+                    ? -10
+                    : minValue - 10
+                }
                 xAxisThickness={0}
-                yAxisLabelPrefix="L "
-                rulesColor={colorScheme === "dark" ? "#f5f5f51a" : "#1B1D1C1a"}
+                yAxisThickness={0}
                 yAxisTextStyle={{
                   color: colorScheme === "dark" ? "#F5F5F580" : "#1B1D1C80",
                   fontFamily: "Rounded-Regular",
                   fontSize: 12,
                 }}
-                adjustToWidth
-                width={screenWidth - 75}
-                disableScroll
+                yAxisLabelPrefix="L "
+                rulesColor={colorScheme === "dark" ? "#f5f5f51a" : "#1B1D1C1a"}
               />
-            </View>
-
-            <View className="pr-4 pl-9 flex-row justify-between items-center">
-              {breakpoints &&
-                breakpoints.map((date, idx) => (
-                  <Text
-                    key={date + idx}
-                    className="text-main-500 dark:text-[#F5F5F580] font-[Rounded-Regular] text-xs"
-                  >
-                    {moment(date * 1000).format("hh:mm A")}
-                  </Text>
-                ))}
             </View>
           </View>
 
