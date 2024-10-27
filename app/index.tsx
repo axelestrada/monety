@@ -41,6 +41,9 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import { transactionServices } from "@/reducers/transactionsSlice";
+import NoTransactions from "@/components/NoTransactions";
+import Transaction from "@/components/Transaction";
+import SeeAllButton from "@/components/ui/SeeAllButton";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -376,8 +379,214 @@ export default function Index() {
           <TimeRange />
         </OverallBalance>
 
+        <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mx-3 mt-2 overflow-hidden">
+          <View className="mx-2 flex-row justify-between">
+            <Text className="text-main dark:text-[#F5F5F5] text-lg font-[Rounded-Bold]">
+              Statistics
+            </Text>
+
+            <View className="flex-row gap-[4]">
+              <View className="flex-row items-center gap-[4]">
+                <View className="bg-green dark:bg-[#5bbe77] w-2 h-2 rounded-full"></View>
+                <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium]">
+                  Incomes
+                </Text>
+              </View>
+
+              <View className="flex-row items-center gap-[4]">
+                <View className="bg-red dark:bg-[#ff8092] w-2 h-2 rounded-full"></View>
+                <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium]">
+                  Expenses
+                </Text>
+              </View>
+            </View>
+          </View>
+
+          <View className="mt-3">
+            <LineChart
+              data={incomes}
+              data2={expenses}
+              overflowTop={100}
+              isAnimated
+              height={150}
+              pointerConfig={{
+                activatePointersOnLongPress: true,
+                pointer1Color: colorScheme === "dark" ? "#5bbe77" : "#02AB5B",
+                pointer2Color: colorScheme === "dark" ? "#FF8092" : "#FF8092",
+                pointerStripWidth: 2,
+                strokeDashArray: [2, 5],
+                pointerStripUptoDataPoint: true,
+                autoAdjustPointerLabelPosition: true,
+                pointerLabelHeight: 45,
+                radius: 5,
+                stripOverPointer: true,
+                pointerVanishDelay: 500,
+                pointerLabelComponent: (items: any, si: any, idx: number) => {
+                  return idx >= 0 ? (
+                    <View
+                      className="z-20"
+                      style={{
+                        width: 80,
+                        height: 40,
+                        backgroundColor:
+                          colorScheme === "light" ? "#FFFFFF" : "#383838",
+                        borderRadius: 8,
+                        paddingVertical: 4,
+                        elevation: colorScheme === "dark" ? 0 : 8,
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        left:
+                          idx === 0
+                            ? 10
+                            : idx === incomes.length - 1
+                            ? 0
+                            : idx === incomes.length - 2 &&
+                              (screenWidth - 82) / (incomes.length - 1) < 90
+                            ? -50
+                            : 50,
+                      }}
+                    >
+                      <Text
+                        style={{
+                          color: colorScheme === "dark" ? "#F5F5F5" : "#1B1D1C",
+                          fontFamily: "Rounded-Medium",
+                          fontSize: 12,
+                        }}
+                      >
+                        {moment(startDate * 1000)
+                          .add(idx, "hour")
+                          .format("hh:mm A")}
+                      </Text>
+                      <View className="flex-row items-center justify-center flex-[1] w-full px-1">
+                        <Text
+                          className="pr-1"
+                          style={{
+                            color:
+                              colorScheme === "dark" ? "#5bbe77" : "#02AB5B",
+                            fontFamily: "Rounded-Medium",
+                            fontSize: 12,
+                          }}
+                        >
+                          +L{items[0].value}
+                        </Text>
+                        <Text
+                          style={{
+                            color:
+                              colorScheme === "dark" ? "#FF8092" : "#FF8092",
+                            fontFamily: "Rounded-Medium",
+                            fontSize: 12,
+                          }}
+                        >
+                          -L{items[1].value}
+                        </Text>
+                      </View>
+                    </View>
+                  ) : (
+                    <></>
+                  );
+                },
+                pointerLabelWidth: 80,
+                showPointerStrip: false,
+                resetPointerOnDataChange: false,
+                pointerEvents: "auto",
+              }}
+              hideRules
+              areaChart={colorScheme === "light"}
+              color1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
+              color2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
+              startFillColor1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
+              startFillColor2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
+              endFillColor1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
+              endFillColor2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
+              startOpacity={0.3}
+              endOpacity={0}
+              curved
+              curveType={1}
+              initialSpacing={12}
+              spacing={
+                incomes.length === 1
+                  ? screenWidth - 82
+                  : (screenWidth - 82) / (incomes.length - 1) > 50
+                  ? (screenWidth - 82) / (incomes.length - 1)
+                  : 50
+              }
+              endSpacing={
+                incomes.length === 1
+                  ? -(screenWidth - 82)
+                  : -((screenWidth - 82) / (incomes.length - 1) - 12)
+              }
+              hideDataPoints
+              stepValue={
+                incomes.length === 1
+                  ? maxValue
+                  : minValue === 0
+                  ? maxValue / 3
+                  : (maxValue - minValue) / 3
+              }
+              maxValue={
+                incomes.length === 1
+                  ? maxValue
+                  : minValue === 0
+                  ? maxValue + 10
+                  : maxValue - (minValue - 10)
+              }
+              yAxisOffset={
+                incomes.length === 1 ? 0 : minValue === 0 ? -10 : minValue - 10
+              }
+              xAxisThickness={0}
+              yAxisThickness={0}
+              yAxisTextStyle={{
+                color: colorScheme === "dark" ? "#F5F5F580" : "#1B1D1C80",
+                fontFamily: "Rounded-Regular",
+                fontSize: 12,
+              }}
+              yAxisLabelPrefix="L "
+              rulesColor={colorScheme === "dark" ? "#f5f5f51a" : "#1B1D1C1a"}
+            />
+          </View>
+        </View>
+
+        <View className="flex flex-row mt-3 mx-1.5">
+          <CashFlowItem
+            type="Incomes"
+            value={transactions
+              .filter((transaction) => transaction.type === "Income")
+              .reduce((acc, curr) => acc + curr.amount, 0)}
+            onPress={() =>
+              router.navigate({
+                pathname: "/categories",
+                params: {
+                  type: "Income",
+                },
+              })
+            }
+          />
+          <CashFlowItem
+            type="Expenses"
+            value={transactions
+              .filter((transaction) => transaction.type === "Expense")
+              .reduce((acc, curr) => acc + curr.amount, 0)}
+            onPress={() =>
+              router.navigate({
+                pathname: "/categories",
+                params: {
+                  type: "Expense",
+                },
+              })
+            }
+          />
+        </View>
+
+        <View className="flex flex-row justify-between items-center mt-3 mx-3">
+          <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#F5F5F5]">
+            Latest Transactions
+          </Text>
+
+          {transactions.length > 0 && <SeeAllButton />}
+        </View>
+
         <ScrollView
-          className="mt-2 -mb-6"
+          className="mt-1 pt-1 -mb-4"
           contentContainerStyle={{ flexGrow: 1 }}
           refreshControl={
             <RefreshControl
@@ -390,209 +599,17 @@ export default function Index() {
             />
           }
         >
-          <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mx-3 overflow-hidden">
-            <View className="mx-2 flex-row justify-between">
-              <Text className="text-main dark:text-[#F5F5F5] text-lg font-[Rounded-Bold]">
-                Statistics
-              </Text>
-
-              <View className="flex-row gap-[4]">
-                <View className="flex-row items-center gap-[4]">
-                  <View className="bg-green dark:bg-[#5bbe77] w-2 h-2 rounded-full"></View>
-                  <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium]">
-                    Incomes
-                  </Text>
-                </View>
-
-                <View className="flex-row items-center gap-[4]">
-                  <View className="bg-red dark:bg-[#ff8092] w-2 h-2 rounded-full"></View>
-                  <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium]">
-                    Expenses
-                  </Text>
-                </View>
-              </View>
-            </View>
-
-            <View className="mt-3">
-              <LineChart
-                data={incomes}
-                data2={expenses}
-                overflowTop={100}
-                isAnimated
-                height={150}
-                pointerConfig={{
-                  activatePointersOnLongPress: true,
-                  pointer1Color: colorScheme === "dark" ? "#5bbe77" : "#02AB5B",
-                  pointer2Color: colorScheme === "dark" ? "#FF8092" : "#FF8092",
-                  pointerStripWidth: 2,
-                  strokeDashArray: [2, 5],
-                  pointerStripUptoDataPoint: true,
-                  autoAdjustPointerLabelPosition: true,
-                  pointerLabelHeight: 45,
-                  radius: 5,
-                  pointerVanishDelay: 500,
-                  pointerLabelComponent: (items: any, si: any, idx: number) => {
-                    return idx >= 0 ? (
-                      <View
-                        className="z-20"
-                        style={{
-                          width: 80,
-                          height: 40,
-                          backgroundColor:
-                            colorScheme === "light" ? "#FFFFFF" : "#383838",
-                          borderRadius: 8,
-                          paddingVertical: 4,
-                          elevation: colorScheme === "dark" ? 0 : 8,
-                          alignItems: "center",
-                          justifyContent: "space-between",
-                          left:
-                            idx === 0
-                              ? 10
-                              : idx === incomes.length - 1
-                              ? 0
-                              : idx === incomes.length - 2 &&
-                                (screenWidth - 82) / (incomes.length - 1) < 90
-                              ? -50
-                              : 50,
-                        }}
-                      >
-                        <Text
-                          style={{
-                            color:
-                              colorScheme === "dark" ? "#F5F5F5" : "#1B1D1C",
-                            fontFamily: "Rounded-Medium",
-                            fontSize: 12,
-                          }}
-                        >
-                          {moment(startDate * 1000)
-                            .add(idx, "hour")
-                            .format("hh:mm A")}
-                        </Text>
-                        <View className="flex-row items-center justify-center flex-[1] w-full px-1">
-                          <Text
-                            className="pr-1"
-                            style={{
-                              color:
-                                colorScheme === "dark" ? "#5bbe77" : "#02AB5B",
-                              fontFamily: "Rounded-Medium",
-                              fontSize: 12,
-                            }}
-                          >
-                            +L{items[0].value}
-                          </Text>
-                          <Text
-                            style={{
-                              color:
-                                colorScheme === "dark" ? "#FF8092" : "#FF8092",
-                              fontFamily: "Rounded-Medium",
-                              fontSize: 12,
-                            }}
-                          >
-                            -L{items[1].value}
-                          </Text>
-                        </View>
-                      </View>
-                    ) : (
-                      <></>
-                    );
-                  },
-                  pointerLabelWidth: 80,
-                  showPointerStrip: false,
-                  resetPointerOnDataChange: false,
-                  pointerEvents: "auto",
-                }}
-                hideRules
-                areaChart={colorScheme === "light"}
-                color1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
-                color2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
-                startFillColor1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
-                startFillColor2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
-                endFillColor1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
-                endFillColor2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
-                startOpacity={0.3}
-                endOpacity={0}
-                curved
-                curveType={1}
-                initialSpacing={12}
-                spacing={
-                  incomes.length === 1
-                    ? screenWidth - 82
-                    : (screenWidth - 82) / (incomes.length - 1) > 50
-                    ? (screenWidth - 82) / (incomes.length - 1)
-                    : 50
-                }
-                endSpacing={
-                  incomes.length === 1
-                    ? -(screenWidth - 82)
-                    : -((screenWidth - 82) / (incomes.length - 1) - 12)
-                }
-                hideDataPoints
-                stepValue={
-                  incomes.length === 1
-                    ? maxValue
-                    : minValue === 0
-                    ? maxValue / 3
-                    : (maxValue - minValue) / 3
-                }
-                maxValue={
-                  incomes.length === 1
-                    ? maxValue
-                    : minValue === 0
-                    ? maxValue + 10
-                    : maxValue - (minValue - 10)
-                }
-                yAxisOffset={
-                  incomes.length === 1
-                    ? 0
-                    : minValue === 0
-                    ? -10
-                    : minValue - 10
-                }
-                xAxisThickness={0}
-                yAxisThickness={0}
-                yAxisTextStyle={{
-                  color: colorScheme === "dark" ? "#F5F5F580" : "#1B1D1C80",
-                  fontFamily: "Rounded-Regular",
-                  fontSize: 12,
-                }}
-                yAxisLabelPrefix="L "
-                rulesColor={colorScheme === "dark" ? "#f5f5f51a" : "#1B1D1C1a"}
-              />
-            </View>
+          <View className="grow mb-6">
+            {transactions.length > 0 ? (
+              transactions
+                .slice(0, 10)
+                .map((transaction) => (
+                  <Transaction key={transaction.id} transaction={transaction} />
+                ))
+            ) : (
+              <NoTransactions />
+            )}
           </View>
-
-          <View className="flex flex-row mt-3 mx-1.5">
-            <CashFlowItem
-              type="Incomes"
-              value={transactions
-                .filter((transaction) => transaction.type === "Income")
-                .reduce((acc, curr) => acc + curr.amount, 0)}
-              onPress={() =>
-                router.navigate({
-                  pathname: "/categories",
-                  params: {
-                    type: "Income",
-                  },
-                })
-              }
-            />
-            <CashFlowItem
-              type="Expenses"
-              value={transactions
-                .filter((transaction) => transaction.type === "Expense")
-                .reduce((acc, curr) => acc + curr.amount, 0)}
-              onPress={() =>
-                router.navigate({
-                  pathname: "/categories",
-                  params: {
-                    type: "Expense",
-                  },
-                })
-              }
-            />
-          </View>
-
-          <TransactionsList />
         </ScrollView>
 
         <BottomTabNavigator />
