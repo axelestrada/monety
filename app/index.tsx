@@ -353,6 +353,14 @@ export default function Index() {
   if (!fontsLoaded && !fontError) {
     return null;
   }
+
+  const spacing = (data: lineDataItem[]) => {
+    if (data.length === 1) return screenWidth - 82;
+
+    if ((screenWidth - 82) / (data.length - 1) < 48) return 48;
+
+    return (screenWidth - 82) / (data.length - 1);
+  };
   //#endregion
 
   return (
@@ -420,31 +428,36 @@ export default function Index() {
                 pointerLabelHeight: 45,
                 radius: 5,
                 stripOverPointer: true,
-                pointerVanishDelay: 500,
+                pointerVanishDelay: 0,
                 pointerLabelComponent: (items: any, si: any, idx: number) => {
                   return idx >= 0 ? (
                     <View
-                      className="z-20"
-                      style={{
-                        width: 80,
-                        height: 40,
-                        backgroundColor:
-                          colorScheme === "light" ? "#FFFFFF" : "#383838",
-                        borderRadius: 8,
-                        paddingVertical: 4,
-                        elevation: colorScheme === "dark" ? 0 : 8,
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        left:
-                          idx === 0
-                            ? 10
-                            : idx === incomes.length - 1
-                            ? 0
-                            : idx === incomes.length - 2 &&
-                              (screenWidth - 82) / (incomes.length - 1) < 90
-                            ? -50
-                            : 50,
-                      }}
+                      style={[
+                        {
+                          width: 80,
+                          height: 40,
+                          backgroundColor:
+                            colorScheme === "light" ? "#FFFFFF" : "#383838",
+                          borderRadius: 8,
+                          paddingVertical: 4,
+                          elevation: colorScheme === "dark" ? 0 : 8,
+                          shadowColor: "#1B1D1C80",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          left:
+                            idx === 0
+                              ? 8
+                              : idx === incomes.length - 1
+                              ? spacing(incomes) > 48
+                                ? 0
+                                : -48
+                              : idx === incomes.length - 2
+                              ? spacing(incomes) < 96
+                                ? -48
+                                : 48
+                              : 48,
+                        },
+                      ]}
                     >
                       <Text
                         style={{
@@ -494,27 +507,15 @@ export default function Index() {
               areaChart={colorScheme === "light"}
               color1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
               color2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
-              startFillColor1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
-              startFillColor2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
-              endFillColor1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
-              endFillColor2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
+              startFillColor1="#02AB5B"
+              startFillColor2="#FF8092"
               startOpacity={0.3}
               endOpacity={0}
               curved
               curveType={1}
               initialSpacing={12}
-              spacing={
-                incomes.length === 1
-                  ? screenWidth - 82
-                  : (screenWidth - 82) / (incomes.length - 1) > 50
-                  ? (screenWidth - 82) / (incomes.length - 1)
-                  : 50
-              }
-              endSpacing={
-                incomes.length === 1
-                  ? -(screenWidth - 82)
-                  : -((screenWidth - 82) / (incomes.length - 1) - 12)
-              }
+              spacing={spacing(incomes)}
+              endSpacing={-(spacing(incomes) - 12)}
               hideDataPoints
               stepValue={
                 incomes.length === 1
