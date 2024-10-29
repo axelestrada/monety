@@ -276,14 +276,14 @@ export default function Index() {
     }
 
     if (newIncomes.length === 0 && newExpenses.length === 0) {
-      setIncomes([{ value: 0 }]);
-      setExpenses([{ value: 0 }]);
+      setIncomes([]);
+      setExpenses([]);
       setMaxValue(100);
       setMinValue(0);
       return;
     } else {
       if (newIncomes.length === 0) {
-        setIncomes([{ value: 0 }]);
+        setIncomes([]);
       } else {
         setIncomes(
           newIncomes.length === 1
@@ -293,12 +293,10 @@ export default function Index() {
       }
 
       if (newExpenses.length === 0) {
-        setExpenses([{ value: 0 }]);
+        setExpenses([{ value: 0 }, { value: 0 }]);
       } else {
         setExpenses(
-          newExpenses.length === 1
-            ? [...newExpenses, { value: 0 }]
-            : [...newExpenses]
+          newExpenses.length === 1 ? [...newExpenses] : [...newExpenses]
         );
       }
 
@@ -355,11 +353,46 @@ export default function Index() {
   }
 
   const spacing = (data: lineDataItem[]) => {
-    if (data.length === 1) return screenWidth - 82;
+    if (data.length === 0) return 0;
 
-    if ((screenWidth - 82) / (data.length - 1) < 48) return 48;
+    if ((screenWidth - 88) / (data.length - 1) < 48) return 48;
 
-    return (screenWidth - 82) / (data.length - 1);
+    return (screenWidth - 88) / (data.length - 1);
+  };
+
+  const getStepValue = (max: number) => {
+    return max / 3;
+  };
+
+  const getYAxisLabelTexts = (max: number, min: number) => {
+    const stepValue = getStepValue(max);
+
+    const steps: number[] = [min];
+
+    for (let i = 1; i <= 3; i++) {
+      steps.push(i < 3 ? Math.round(i * stepValue) : max);
+    }
+
+    return steps
+      .map((val) => {
+        if (val <= 10) return val;
+
+        const stringValue = val.toString();
+
+        const lastDigit = parseInt(
+          stringValue.split("")[stringValue.length - 1]
+        );
+
+        if (lastDigit === 0 || lastDigit === 5) return val;
+
+        if (lastDigit < 5) return parseInt(stringValue.replace(/.$/, "0"));
+
+        if (lastDigit > 5)
+          return parseInt((val + 10).toString().replace(/.$/, "0"));
+
+        return val;
+      })
+      .map((val) => "L " + (val > 999 ? val / 1000 + "K" : val));
   };
   //#endregion
 
@@ -446,7 +479,7 @@ export default function Index() {
                           justifyContent: "space-between",
                           left:
                             idx === 0
-                              ? 8
+                              ? 5
                               : idx === incomes.length - 1
                               ? spacing(incomes) > 48
                                 ? 0
@@ -513,27 +546,34 @@ export default function Index() {
               endOpacity={0}
               curved
               curveType={1}
-              initialSpacing={12}
+              initialSpacing={7}
               spacing={spacing(incomes)}
               endSpacing={-(spacing(incomes) - 12)}
               hideDataPoints
-              stepValue={
-                incomes.length === 1
-                  ? maxValue
-                  : minValue === 0
-                  ? maxValue / 3
-                  : (maxValue - minValue) / 3
-              }
-              maxValue={
-                incomes.length === 1
-                  ? maxValue
-                  : minValue === 0
-                  ? maxValue + 10
-                  : maxValue - (minValue - 10)
-              }
-              yAxisOffset={
-                incomes.length === 1 ? 0 : minValue === 0 ? -10 : minValue - 10
-              }
+              yAxisLabelTexts={getYAxisLabelTexts(maxValue, minValue)}
+              yAxisLabelWidth={45}
+              stepHeight={150 / 3}
+              stepValue={getStepValue(maxValue + 10)}
+              maxValue={maxValue + 10}
+              // stepValue={getStepValue(maxValue, minValue)}
+              // stepValue={
+              //   incomes.length === 1
+              //     ? maxValue
+              //     : minValue === 0
+              //     ? maxValue / 3
+              //     : (maxValue - minValue) / 3
+              // }
+              // maxValue={
+              //   incomes.length === 1
+              //     ? maxValue
+              //     : minValue === 0
+              //     ? maxValue + 10
+              //     : maxValue - (minValue - 10)
+              // }
+              // yAxisOffset={
+              //   incomes.length === 1 ? 0 : minValue === 0 ? -10 : minValue - 10
+              // }
+              yAxisOffset={minValue === 0 ? -10 : minValue - 10}
               xAxisThickness={0}
               yAxisThickness={0}
               yAxisTextStyle={{
@@ -541,8 +581,10 @@ export default function Index() {
                 fontFamily: "Rounded-Regular",
                 fontSize: 12,
               }}
-              yAxisLabelPrefix="L "
-              rulesColor={colorScheme === "dark" ? "#f5f5f51a" : "#1B1D1C1a"}
+              yAxisLabelContainerStyle={{
+                paddingLeft: spacing(incomes) > 48 ? 9 : 2,
+                paddingRight: 2
+              }}
             />
           </View>
         </View>
