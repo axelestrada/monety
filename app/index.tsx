@@ -283,33 +283,40 @@ export default function Index() {
       return;
     } else {
       if (newIncomes.length === 0) {
-        setIncomes([]);
+        newIncomes.push({ value: 0 }, { value: 0 });
       } else {
-        setIncomes(
-          newIncomes.length === 1
-            ? [...newIncomes, { value: 0 }]
-            : [...newIncomes]
-        );
+        if (newIncomes.length === 1) {
+          newIncomes.push({ value: 0 });
+        }
       }
 
       if (newExpenses.length === 0) {
-        setExpenses([{ value: 0 }, { value: 0 }]);
+        newExpenses.push({ value: 0 }, { value: 0 });
       } else {
-        setExpenses(
-          newExpenses.length === 1 ? [...newExpenses] : [...newExpenses]
-        );
+        if (newExpenses.length === 1) {
+          newExpenses.push({ value: 0 });
+        }
       }
 
-      setMaxValue(
-        Math.max(...[...newIncomes, ...newExpenses].map((item) => item.value))
+      setIncomes(newIncomes);
+      setExpenses(newExpenses);
+
+      let max = Math.max(
+        ...[...newIncomes, ...newExpenses].map((item) => item.value)
       );
-      setMinValue(
-        newIncomes.length === 1 || newExpenses.length === 1
-          ? 0
-          : Math.min(
-              ...[...newIncomes, ...newExpenses].map((item) => item.value)
-            )
+
+      const min = Math.min(
+        ...[...newIncomes, ...newExpenses].map((item) => item.value)
       );
+
+      const diff = max - min;
+
+      if (diff < 30) {
+        max = 30 - diff + diff;
+      }
+
+      setMaxValue(max);
+      setMinValue(min);
     }
 
     let newBreakPoints: number[] = [];
@@ -394,6 +401,9 @@ export default function Index() {
       })
       .map((val) => "L " + (val > 999 ? val / 1000 + "K" : val));
   };
+
+  const offset = Math.round(((maxValue - minValue) * 10) / 100);
+
   //#endregion
 
   return (
@@ -552,28 +562,10 @@ export default function Index() {
               hideDataPoints
               yAxisLabelTexts={getYAxisLabelTexts(maxValue, minValue)}
               yAxisLabelWidth={45}
-              stepHeight={150 / 3}
-              stepValue={getStepValue(maxValue + 10)}
-              maxValue={maxValue + 10}
-              // stepValue={getStepValue(maxValue, minValue)}
-              // stepValue={
-              //   incomes.length === 1
-              //     ? maxValue
-              //     : minValue === 0
-              //     ? maxValue / 3
-              //     : (maxValue - minValue) / 3
-              // }
-              // maxValue={
-              //   incomes.length === 1
-              //     ? maxValue
-              //     : minValue === 0
-              //     ? maxValue + 10
-              //     : maxValue - (minValue - 10)
-              // }
-              // yAxisOffset={
-              //   incomes.length === 1 ? 0 : minValue === 0 ? -10 : minValue - 10
-              // }
-              yAxisOffset={minValue === 0 ? -10 : minValue - 10}
+              stepHeight={135 / 3}
+              stepValue={getStepValue(maxValue + offset)}
+              maxValue={maxValue + offset}
+              yAxisOffset={minValue === 0 ? -offset : minValue - offset}
               xAxisThickness={0}
               yAxisThickness={0}
               yAxisTextStyle={{
@@ -583,7 +575,7 @@ export default function Index() {
               }}
               yAxisLabelContainerStyle={{
                 paddingLeft: spacing(incomes) > 48 ? 9 : 2,
-                paddingRight: 2
+                paddingRight: 2,
               }}
             />
           </View>
