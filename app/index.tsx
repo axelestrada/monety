@@ -47,6 +47,9 @@ import Transaction from "@/components/Transaction";
 import SeeAllButton from "@/components/ui/SeeAllButton";
 import { ITransaction } from "@/interfaces";
 
+import { Alert } from "react-native";
+import * as Updates from "expo-updates";
+
 const screenWidth = Dimensions.get("window").width;
 
 export default function Index() {
@@ -98,6 +101,30 @@ export default function Index() {
   }, [timeRange, loadTransactions]);
 
   useEffect(() => {
+    async function checkForUpdates() {
+      try {
+        const update = await Updates.checkForUpdateAsync();
+        if (update.isAvailable) {
+          Alert.alert(
+            "Nueva actualización",
+            "Hay una nueva versión disponible. ¿Quieres actualizar?",
+            [
+              { text: "No", style: "cancel" },
+              {
+                text: "Sí",
+                onPress: () =>
+                  Updates.fetchUpdateAsync().then(() => Updates.reloadAsync()),
+              },
+            ]
+          );
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    checkForUpdates();
+
     if (categories.length === 0) {
       const initializeDatabase = async () => {
         try {
@@ -464,7 +491,7 @@ export default function Index() {
             delayLongPress={200}
           >
             <View
-              className="bg-white dark:bg-[#1A1A1A] rounded-2xl mx-3 overflow-hidden"
+              className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mx-3 overflow-hidden"
               style={{
                 elevation: 16,
                 shadowColor: "#1b1d1c1f",
