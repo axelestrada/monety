@@ -4,9 +4,8 @@ import CategoriesGrid from "@/components/CategoriesGrid";
 import Header from "@/components/Header";
 import OverallBalance from "@/components/OverallBalance";
 import TimeRange from "@/components/TimeRange";
-import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import IconButton from "@/components/ui/IconButton";
-import { IAccount, ICategory } from "@/interfaces";
+import { IAccount, ICategory, ITransaction } from "@/interfaces";
 import { Octicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useSegments } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
@@ -45,10 +44,16 @@ function Categories() {
   >("");
   const [elementType, setElementType] = useState<"from" | "to">("from");
 
-  const { categories, loadCategories } = useCategories();
+  const {
+    categories,
+    loadCategories,
+  }: { categories: ICategory[]; loadCategories: () => Promise<void> } =
+    useCategories();
   const { accounts, loadAccounts } = useAccounts();
   const { loadTransactions } = useTransactions();
-  const { transactions } = useTypedSelector((state) => state.transactions);
+  const { transactions }: { transactions: ITransaction[] } = useTypedSelector(
+    (state) => state.transactions
+  );
   const { loading } = useTypedSelector((state) => state.userPreferences);
 
   const [transactionDetails, setTransactionDetails] = useState<{
@@ -73,9 +78,7 @@ function Categories() {
   }, [setRefreshing, loadTransactions, loadAccounts, loadCategories]);
 
   return (
-    <SafeAreaView className="flex flex-1 dark:bg-[#121212]">
-      {colorScheme === "light" && <BackgroundGradient />}
-
+    <SafeAreaView className="flex flex-1 bg-light-background dark:bg-[#121212]">
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
       {loading && (
@@ -129,9 +132,7 @@ function Categories() {
           onPress={() => setActiveSelector("")}
         >
           <TouchableWithoutFeedback>
-            <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#121212]">
-              {colorScheme === "light" && <BackgroundGradient />}
-
+            <View className="rounded-t-3xl overflow-hidden bg-light-background dark:bg-[#121212]">
               <AccountCategorySelector
                 type={activeSelector || "Categories"}
                 hideModal={() => setActiveSelector("")}

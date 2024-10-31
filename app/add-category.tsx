@@ -1,5 +1,4 @@
 import Header from "@/components/Header";
-import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import { colors, darkColors } from "@/constants/colors";
 import { icons } from "@/constants/icons";
 import { ICategory } from "@/interfaces";
@@ -133,8 +132,7 @@ const AddCategory = () => {
   const itemSize = (windowWidth - 12 * 6) / 5;
 
   return (
-    <SafeAreaView className="flex flex-1 dark:bg-[#1E1F22]">
-      {colorScheme === "light" && <BackgroundGradient />}
+    <SafeAreaView className="flex flex-1 bg-light-background dark:bg-[#1E1F22]">
 
       <Header title={params.id ? "Edit Category" : "New Category"} goBack />
 

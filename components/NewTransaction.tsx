@@ -12,7 +12,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import BackgroundGradient from "./ui/BackgroundGradient";
 import { AntDesign, Feather, Ionicons } from "@expo/vector-icons";
 import Header from "./Header";
 import { styles } from "@/styles/shadow";
@@ -370,8 +369,7 @@ const NewTransaction = ({
         onPress={hideModal}
       >
         <TouchableWithoutFeedback>
-          <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#121212]">
-            {colorScheme === "light" && <BackgroundGradient />}
+          <View className="rounded-t-3xl overflow-hidden bg-light-background dark:bg-[#121212]">
             <ScrollView>
               <View className="flex-row mx-1 mt-4">
                 {from && (

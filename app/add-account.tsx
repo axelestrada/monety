@@ -1,5 +1,4 @@
 import Header from "@/components/Header";
-import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import { colors, darkColors } from "@/constants/colors";
 import { icons } from "@/constants/icons";
 import { IAccount, ICategory } from "@/interfaces";
@@ -38,7 +37,9 @@ const AddAccount = () => {
     id: string;
   } = useLocalSearchParams();
 
-  const { accounts } = useTypedSelector((state) => state.accounts);
+  const { accounts }: { accounts: IAccount[] } = useTypedSelector(
+    (state) => state.accounts
+  );
 
   const [account, setAccount] = useState<IAccount>(
     accounts.find((account) => account.id === params.id) || {
@@ -175,9 +176,7 @@ const AddAccount = () => {
   const itemSize = (windowWidth - 12 * 6) / 5;
 
   return (
-    <SafeAreaView className="flex flex-1 dark:bg-[#1E1F22]">
-      {colorScheme === "light" && <BackgroundGradient />}
-
+    <SafeAreaView className="flex flex-1 bg-light-background dark:bg-[#1E1F22]">
       <Header title={params.id ? "Edit Account" : "New Account"} goBack />
 
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>

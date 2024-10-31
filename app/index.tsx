@@ -13,7 +13,6 @@ import { StatusBar } from "expo-status-bar";
 import { Link, SplashScreen, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 
-import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import Header from "@/components/Header";
 import BottomTabNavigator from "@/components/BottomTabNavigator";
 import OverallBalance from "@/components/OverallBalance";
@@ -46,6 +45,7 @@ import { transactionServices } from "@/reducers/transactionsSlice";
 import NoTransactions from "@/components/NoTransactions";
 import Transaction from "@/components/Transaction";
 import SeeAllButton from "@/components/ui/SeeAllButton";
+import { ITransaction } from "@/interfaces";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -58,7 +58,9 @@ export default function Index() {
   const { loadTransactions } = useTransactions();
   const { loadCategories } = useCategories();
 
-  const { transactions } = useTypedSelector((state) => state.transactions);
+  const { transactions }: { transactions: ITransaction[] } = useTypedSelector(
+    (state) => state.transactions
+  );
   const { categories } = useTypedSelector((state) => state.categories);
 
   const [refreshing, setRefreshing] = useState(false);
@@ -415,29 +417,32 @@ export default function Index() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView
-        className="flex flex-1 dark:bg-[#0D0D0D]"
+        className="flex flex-1 bg-light-background dark:bg-[#0D0D0D]"
         onLayout={onLayoutRootView}
       >
-        {colorScheme === "light" && <BackgroundGradient />}
+        <StatusBar
+          style={colorScheme === "dark" ? "light" : "dark"}
+          backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#1A1A1A"}
+        />
 
-        <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+        <View className="bg-white dark:bg-[#1A1A1A] rounded-b-3xl z-20">
+          <Header title="Home">
+            <IconButton onPress={toggleColorScheme}>
+              <Octicons
+                name="gear"
+                size={18}
+                color={colorScheme === "dark" ? "#F5F5F5" : "#1B1D1C"}
+              />
+            </IconButton>
+          </Header>
 
-        <Header title="Home">
-          <IconButton onPress={toggleColorScheme}>
-            <Octicons
-              name="gear"
-              size={18}
-              color={colorScheme === "dark" ? "#F5F5F5" : "#1B1D1C"}
-            />
-          </IconButton>
-        </Header>
-
-        <OverallBalance>
-          <TimeRange />
-        </OverallBalance>
+          <OverallBalance>
+            <TimeRange />
+          </OverallBalance>
+        </View>
 
         <ScrollView
-          className="mt-2 pt-0 -mb-4"
+          className="-mt-6 pt-9 -mb-6"
           contentContainerStyle={{ flexGrow: 1 }}
           scrollEnabled={scrollEnabled}
           onTouchEnd={() => {
@@ -458,7 +463,13 @@ export default function Index() {
             onLongPress={() => setScrollEnabled(false)}
             delayLongPress={200}
           >
-            <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mx-3 mt-0 overflow-hidden">
+            <View
+              className="bg-white dark:bg-[#1A1A1A] rounded-2xl mx-3 overflow-hidden"
+              style={{
+                elevation: 16,
+                shadowColor: "#1b1d1c1f",
+              }}
+            >
               <View className="mx-2 flex-row justify-between">
                 <Text className="text-main dark:text-[#F5F5F5] text-lg font-[Rounded-Bold]">
                   Statistics
@@ -624,6 +635,7 @@ export default function Index() {
           <View className="flex flex-row mt-3 mx-1.5">
             <CashFlowItem
               type="Incomes"
+              active
               value={transactions
                 .filter((transaction) => transaction.type === "Income")
                 .reduce((acc, curr) => acc + curr.amount, 0)}
@@ -638,6 +650,7 @@ export default function Index() {
             />
             <CashFlowItem
               type="Expenses"
+              active
               value={transactions
                 .filter((transaction) => transaction.type === "Expense")
                 .reduce((acc, curr) => acc + curr.amount, 0)}
@@ -659,7 +672,7 @@ export default function Index() {
             {transactions.length > 0 && <SeeAllButton />}
           </View>
 
-          <View className="grow mb-6">
+          <View className="grow mb-[60]">
             {transactions.length > 0 ? (
               transactions
                 .slice(0, 10)

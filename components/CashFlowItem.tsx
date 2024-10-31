@@ -22,11 +22,13 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
       className={`${
         active && "bg-white dark:bg-[#1A1A1A]"
       } flex flex-1 rounded-2xl py-2.5 px-2 mx-1.5 flex-row items-center`}
-      style={active ? styles.shadow : {}}
+      style={active ? { elevation: 16, shadowColor: "#1b1d1c1f" } : {}}
     >
       <View
         className={`${
-          type === "Incomes" ? "bg-green-10 dark:bg-[#5bbe771a]" : "bg-red-10 dark:bg-[#FF80921a]"
+          type === "Incomes"
+            ? "bg-green-10 dark:bg-[#5bbe771a]"
+            : "bg-red-10 dark:bg-[#FF80921a]"
         } justify-center items-center p-4 mr-1.5 rounded-full`}
       >
         <Feather
@@ -55,7 +57,9 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
           {"L " + Intl.NumberFormat("en-US").format(value)}
         </Text>
 
-        <Text className="text-main dark:text-[#F5F5F5] font-[Rounded-Bold] text-lg">{type}</Text>
+        <Text className="text-main dark:text-[#F5F5F5] font-[Rounded-Bold] text-lg">
+          {type}
+        </Text>
       </View>
     </TouchableOpacity>
   );

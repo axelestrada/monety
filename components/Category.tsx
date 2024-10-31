@@ -27,7 +27,7 @@ const Category = ({ category, summary = 0, ...params }: Props) => {
     <TouchableOpacity
       activeOpacity={0.75}
       className="bg-white dark:bg-[#1E1E1E] rounded-2xl py-3 px-2 mb-3 mx-1.5 flex-row items-center"
-      style={{ width: (windowWidth - 36) / 2, ...styles.shadow }}
+      style={{ width: (windowWidth - 36) / 2, ...{elevation: 16, shadowColor: "#1b1d1c1f"} }}
       {...params}
     >
       <View

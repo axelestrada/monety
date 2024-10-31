@@ -3,7 +3,6 @@ import BottomTabNavigator from "@/components/BottomTabNavigator";
 import Header from "@/components/Header";
 import NewTransaction from "@/components/NewTransaction";
 import OverallBalance from "@/components/OverallBalance";
-import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import IconButton from "@/components/ui/IconButton";
 import { darkColors } from "@/constants/colors";
 import { useAccounts, useCategories, useTransactions } from "@/hooks";
@@ -15,6 +14,7 @@ import { Feather, Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { useSQLiteContext } from "expo-sqlite";
 import { StatusBar } from "expo-status-bar";
+import moment from "moment";
 import { useColorScheme } from "nativewind";
 import { useCallback, useEffect, useState } from "react";
 import {
@@ -32,7 +32,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function Accounts() {
-  const { accounts } = useAccounts();
+  const { accounts }: { accounts: IAccount[] } = useAccounts();
 
   const [activeModal, setActiveModal] = useState(false);
   const [activeSelector, setActiveSelector] = useState<{
@@ -86,9 +86,7 @@ export default function Accounts() {
   };
 
   return (
-    <SafeAreaView className="flex flex-1 dark:bg-[#121212]">
-      {colorScheme === "light" && <BackgroundGradient />}
-
+    <SafeAreaView className="flex flex-1 bg-light-background dark:bg-[#121212]">
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
       <Modal
@@ -111,6 +109,10 @@ export default function Accounts() {
           }}
           from={transactionDetails.from}
           to={transactionDetails.to}
+          openDateTimePicker={function (): void {
+            throw new Error("Function not implemented.");
+          }}
+          selectedDate={moment().unix()}
         />
       </Modal>
 
@@ -138,9 +140,7 @@ export default function Accounts() {
           }
         >
           <TouchableWithoutFeedback>
-            <View className="rounded-t-3xl overflow-hidden bg-white dark:bg-[#121212]">
-              {colorScheme === "light" && <BackgroundGradient />}
-
+            <View className="rounded-t-3xl overflow-hidden bg-light-background dark:bg-[#121212]">
               <AccountCategorySelector
                 type={activeSelector.type || "Categories"}
                 callback={activeSelector.callback}
@@ -239,7 +239,10 @@ export default function Accounts() {
               <TouchableOpacity
                 activeOpacity={0.75}
                 className="bg-white dark:bg-[#1E1E1E] px-2 py-3 mb-3 mx-3 rounded-2xl"
-                style={styles.shadow}
+                style={{
+                  elevation: 16,
+                  shadowColor: "#1b1d1c1f",
+                }}
                 onPress={() => {
                   setActiveSelector({
                     type: "Accounts",
@@ -339,7 +342,10 @@ export default function Accounts() {
                 <TouchableOpacity
                   activeOpacity={0.75}
                   className="bg-white dark:bg-[#1E1E1E] px-2 py-3 mb-3 mx-3 rounded-2xl flex flex-row justify-between items-center"
-                  style={styles.shadow}
+                  style={{
+                    elevation: 16,
+                    shadowColor: "#1b1d1c1f",
+                  }}
                   onPress={() => {
                     setActiveModal(true);
                   }}

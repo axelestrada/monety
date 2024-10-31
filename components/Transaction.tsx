@@ -30,7 +30,10 @@ const Transaction = ({ transaction }: { transaction: ITransaction }) => {
     <TouchableOpacity
       activeOpacity={0.75}
       className="bg-white dark:bg-[#1A1A1A] py-3 px-2 mb-3 mx-3 rounded-2xl"
-      style={styles.shadow}
+      style={{
+        elevation: 16,
+        shadowColor: "#1b1d1c1f"
+      }}
       onLongPress={() => deleteTransaction(transaction)}
     >
       <View className="flex flex-row justify-between items-center">

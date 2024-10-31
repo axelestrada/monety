@@ -22,10 +22,7 @@
       },
       "package": "com.axelestrada.moneymanager"
     },
-    "plugins": [
-      "expo-router",
-      "expo-asset"
-    ],
+    "plugins": ["expo-router", "expo-asset"],
     "experiments": {
       "typedRoutes": true
     },

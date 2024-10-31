@@ -1,8 +1,13 @@
-import { ActivityIndicator, RefreshControl, ScrollView, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  RefreshControl,
+  ScrollView,
+  Text,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAppDispatch, useTypedSelector } from "../store";
-import BackgroundGradient from "@/components/ui/BackgroundGradient";
 import Header from "@/components/Header";
 import IconButton from "@/components/ui/IconButton";
 import { Feather } from "@expo/vector-icons";
@@ -20,7 +25,9 @@ import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
 
 const Transactions = () => {
-  const { transactions } = useTypedSelector((state) => state.transactions);
+  const { transactions }: { transactions: ITransaction[] } = useTypedSelector(
+    (state) => state.transactions
+  );
   const { loading } = useTypedSelector((state) => state.userPreferences);
 
   const [refreshing, setRefreshing] = useState(false);
@@ -37,7 +44,7 @@ const Transactions = () => {
     setRefreshing(false);
   }, [setRefreshing, loadTransactions, loadAccounts, loadCategories]);
 
-  const {colorScheme} = useColorScheme()
+  const { colorScheme } = useColorScheme();
 
   const format = (number: number) => {
     const formattedNumber = Intl.NumberFormat("en-US").format(number);
@@ -56,10 +63,8 @@ const Transactions = () => {
   };
 
   return (
-    <SafeAreaView className="flex-1 dark:bg-[#121212]">
-      {colorScheme === "light" && <BackgroundGradient />}
-
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"}/>
+    <SafeAreaView className="flex-1 bg-light-background dark:bg-[#121212]">
+      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
       {loading && (
         <View className="absolute top-0 left-0 right-0 bottom-0 z-50 bg-[#00000080] justify-center items-center">
@@ -69,7 +74,11 @@ const Transactions = () => {
 
       <Header title="Transactions">
         <IconButton>
-          <Feather name="filter" color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}size={20} />
+          <Feather
+            name="filter"
+            color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}
+            size={20}
+          />
         </IconButton>
       </Header>
 
@@ -85,7 +94,9 @@ const Transactions = () => {
             refreshing={refreshing}
             onRefresh={onRefresh}
             colors={[colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"]}
-            progressBackgroundColor={colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"}
+            progressBackgroundColor={
+              colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"
+            }
           />
         }
       >

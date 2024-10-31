@@ -12,7 +12,10 @@ const BottomTabNavigator = () => {
   const { colorScheme } = useColorScheme();
 
   return (
-    <View className="bg-white dark:bg-[#1A1A1A] rounded-t-3xl py-7 flex flex-row justify-evenly items-center">
+    <View className="bg-white dark:bg-[#1A1A1A] rounded-t-3xl py-7 flex flex-row justify-evenly items-center" style={{
+      elevation: 16,
+      shadowColor: "#1b1d1c80"
+    }}>
       <IconButton onPress={() => router.navigate("/")}>
         <Octicons
           name="home"
