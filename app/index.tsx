@@ -404,8 +404,6 @@ export default function Index() {
 
   const diff = maxValue - minValue;
 
-  console.log(offset, stepValue);
-
   //#endregion
 
   return (
@@ -610,11 +608,33 @@ export default function Index() {
                   endSpacing={-(spacing(incomes) - 12)}
                   hideDataPoints
                   yAxisLabelWidth={45}
+                  yAxisLabelTexts={yAxisLabelTexts}
                   stepHeight={135 / 3}
-                  stepValue={stepValue}
-                  maxValue={(diff <= 30 && minValue <= 30) ? 33 : maxValue + offset}
+                  noOfSections={3}
+                  // stepValue={
+                  //   diff <= 30 && minValue <= 30 && minValue !== 0
+                  //     ? maxValue >= 10
+                  //       ? maxValue
+                  //       : 10
+                  //     : stepValue
+                  // }
+                  maxValue={
+                    diff <= 30 && minValue <= 30 && minValue !== 0
+                      ? (maxValue >= 10 ? maxValue : 10) * 3 +
+                        Math.round(
+                          ((maxValue >= 10 ? maxValue : 10) * 3 * 10) / 100
+                        )
+                      : diff <= 30 && minValue <= 30
+                      ? 33
+                      : maxValue + offset
+                  }
                   yAxisOffset={
-                    minValue === 0 || (diff <= 30 && minValue <= 30)
+                    diff <= 30 && minValue <= 30 && minValue !== 0
+                      ? minValue -
+                        Math.round(
+                          ((maxValue >= 10 ? maxValue : 10) * 3 * 10) / 100
+                        )
+                      : minValue === 0 || (diff <= 30 && minValue <= 30)
                       ? -offset
                       : minValue - offset
                   }
