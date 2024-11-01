@@ -49,6 +49,9 @@ import { ITransaction } from "@/interfaces";
 
 import { Alert } from "react-native";
 import * as Updates from "expo-updates";
+import calculateOffset from "@/utils/calculateOffset";
+import getYAxisLabelTexts from "@/utils/getYAxisLabelTexts";
+import calculateStepValue from "@/utils/calculateStepValue";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -334,19 +337,13 @@ export default function Index() {
       setIncomes(newIncomes);
       setExpenses(newExpenses);
 
-      let max = Math.max(
+      const max = Math.max(
         ...[...newIncomes, ...newExpenses].map((item) => item.value)
       );
 
       const min = Math.min(
         ...[...newIncomes, ...newExpenses].map((item) => item.value)
       );
-
-      const diff = max - min;
-
-      if (diff < 30) {
-        max = 30 - diff + diff;
-      }
 
       setMaxValue(max);
       setMinValue(min);
@@ -400,46 +397,16 @@ export default function Index() {
     return (screenWidth - 88) / (data.length - 1);
   };
 
-  const getStepValue = (max: number) => {
-    return max / 3;
-  };
+  const offset = calculateOffset(maxValue, minValue);
 
-  const getYAxisLabelTexts = (max: number, min: number) => {
-    const stepValue = getStepValue(max);
+  const stepValue = calculateStepValue(maxValue, minValue);
+  const yAxisLabelTexts = getYAxisLabelTexts(maxValue, minValue, stepValue);
 
-    const steps: number[] = [min];
+  const diff = maxValue - minValue;
 
-    for (let i = 1; i <= 3; i++) {
-      steps.push(i < 3 ? Math.round(i * stepValue) : max);
-    }
-
-    return steps
-      .map((val) => {
-        if (val <= 10) return val;
-
-        const stringValue = val.toString();
-
-        const lastDigit = parseInt(
-          stringValue.split("")[stringValue.length - 1]
-        );
-
-        if (lastDigit === 0 || lastDigit === 5) return val;
-
-        if (lastDigit < 5) return parseInt(stringValue.replace(/.$/, "0"));
-
-        if (lastDigit > 5)
-          return parseInt((val + 10).toString().replace(/.$/, "0"));
-
-        return val;
-      })
-      .map((val) => "L " + (val > 999 ? val / 1000 + "K" : val));
-  };
-
-  const offset = Math.round(((maxValue - minValue) * 10) / 100);
+  console.log(offset, stepValue);
 
   //#endregion
-
-  const longPress = Gesture.LongPress();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -452,7 +419,10 @@ export default function Index() {
           backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#1A1A1A"}
         />
 
-        <View className="bg-white dark:bg-[#1A1A1A] rounded-b-3xl z-20">
+        <View
+          className="bg-white dark:bg-[#1A1A1A] rounded-b-3xl z-20"
+          style={{ elevation: 16, shadowColor: "#1b1d1c3f" }}
+        >
           <Header title="Home">
             <IconButton onPress={toggleColorScheme}>
               <Octicons
@@ -491,7 +461,7 @@ export default function Index() {
             delayLongPress={200}
           >
             <View
-              className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mx-3 overflow-hidden"
+              className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mx-3"
               style={{
                 elevation: 16,
                 shadowColor: "#1b1d1c1f",
@@ -526,6 +496,8 @@ export default function Index() {
                   overflowTop={100}
                   isAnimated
                   height={150}
+                  width={spacing(incomes) > 48 ? screenWidth - 69 : undefined}
+                  disableScroll={false}
                   pointerConfig={{
                     activatePointersOnLongPress: true,
                     pointer1Color:
@@ -637,12 +609,15 @@ export default function Index() {
                   spacing={spacing(incomes)}
                   endSpacing={-(spacing(incomes) - 12)}
                   hideDataPoints
-                  yAxisLabelTexts={getYAxisLabelTexts(maxValue, minValue)}
                   yAxisLabelWidth={45}
                   stepHeight={135 / 3}
-                  stepValue={getStepValue(maxValue + offset)}
-                  maxValue={maxValue + offset}
-                  yAxisOffset={minValue === 0 ? -offset : minValue - offset}
+                  stepValue={stepValue}
+                  maxValue={(diff <= 30 && minValue <= 30) ? 33 : maxValue + offset}
+                  yAxisOffset={
+                    minValue === 0 || (diff <= 30 && minValue <= 30)
+                      ? -offset
+                      : minValue - offset
+                  }
                   xAxisThickness={0}
                   yAxisThickness={0}
                   yAxisTextStyle={{
