@@ -17,5 +17,5 @@ test('El resultado de 500 y 500 debe dar 3', () => {
 });
 
 test('El resultado de 10 y 20 debe dar 3', () => {
-  expect(calculateOffset(20, 10)).toBe(2)
+  expect(calculateOffset(20, 10)).toBe(3)
 });
