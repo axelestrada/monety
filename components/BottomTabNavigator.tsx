@@ -12,11 +12,13 @@ const BottomTabNavigator = () => {
   const { colorScheme } = useColorScheme();
 
   return (
-    <View className="bg-white dark:bg-[#1A1A1A] rounded-t-3xl py-7 flex flex-row justify-evenly items-center" style={{
-      elevation: 16,
-      shadowColor: "#1b1d1c80"
-    }}>
-      <IconButton onPress={() => router.navigate("/")}>
+    <View
+      className="bg-white dark:bg-[#1A1A1A] py-4 flex flex-row justify-evenly items-center shadow-md shadow-main-25"
+    >
+      <IconButton
+        active={pathname === "/"}
+        onPress={() => router.navigate("/")}
+      >
         <Octicons
           name="home"
           size={18}
@@ -32,7 +34,10 @@ const BottomTabNavigator = () => {
         />
       </IconButton>
 
-      <IconButton onPress={() => router.navigate("/accounts")}>
+      <IconButton
+        onPress={() => router.navigate("/accounts")}
+        active={pathname === "/accounts"}
+      >
         <Ionicons
           name="wallet-outline"
           size={20}
@@ -49,12 +54,17 @@ const BottomTabNavigator = () => {
       </IconButton>
 
       <IconButton highlight onPress={() => router.navigate("/categories")}>
-        <Octicons name="apps" size={20} color={colorScheme === "dark"
-                ? "#1B1D1C"
-                : "#FFFFFF"} />
+        <Octicons
+          name="apps"
+          size={20}
+          color={colorScheme === "dark" ? "#1B1D1C" : "#FFFFFF"}
+        />
       </IconButton>
 
-      <IconButton onPress={() => router.navigate("/transactions")}>
+      <IconButton
+        onPress={() => router.navigate("/transactions")}
+        active={pathname === "/transactions"}
+      >
         <Octicons
           name="rows"
           size={18}
@@ -70,7 +80,7 @@ const BottomTabNavigator = () => {
         />
       </IconButton>
 
-      <IconButton>
+      <IconButton active={pathname === "/statistics"}>
         <Feather
           name="bar-chart-2"
           size={20}

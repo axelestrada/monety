@@ -13,7 +13,6 @@ import { StatusBar } from "expo-status-bar";
 import { Link, SplashScreen, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 
-import Header from "@/components/Header";
 import BottomTabNavigator from "@/components/BottomTabNavigator";
 import OverallBalance from "@/components/OverallBalance";
 import CashFlowItem from "@/components/CashFlowItem";
@@ -52,6 +51,7 @@ import * as Updates from "expo-updates";
 import calculateOffset from "@/utils/calculateOffset";
 import getYAxisLabelTexts from "@/utils/getYAxisLabelTexts";
 import calculateStepValue from "@/utils/calculateStepValue";
+import { Header } from "@/components";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -414,30 +414,12 @@ export default function Index() {
       >
         <StatusBar
           style={colorScheme === "dark" ? "light" : "dark"}
-          backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#1A1A1A"}
+          backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#0D0D0D"}
         />
 
-        <View
-          className="bg-white dark:bg-[#1A1A1A] rounded-b-3xl z-20"
-          style={{ elevation: 16, shadowColor: "#1b1d1c3f" }}
-        >
-          <Header title="Home">
-            <IconButton onPress={toggleColorScheme}>
-              <Octicons
-                name="gear"
-                size={18}
-                color={colorScheme === "dark" ? "#F5F5F5" : "#1B1D1C"}
-              />
-            </IconButton>
-          </Header>
-
-          <OverallBalance>
-            <TimeRange />
-          </OverallBalance>
-        </View>
+        <Header />
 
         <ScrollView
-          className="-mt-6 pt-9 -mb-6"
           contentContainerStyle={{ flexGrow: 1 }}
           scrollEnabled={scrollEnabled}
           onTouchEnd={() => {
@@ -459,27 +441,23 @@ export default function Index() {
             delayLongPress={200}
           >
             <View
-              className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mx-3"
-              style={{
-                elevation: 16,
-                shadowColor: "#1b1d1c1f",
-              }}
+              className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mt-5 mx-3 shadow-md shadow-main-25"
             >
-              <View className="mx-2 flex-row justify-between">
-                <Text className="text-main dark:text-[#F5F5F5] text-lg font-[Rounded-Bold]">
+              <View className="mx-3 flex-row justify-between items-center">
+                <Text className="text-main dark:text-[#F5F5F5] text-xl font-[Rounded-Bold]">
                   Statistics
                 </Text>
 
-                <View className="flex-row gap-[4]">
-                  <View className="flex-row items-center gap-[4]">
-                    <View className="bg-green dark:bg-[#5bbe77] w-2 h-2 rounded-full"></View>
+                <View className="flex-row items-center justify-center">
+                  <View className="flex-row items-center justify-center mr-2.5">
+                    <View className="bg-green dark:bg-[#5bbe77] w-2 h-2 mr-1 rounded-full"></View>
                     <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium]">
                       Incomes
                     </Text>
                   </View>
 
-                  <View className="flex-row items-center gap-[4]">
-                    <View className="bg-red dark:bg-[#ff8092] w-2 h-2 rounded-full"></View>
+                  <View className="flex-row items-center">
+                    <View className="bg-red dark:bg-[#ff8092] w-2 h-2 mr-1 rounded-full"></View>
                     <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium]">
                       Expenses
                     </Text>
@@ -611,13 +589,6 @@ export default function Index() {
                   yAxisLabelTexts={yAxisLabelTexts}
                   stepHeight={135 / 3}
                   noOfSections={3}
-                  // stepValue={
-                  //   diff <= 30 && minValue <= 30 && minValue !== 0
-                  //     ? maxValue >= 10
-                  //       ? maxValue
-                  //       : 10
-                  //     : stepValue
-                  // }
                   maxValue={
                     diff <= 30 && minValue <= 30 && minValue !== 0
                       ? (maxValue >= 10 ? maxValue : 10) * 3 +
@@ -686,15 +657,15 @@ export default function Index() {
               }
             />
           </View>
-          <View className="flex flex-row justify-between items-center mt-3 mb-2 mx-3">
-            <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#F5F5F5]">
+          <View className="flex flex-row justify-between items-center mt-5 mb-2 mx-3">
+            <Text className="font-[Rounded-Bold] text-xl text-main dark:text-[#F5F5F5]">
               Latest Transactions
             </Text>
 
             {transactions.length > 0 && <SeeAllButton />}
           </View>
 
-          <View className="grow mb-[60]">
+          <View className="grow mb-2">
             {transactions.length > 0 ? (
               transactions
                 .slice(0, 10)
