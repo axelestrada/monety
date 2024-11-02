@@ -3,7 +3,7 @@ import { Text, View } from "react-native";
 import { useTypedSelector } from "@/store";
 import { formatCurrency } from "@/utils";
 
-import { TimeRange } from "@/components";
+import TimeRange from "../TimeRange/TimeRange";
 
 interface Props {
   timeRange?: boolean;

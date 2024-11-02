@@ -51,7 +51,7 @@ import * as Updates from "expo-updates";
 import calculateOffset from "@/utils/calculateOffset";
 import getYAxisLabelTexts from "@/utils/getYAxisLabelTexts";
 import calculateStepValue from "@/utils/calculateStepValue";
-import { Header } from "@/components";
+import Header from "@/components/Header/Header";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -461,7 +461,7 @@ export default function Index() {
             onLongPress={() => setScrollEnabled(false)}
             delayLongPress={200}
           >
-            <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mt-5 mx-3 shadow-md shadow-main-25">
+            <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mt-5 dark:mt-0 mx-3 shadow-md shadow-main-25">
               <View className="mx-3 flex-row justify-between items-center">
                 <Text className="text-main dark:text-[#F5F5F5] text-xl font-[Rounded-Bold]">
                   Statistics

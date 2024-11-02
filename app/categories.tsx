@@ -1,7 +1,7 @@
 import BottomTabNavigator from "@/components/BottomTabNavigator";
 import CashFlowItem from "@/components/CashFlowItem";
 import CategoriesGrid from "@/components/CategoriesGrid";
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import OverallBalance from "@/components/OverallBalance";
 import TimeRange from "@/components/TimeRange";
 import IconButton from "@/components/ui/IconButton";
@@ -79,13 +79,10 @@ function Categories() {
 
   return (
     <SafeAreaView className="flex flex-1 bg-light-background dark:bg-[#0D0D0D]">
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
-
-      {loading && (
-        <View className="absolute top-0 left-0 right-0 bottom-0 z-50 bg-[#00000080] justify-center items-center">
-          <ActivityIndicator color={"#FFFFFF"} size={32} />
-        </View>
-      )}
+      <StatusBar
+        style={colorScheme === "dark" ? "light" : "dark"}
+        backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#0D0D0D"}
+      />
 
       <Modal
         visible={activeModal}
@@ -173,41 +170,11 @@ function Categories() {
         </View>
       </Modal>
 
-      <Header title="Categories">
-        <IconButton>
-          <Octicons
-            name="pencil"
-            size={20}
-            color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}
-          />
-        </IconButton>
-      </Header>
-
-      <OverallBalance>
-        <TimeRange />
-      </OverallBalance>
-
-      <View className="flex flex-row mx-3 py-1.5 bg-[#ffffff80] dark:bg-[#E0E2EE00] dark:mx-1.5 rounded-2xl">
-        <CashFlowItem
-          type="Incomes"
-          value={transactions
-            .filter((transaction) => transaction.type === "Income")
-            .reduce((acc, curr) => acc + curr.amount, 0)}
-          active={type === "Income"}
-          onPress={() => setType("Income")}
-        />
-
-        <CashFlowItem
-          type="Expenses"
-          value={transactions
-            .filter((transaction) => transaction.type === "Expense")
-            .reduce((acc, curr) => acc + curr.amount, 0)}
-          active={type === "Expense"}
-          onPress={() => setType("Expense")}
-        />
-      </View>
+      <Header overallBalance timeRange />
 
       <CategoriesGrid
+        type={type}
+        setType={setType}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

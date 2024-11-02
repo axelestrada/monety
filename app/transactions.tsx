@@ -8,7 +8,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAppDispatch, useTypedSelector } from "../store";
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import IconButton from "@/components/ui/IconButton";
 import { Feather } from "@expo/vector-icons";
 import OverallBalance from "@/components/OverallBalance";
@@ -23,6 +23,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import { transactionServices } from "@/reducers/transactionsSlice";
 import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
+import moment from "moment";
 
 const Transactions = () => {
   const { transactions }: { transactions: ITransaction[] } = useTypedSelector(
@@ -64,31 +65,15 @@ const Transactions = () => {
 
   return (
     <SafeAreaView className="flex-1 bg-light-background dark:bg-[#0D0D0D]">
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+      <StatusBar
+        style={colorScheme === "dark" ? "light" : "dark"}
+        backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#0D0D0D"}
+      />
 
-      {loading && (
-        <View className="absolute top-0 left-0 right-0 bottom-0 z-50 bg-[#00000080] justify-center items-center">
-          <ActivityIndicator color={"#FFFFFF"} size={32} />
-        </View>
-      )}
-
-      <Header title="Transactions">
-        <IconButton>
-          <Feather
-            name="filter"
-            color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}
-            size={20}
-          />
-        </IconButton>
-      </Header>
-
-      <OverallBalance>
-        <TimeRange />
-      </OverallBalance>
+      <Header overallBalance timeRange />
 
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
-        className="-mb-6"
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -100,14 +85,21 @@ const Transactions = () => {
           />
         }
       >
-        <View className="rounded-md grow mb-6">
+        <View className="grow mt-4 mb-2">
           {transactions.length <= 0 ? (
             <NoTransactions />
           ) : (
             <>
               <View className="flex flex-row justify-between items-center mb-2 mx-3">
                 <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#E0E2EE]">
-                  Today
+                  {moment(transactions[0].createdAt * 1000).isSame(
+                    moment(),
+                    "day"
+                  )
+                    ? "Today"
+                    : moment(transactions[0].createdAt * 1000).format(
+                        "MMMM DD YYYY"
+                      )}
                 </Text>
 
                 <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#E0E2EE]">

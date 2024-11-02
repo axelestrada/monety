@@ -1,6 +1,6 @@
 import AccountCategorySelector from "@/components/AccountCategorySelector";
 import BottomTabNavigator from "@/components/BottomTabNavigator";
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import NewTransaction from "@/components/NewTransaction";
 import OverallBalance from "@/components/OverallBalance";
 import IconButton from "@/components/ui/IconButton";
@@ -87,7 +87,10 @@ export default function Accounts() {
 
   return (
     <SafeAreaView className="flex flex-1 bg-light-background dark:bg-[#0D0D0D]">
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+      <StatusBar
+        style={colorScheme === "dark" ? "light" : "dark"}
+        backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#0D0D0D"}
+      />
 
       <Modal
         visible={activeModal}
@@ -163,21 +166,7 @@ export default function Accounts() {
         </TouchableOpacity>
       </Modal>
 
-      <Header title="Accounts">
-        <IconButton
-          onPress={() => {
-            router.navigate("/add-account");
-          }}
-        >
-          <Ionicons
-            name="add"
-            size={24}
-            color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}
-          />
-        </IconButton>
-      </Header>
-
-      <OverallBalance />
+      <Header overallBalance />
 
       <ScrollView
         className="flex flex-1"
@@ -192,7 +181,7 @@ export default function Accounts() {
           />
         }
       >
-        <View className="mx-3 flex-row justify-between items-center mb-3">
+        <View className="mx-3 flex-row justify-between items-center mb-3 mt-4 dark:mt-0">
           <Text className="text-main dark:text-[#E0E2EE] font-[Rounded-Bold] text-lg">
             Accounts
           </Text>
