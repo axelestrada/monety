@@ -1,8 +1,9 @@
 import { Text, View } from "react-native";
 
-import { TimeRange } from "@/components";
-
 import { useTypedSelector } from "@/store";
+import { formatCurrency } from "@/utils";
+
+import { TimeRange } from "@/components";
 
 interface Props {
   timeRange?: boolean;
@@ -11,17 +12,13 @@ interface Props {
 const OverallBalance = ({ timeRange }: Props) => {
   const { accounts } = useTypedSelector((state) => state.accounts);
 
-  const formatNumber = (number: number) => {
-    const formattedNumber = Intl.NumberFormat("en-US").format(number);
-
-    if (number < 0) {
-      return "- L " + formattedNumber.toString().slice(1);
-    }
-
-    if (number >= 0) {
-      return "L " + formattedNumber;
-    }
-  };
+  const totalBalance = formatCurrency(
+    accounts.reduce(
+      (acc, { includeInOverallBalance, currentBalance }) =>
+        includeInOverallBalance ? acc + currentBalance : acc,
+      0
+    )
+  );
 
   return (
     <View className={`justify-center items-center`}>
@@ -30,13 +27,7 @@ const OverallBalance = ({ timeRange }: Props) => {
       </Text>
 
       <Text className="text-main dark:text-[#F5F5F5] font-[Rounded-Bold] text-3.5xl">
-        {formatNumber(
-          accounts.reduce(
-            (acc, curr) =>
-              curr.includeInOverallBalance ? acc + curr.currentBalance : acc,
-            0
-          )
-        )}
+        {totalBalance}
       </Text>
 
       {timeRange && <TimeRange />}
