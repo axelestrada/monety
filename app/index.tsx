@@ -18,7 +18,7 @@ import OverallBalance from "@/components/OverallBalance";
 import CashFlowItem from "@/components/CashFlowItem";
 import TransactionsList from "@/components/TransactionsList";
 import IconButton from "@/components/ui/IconButton";
-import { Octicons } from "@expo/vector-icons";
+import { Feather, Octicons } from "@expo/vector-icons";
 import { useSQLiteContext } from "expo-sqlite";
 
 import { LineChart, lineDataItem } from "react-native-gifted-charts";
@@ -235,6 +235,27 @@ export default function Index() {
 
       initializeDatabase();
 
+      async function createIndexes() {
+        const indexQueries = [
+          `CREATE INDEX IF NOT EXISTS idx_transactions_created_at ON Transactions (created_at);`,
+          `CREATE INDEX IF NOT EXISTS idx_transactions_category_id ON Transactions (category_id);`,
+          `CREATE INDEX IF NOT EXISTS idx_transactions_account_id ON Transactions (account_id);`,
+          `CREATE INDEX IF NOT EXISTS idx_transactions_destination_account ON Transactions (destination_account);`,
+        ];
+
+        try {
+          for (const query of indexQueries) {
+            await db.execAsync(query);
+          }
+          console.log("Indexes created successfully.");
+        } catch (error) {
+          console.error("Error creating indexes:", error);
+          throw error;
+        }
+      }
+
+      createIndexes();
+
       loadAccounts();
       loadTransactions();
       loadCategories();
@@ -417,7 +438,7 @@ export default function Index() {
           backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#0D0D0D"}
         />
 
-        <Header />
+        <Header overallBalance timeRange />
 
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
@@ -440,9 +461,7 @@ export default function Index() {
             onLongPress={() => setScrollEnabled(false)}
             delayLongPress={200}
           >
-            <View
-              className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mt-5 mx-3 shadow-md shadow-main-25"
-            >
+            <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mt-5 mx-3 shadow-md shadow-main-25">
               <View className="mx-3 flex-row justify-between items-center">
                 <Text className="text-main dark:text-[#F5F5F5] text-xl font-[Rounded-Bold]">
                   Statistics

@@ -8,6 +8,7 @@ module.exports = {
         "light-background": "#f5f6f7",
         "main-50": "#1B1D1C80",
         "main-25": "#1B1D1C33",
+        "main-75": "#1b1d1cbf",
         "main-500": "#939496",
         green: "#02AB5B",
         "green-10": "#02AB5B1A",
@@ -18,6 +19,7 @@ module.exports = {
       },
       fontSize: {
         "4.5xl": "40px",
+        "3.5xl": "34px",
       },
     },
   },

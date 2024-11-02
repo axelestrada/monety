@@ -13,7 +13,7 @@ const BottomTabNavigator = () => {
 
   return (
     <View
-      className="bg-white dark:bg-[#1A1A1A] py-4 flex flex-row justify-evenly items-center shadow-md shadow-main-25"
+      className="bg-white dark:bg-[#1A1A1A] py-4 flex flex-row justify-evenly items-center z-20 shadow-2xl shadow-main"
     >
       <IconButton
         active={pathname === "/"}
