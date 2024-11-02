@@ -5,7 +5,6 @@ import { Text, View } from "react-native";
 import moment from "moment";
 import { useAppDispatch, useTypedSelector } from "@/store";
 import { userPreferencesServices } from "@/reducers/userPreferencesSlice";
-import { useTransactions } from "@/hooks";
 import { useColorScheme } from "nativewind";
 import IconButton from "@/components/ui/IconButton";
 

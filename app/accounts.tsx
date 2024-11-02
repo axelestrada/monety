@@ -86,7 +86,7 @@ export default function Accounts() {
   };
 
   return (
-    <SafeAreaView className="flex flex-1 bg-light-background dark:bg-[#121212]">
+    <SafeAreaView className="flex flex-1 bg-light-background dark:bg-[#0D0D0D]">
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
 
       <Modal

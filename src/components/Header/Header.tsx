@@ -11,7 +11,7 @@ interface Props {
 
 export default function Header({ overallBalance, timeRange }: Props) {
   return (
-    <View className="py-2 px-2 bg-white z-20 shadow-2xl shadow-[#1b1d1c4d]">
+    <View className="py-2 px-2 bg-white dark:bg-[#0D0D0D] z-20 shadow-2xl shadow-[#1b1d1c4d]">
       <View className="flex-row justify-between items-center mb-2">
         <View className="flex-row items-center">
           <HeaderAction icon="menu" />
