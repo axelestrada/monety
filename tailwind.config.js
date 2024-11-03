@@ -14,6 +14,7 @@ module.exports = {
         "green-10": "#02AB5B1A",
         red: "#FF8092",
         accent: "#FF2883",
+        "dark-accent": "#f43385",
         "red-10": "#FF80921A",
         yellow: "#FFE56E",
       },

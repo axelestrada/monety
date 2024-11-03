@@ -85,13 +85,13 @@ const Transactions = () => {
           />
         }
       >
-        <View className="grow mt-4 mb-2">
+        <View className="grow mt-4 dark:mt-2 mb-2 dark:mb-0">
           {transactions.length <= 0 ? (
             <NoTransactions />
           ) : (
             <>
               <View className="flex flex-row justify-between items-center mb-2 mx-3">
-                <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#E0E2EE]">
+                <Text className="font-[Rounded-Bold] text-base text-main dark:text-[#E0E2EE]">
                   {moment(transactions[0].createdAt * 1000).isSame(
                     moment(),
                     "day"
@@ -102,7 +102,7 @@ const Transactions = () => {
                       )}
                 </Text>
 
-                <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#E0E2EE]">
+                <Text className="font-[Rounded-Bold] text-base text-main dark:text-[#E0E2EE]">
                   {format(
                     transactions.reduce((acc, cur) => {
                       if (cur.type === "Income") {

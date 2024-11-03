@@ -46,7 +46,7 @@ const CategoriesGrid = ({
       data={categories}
       refreshControl={refreshControl}
       ListHeaderComponent={() => (
-        <View className="flex flex-row mx-1.5 mb-3 py-1.5 bg-[#ffffff80] dark:bg-[#E0E2EE00] dark:mx-1.5 rounded-2xl">
+        <View className="flex flex-row mx-1.5 mb-3 dark:-mt-4 py-1.5 bg-[#ffffff80] dark:bg-[#E0E2EE00] dark:mx-0 rounded-2xl">
           <CashFlowItem
             type="Incomes"
             value={transactions

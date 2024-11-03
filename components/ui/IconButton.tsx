@@ -19,7 +19,7 @@ const IconButton = ({ children, active, highlight, onPress }: Props) => {
       onPress={onPress}
     >
       {children}
-      {active && <View className="bg-accent w-1.5 h-1.5 rounded-full absolute bottom-1 left-[21]"></View>}
+      {active && <View className="bg-accent dark:bg-dark-accent w-1.5 h-1.5 rounded-full absolute bottom-1 left-[21]"></View>}
     </TouchableOpacity>
   );
 };

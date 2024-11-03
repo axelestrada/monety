@@ -24,7 +24,7 @@ export default function HeaderAction({ icon, badge, ...others }: Props) {
       />
 
       {badge && (
-        <View className="bg-accent w-2 h-2 rounded-full absolute top-[7] right-[10]" />
+        <View className="bg-accent dark:bg-dark-accent w-2 h-2 rounded-full absolute top-[7] right-[10]" />
       )}
     </TouchableOpacity>
   );

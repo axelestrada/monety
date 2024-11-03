@@ -461,9 +461,9 @@ export default function Index() {
             onLongPress={() => setScrollEnabled(false)}
             delayLongPress={200}
           >
-            <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mt-5 dark:mt-0 mx-3 shadow-md shadow-main-25">
+            <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mt-4 dark:mt-2 mx-3 shadow-md shadow-main-25">
               <View className="mx-3 flex-row justify-between items-center">
-                <Text className="text-main dark:text-[#F5F5F5] text-xl font-[Rounded-Bold]">
+                <Text className="text-main dark:text-[#F5F5F5] text-lg font-[Rounded-Bold]">
                   Statistics
                 </Text>
 
@@ -677,14 +677,14 @@ export default function Index() {
             />
           </View>
           <View className="flex flex-row justify-between items-center mt-5 mb-2 mx-3">
-            <Text className="font-[Rounded-Bold] text-xl text-main dark:text-[#F5F5F5]">
+            <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#F5F5F5]">
               Latest Transactions
             </Text>
 
             {transactions.length > 0 && <SeeAllButton />}
           </View>
 
-          <View className="grow mb-2">
+          <View className="grow mb-2 dark:mb-0">
             {transactions.length > 0 ? (
               transactions
                 .slice(0, 10)
