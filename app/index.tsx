@@ -52,6 +52,7 @@ import calculateOffset from "@/utils/calculateOffset";
 import getYAxisLabelTexts from "@/utils/getYAxisLabelTexts";
 import calculateStepValue from "@/utils/calculateStepValue";
 import Header from "@/components/Header/Header";
+import calculateMaxValue from "@/utils/calculateMaxValue";
 
 const screenWidth = Dimensions.get("window").width;
 
@@ -263,13 +264,16 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
+    if (timeRange.interval === "all time" || timeRange.interval === "custom")
+      return;
+
     const startDate = moment(
       Math.min(
         ...transactions
           .filter((tr) => tr.type !== "Transfer")
           .map((tr) => tr.date * 1000)
       )
-    ).startOf("hour");
+    ).startOf(timeRange.interval === "day" ? "hour" : timeRange.interval);
 
     setStartDate(startDate.unix());
 
@@ -279,57 +283,99 @@ export default function Index() {
           .filter((tr) => tr.type !== "Transfer")
           .map((tr) => tr.date * 1000)
       )
-    ).endOf("hour");
-
-    const hoursOfDifference = moment(endDate).diff(startDate, "hours");
+    ).endOf(timeRange.interval === "day" ? "hour" : timeRange.interval);
 
     const newIncomes: lineDataItem[] = [];
     const newExpenses: lineDataItem[] = [];
 
     let newMaxValue: number = 0;
 
-    for (let i = 0; i <= hoursOfDifference; i++) {
-      const currentDate = moment(startDate).add(i, "hour");
+    if (timeRange.interval !== "day") {
+      const daysOfDifference = moment(endDate).diff(startDate, "days");
 
-      const incomesAmount = Math.round(
-        transactions
-          .filter((tr) => tr.type !== "Transfer")
-          .filter((tr) => tr.type === "Income")
-          .filter(
-            (tr) =>
-              tr.date >= moment(currentDate).startOf("hour").unix() &&
-              tr.date <= moment(currentDate).endOf("hour").unix()
-          )
-          .reduce((acc, curr) => acc + curr.amount, 0)
-      );
+      for (let i = 0; i <= daysOfDifference; i++) {
+        const currentDate = moment(startDate).add(i, "day");
 
-      const expensesAmount = Math.round(
-        transactions
-          .filter((tr) => tr.type !== "Transfer")
-          .filter((tr) => tr.type === "Expense")
-          .filter(
-            (tr) =>
-              tr.date >= moment(currentDate).startOf("hour").unix() &&
-              tr.date <= moment(currentDate).endOf("hour").unix()
-          )
-          .reduce((acc, curr) => acc + curr.amount, 0)
-      );
+        const incomesAmount = Math.round(
+          transactions
+            .filter((tr) => tr.type !== "Transfer")
+            .filter((tr) => tr.type === "Income")
+            .filter(
+              (tr) =>
+                tr.date >= moment(currentDate).startOf("day").unix() &&
+                tr.date <= moment(currentDate).endOf("day").unix()
+            )
+            .reduce((acc, curr) => acc + curr.amount, 0)
+        );
 
-      const incomesLabelSize = (incomesAmount.toString().length + 1) * 14;
+        const expensesAmount = Math.round(
+          transactions
+            .filter((tr) => tr.type !== "Transfer")
+            .filter((tr) => tr.type === "Expense")
+            .filter(
+              (tr) =>
+                tr.date >= moment(currentDate).startOf("day").unix() &&
+                tr.date <= moment(currentDate).endOf("day").unix()
+            )
+            .reduce((acc, curr) => acc + curr.amount, 0)
+        );
 
-      newMaxValue = incomesAmount > newMaxValue ? incomesAmount : newMaxValue;
+        newMaxValue = incomesAmount > newMaxValue ? incomesAmount : newMaxValue;
 
-      newIncomes.push({
-        value: incomesAmount,
-      });
+        newIncomes.push({
+          value: incomesAmount,
+        });
 
-      const expensesLabelSize = (expensesAmount.toString().length + 1) * 14;
+        newMaxValue =
+          expensesAmount > newMaxValue ? expensesAmount : newMaxValue;
 
-      newMaxValue = expensesAmount > newMaxValue ? expensesAmount : newMaxValue;
+        newExpenses.push({
+          value: expensesAmount,
+        });
+      }
+    } else {
+      const hoursOfDifference = moment(endDate).diff(startDate, "hours");
 
-      newExpenses.push({
-        value: expensesAmount,
-      });
+      for (let i = 0; i <= hoursOfDifference; i++) {
+        const currentDate = moment(startDate).add(i, "hour");
+
+        const incomesAmount = Math.round(
+          transactions
+            .filter((tr) => tr.type !== "Transfer")
+            .filter((tr) => tr.type === "Income")
+            .filter(
+              (tr) =>
+                tr.date >= moment(currentDate).startOf("hour").unix() &&
+                tr.date <= moment(currentDate).endOf("hour").unix()
+            )
+            .reduce((acc, curr) => acc + curr.amount, 0)
+        );
+
+        const expensesAmount = Math.round(
+          transactions
+            .filter((tr) => tr.type !== "Transfer")
+            .filter((tr) => tr.type === "Expense")
+            .filter(
+              (tr) =>
+                tr.date >= moment(currentDate).startOf("hour").unix() &&
+                tr.date <= moment(currentDate).endOf("hour").unix()
+            )
+            .reduce((acc, curr) => acc + curr.amount, 0)
+        );
+
+        newMaxValue = incomesAmount > newMaxValue ? incomesAmount : newMaxValue;
+
+        newIncomes.push({
+          value: incomesAmount,
+        });
+
+        newMaxValue =
+          expensesAmount > newMaxValue ? expensesAmount : newMaxValue;
+
+        newExpenses.push({
+          value: expensesAmount,
+        });
+      }
     }
 
     if (newIncomes.length === 0 && newExpenses.length === 0) {
@@ -369,28 +415,6 @@ export default function Index() {
       setMaxValue(max);
       setMinValue(min);
     }
-
-    let newBreakPoints: number[] = [];
-
-    if (hoursOfDifference <= 2) {
-      for (let index = 0; index <= hoursOfDifference; index++) {
-        newBreakPoints.push(moment(startDate).add(index, "hour").unix());
-      }
-    } else {
-      const middle = Math.ceil(hoursOfDifference / 2);
-
-      newBreakPoints.push(moment(startDate).unix());
-
-      newBreakPoints.push(moment(startDate).add(middle, "hour").unix());
-
-      newBreakPoints.push(moment(endDate).startOf("hour").unix());
-    }
-
-    setBreakpoints(
-      newBreakPoints.length === 1
-        ? [...newBreakPoints, moment(startDate).add(1, "hour").unix()]
-        : newBreakPoints
-    );
   }, [transactions]);
 
   // #region Load Fonts
@@ -418,10 +442,7 @@ export default function Index() {
     return (screenWidth - 88) / (data.length - 1);
   };
 
-  const offset = calculateOffset(maxValue, minValue);
-
-  const stepValue = calculateStepValue(maxValue, minValue);
-  const yAxisLabelTexts = getYAxisLabelTexts(maxValue, minValue, stepValue);
+  const yAxisLabelTexts = getYAxisLabelTexts(minValue, maxValue, 3);
 
   const diff = maxValue - minValue;
 
@@ -492,20 +513,16 @@ export default function Index() {
                   isAnimated
                   height={150}
                   width={spacing(incomes) > 48 ? screenWidth - 69 : undefined}
-                  disableScroll={false}
                   pointerConfig={{
                     activatePointersOnLongPress: true,
                     pointer1Color:
                       colorScheme === "dark" ? "#5bbe77" : "#02AB5B",
                     pointer2Color:
                       colorScheme === "dark" ? "#FF8092" : "#FF8092",
-                    pointerStripWidth: 2,
-                    strokeDashArray: [2, 5],
                     autoAdjustPointerLabelPosition: true,
                     pointerLabelHeight: 45,
                     activatePointersDelay: 200,
                     radius: 5,
-                    stripOverPointer: true,
                     pointerVanishDelay: 0,
                     pointerLabelComponent: (
                       items: any,
@@ -549,9 +566,13 @@ export default function Index() {
                               fontSize: 12,
                             }}
                           >
-                            {moment(startDate * 1000)
-                              .add(idx, "hour")
-                              .format("hh:mm A")}
+                            {timeRange.interval === "day"
+                              ? moment(startDate * 1000)
+                                  .add(idx, "hour")
+                                  .format("hh:mm A")
+                              : moment(startDate * 1000)
+                                  .add(idx, "day")
+                                  .format("MMM DD")}
                           </Text>
                           <View className="flex-row items-center justify-center flex-[1] w-full px-1">
                             <Text
@@ -606,28 +627,9 @@ export default function Index() {
                   hideDataPoints
                   yAxisLabelWidth={45}
                   yAxisLabelTexts={yAxisLabelTexts}
-                  stepHeight={135 / 3}
+                  stepHeight={150 / 3}
                   noOfSections={3}
-                  maxValue={
-                    diff <= 30 && minValue <= 30 && minValue !== 0
-                      ? (maxValue >= 10 ? maxValue : 10) * 3 +
-                        Math.round(
-                          ((maxValue >= 10 ? maxValue : 10) * 3 * 10) / 100
-                        )
-                      : diff <= 30 && minValue <= 30
-                      ? 33
-                      : maxValue + offset
-                  }
-                  yAxisOffset={
-                    diff <= 30 && minValue <= 30 && minValue !== 0
-                      ? minValue -
-                        Math.round(
-                          ((maxValue >= 10 ? maxValue : 10) * 3 * 10) / 100
-                        )
-                      : minValue === 0 || (diff <= 30 && minValue <= 30)
-                      ? -offset
-                      : minValue - offset
-                  }
+                  maxValue={calculateMaxValue(minValue, maxValue)}
                   xAxisThickness={0}
                   yAxisThickness={0}
                   yAxisTextStyle={{
