@@ -1,4 +1,4 @@
-import { Stack } from "expo-router";
+import { Drawer } from "expo-router/drawer";
 import { SQLiteProvider } from "expo-sqlite";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -7,23 +7,50 @@ import { Provider } from "react-redux";
 
 export default function Layout() {
   return (
-    
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
         <SQLiteProvider databaseName="todos.db">
-          <Stack
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <Stack.Screen name="index" />
-            <Stack.Screen name="accounts" />
-            <Stack.Screen name="categories" />
-            <Stack.Screen name="add-category" />
-            <Stack.Screen name="add-account" />
-            <Stack.Screen name="transactions" />
-          </Stack>
+          <Drawer >
+             <Drawer.Screen
+                options={{
+                  headerShown: false
+                }}
+                name="index" // This is the name of the page and must match the url from root
+              />
+              <Drawer.Screen
+              options={{
+                headerShown: false
+              }}
+                name="accounts" // This is the name of the page and must match the url from root
+              />
+              <Drawer.Screen
+              options={{
+                headerShown: false
+              }}
+                name="add-account" // This is the name of the page and must match the url from root
+              />
+
+              <Drawer.Screen
+              options={{
+                headerShown: false
+              }}
+                name="add-category" // This is the name of the page and must match the url from root
+              />
+              <Drawer.Screen
+              options={{
+                headerShown: false
+              }}
+                name="categories" // This is the name of the page and must match the url from root
+              />
+              <Drawer.Screen
+              options={{
+                headerShown: false
+              }}
+                name="transactions" // This is the name of the page and must match the url from root
+              />
+          </Drawer>
         </SQLiteProvider>
       </Provider>
-    
+    </GestureHandlerRootView>
   );
 }
