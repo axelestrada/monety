@@ -170,7 +170,7 @@ function Categories() {
         </View>
       </Modal>
 
-      <Header overallBalance timeRange />
+      <Header overallBalance dateRange />
 
       <CategoriesGrid
         type={type}

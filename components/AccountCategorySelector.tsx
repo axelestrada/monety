@@ -31,7 +31,7 @@ function AccountCategorySelector({
   return (
     <ScrollView className="p-3 h-[400]">
       <View className="mb-3">
-        <Text className="text-center mb-4 mt-2 text-xl font-[Rounded-Bold] text-main dark:text-[#E0E2EE]">
+        <Text className="text-center mb-4 mt-2 text-xl font-[Rounded-Bold] text-main dark:text-[#f5f5f5]">
           Select {type === "Accounts" ? "Account" : "Category"}
         </Text>
 
@@ -82,7 +82,7 @@ function AccountCategorySelector({
                       <View style={{ flex: 1 }}>
                         <Text
                           numberOfLines={1}
-                          className="text-main dark:text-[#E0E2EE] font-[Rounded-Medium] text-lg"
+                          className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium] text-lg"
                         >
                           {category.name}
                         </Text>
@@ -135,7 +135,7 @@ function AccountCategorySelector({
                       </View>
 
                       <View style={{ flex: 1 }}>
-                        <Text className="font-[Rounded-Medium] text-lg text-main dark:text-[#E0E2EE]">
+                        <Text className="font-[Rounded-Medium] text-lg text-main dark:text-[#f5f5f5]">
                           {account.name}
                         </Text>
 
@@ -143,7 +143,7 @@ function AccountCategorySelector({
                           className={`font-[Rounded-Regular] text-base ${
                             account.currentBalance < 0
                               ? "text-red"
-                              : "text-main-500 dark:text-[#E0E2EE80]"
+                              : "text-main-500 dark:text-[#f5f5f580]"
                           }`}
                         >
                           L{" "}

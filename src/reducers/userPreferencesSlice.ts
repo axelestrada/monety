@@ -12,6 +12,7 @@ const initialState: IInitialState = {
   timeRange: {
     from: moment().startOf("day").unix(),
     to: moment().endOf("day").unix(),
+    interval: "day",
   },
   loading: true,
 };
@@ -21,7 +22,7 @@ const userPreferencesSlice = createSlice({
   initialState,
   reducers: {
     updateTimeRange: (state, action) => {
-      state.timeRange = action.payload;
+      state.timeRange = { ...state.timeRange, ...action.payload };
     },
     setLoading: (
       state,

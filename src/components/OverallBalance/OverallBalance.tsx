@@ -3,13 +3,13 @@ import { Text, View } from "react-native";
 import { useTypedSelector } from "@/store";
 import { formatCurrency } from "@/utils";
 
-import TimeRange from "../TimeRange/TimeRange";
+import DateRange from "../DateRange/DateRange";
 
 interface Props {
-  timeRange?: boolean;
+  dateRange?: boolean;
 }
 
-const OverallBalance = ({ timeRange }: Props) => {
+const OverallBalance = ({ dateRange }: Props) => {
   const { accounts } = useTypedSelector((state) => state.accounts);
 
   const totalBalance = formatCurrency(
@@ -30,7 +30,7 @@ const OverallBalance = ({ timeRange }: Props) => {
         {totalBalance}
       </Text>
 
-      {timeRange && <TimeRange />}
+      {dateRange && <DateRange />}
     </View>
   );
 };

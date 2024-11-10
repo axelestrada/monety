@@ -7,10 +7,10 @@ import OverallBalance from "@/components/OverallBalance/OverallBalance";
 
 interface Props {
   overallBalance?: boolean;
-  timeRange?: boolean;
+  dateRange?: boolean;
 }
 
-export default function Header({ overallBalance, timeRange }: Props) {
+export default function Header({ overallBalance, dateRange }: Props) {
   const { toggleColorScheme } = useColorScheme();
 
   return (
@@ -30,7 +30,7 @@ export default function Header({ overallBalance, timeRange }: Props) {
         </View>
       </View>
 
-      {overallBalance && <OverallBalance timeRange={timeRange} />}
+      {overallBalance && <OverallBalance dateRange={dateRange} />}
     </View>
   );
 }

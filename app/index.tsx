@@ -438,7 +438,7 @@ export default function Index() {
           backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#0D0D0D"}
         />
 
-        <Header overallBalance timeRange />
+        <Header overallBalance dateRange />
 
         <ScrollView
           contentContainerStyle={{ flexGrow: 1 }}
