@@ -73,8 +73,8 @@ export default function Index() {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const [incomes, setIncomes] = useState<lineDataItem[]>([{ value: 0 }]);
-  const [expenses, setExpenses] = useState<lineDataItem[]>([{ value: 0 }]);
+  const [incomes, setIncomes] = useState<lineDataItem[]>([{ value: 0 }, { value: 0 }]);
+  const [expenses, setExpenses] = useState<lineDataItem[]>([{ value: 0 }, { value: 0 }]);
 
   const [maxValue, setMaxValue] = useState(100);
   const [minValue, setMinValue] = useState(0);
@@ -380,8 +380,8 @@ export default function Index() {
     }
 
     if (newIncomes.length === 0 && newExpenses.length === 0) {
-      setIncomes([]);
-      setExpenses([]);
+      setIncomes([{value: 0}, {value: 0}]);
+      setExpenses([{value: 0}, {value: 0}]);
       setMaxValue(100);
       setMinValue(0);
       return;
