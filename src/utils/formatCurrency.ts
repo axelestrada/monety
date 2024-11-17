@@ -17,8 +17,6 @@ export default function formatCurrency(
 
   let sign = isNegative ? "-" : "+";
 
-  console.log(spacing, showSign);
-
   if (isNegative) {
     formattedNumber = formattedNumber.slice(1);
   }
