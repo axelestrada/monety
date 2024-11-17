@@ -463,6 +463,14 @@ export default function Index() {
 
   const diff = maxValue - minValue;
 
+  moment.updateLocale("en", {
+    week: {
+      dow: 1,
+    },
+  });
+
+  moment.locale("en");
+
   //#endregion
 
   return (

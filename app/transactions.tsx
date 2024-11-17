@@ -24,6 +24,8 @@ import { transactionServices } from "@/reducers/transactionsSlice";
 import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
 import moment from "moment";
+import _ from "lodash";
+import { formatCurrency } from "@/utils";
 
 const Transactions = () => {
   const { transactions }: { transactions: ITransaction[] } = useTypedSelector(
@@ -47,21 +49,32 @@ const Transactions = () => {
 
   const { colorScheme } = useColorScheme();
 
-  const format = (number: number) => {
-    const formattedNumber = Intl.NumberFormat("en-US").format(number);
+  const groupTransactionsByDate = (
+    transactions: ITransaction[]
+  ): { date: number; transactions: ITransaction[] }[] => {
+    const grouped = transactions.reduce((groups, transaction) => {
+      const dateKey = moment(transaction.createdAt * 1000)
+        .startOf("day")
+        .valueOf()
+        .toString(); // Convertimos la fecha a string para usarla como clave
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+      groups[dateKey].push(transaction);
+      return groups;
+    }, {} as Record<string, ITransaction[]>);
 
-    if (number < 0) {
-      return "- L " + formattedNumber.toString().slice(1);
-    }
-
-    if (number === 0) {
-      return "L " + formattedNumber;
-    }
-
-    if (number > 0) {
-      return "+ L " + formattedNumber;
-    }
+    // Transformar el objeto a un arreglo con la estructura deseada
+    return Object.entries(grouped)
+      .map(([date, transactions]) => ({
+        date: Number(date), // Convertimos la clave nuevamente a número
+        transactions,
+      }))
+      .sort((a, b) => b.date - a.date);
   };
+
+  const groupedTransactions = groupTransactionsByDate(transactions);
+  console.log(groupedTransactions);
 
   return (
     <SafeAreaView className="flex-1 bg-light-background dark:bg-[#0D0D0D]">
@@ -86,43 +99,44 @@ const Transactions = () => {
         }
       >
         <View className="grow mt-4 dark:mt-2 mb-2 dark:mb-0">
-          {transactions.length <= 0 ? (
+          {groupedTransactions.length <= 0 ? (
             <NoTransactions />
           ) : (
-            <>
-              <View className="flex flex-row justify-between items-center mb-2 mx-3">
-                <Text className="font-[Rounded-Bold] text-base text-main dark:text-[#E0E2EE]">
-                  {moment(transactions[0].createdAt * 1000).isSame(
-                    moment(),
-                    "day"
-                  )
-                    ? "Today"
-                    : moment(transactions[0].createdAt * 1000).format(
-                        "MMMM DD YYYY"
-                      )}
-                </Text>
+            groupedTransactions.map(({ date, transactions }) => (
+              <>
+                <View className="flex flex-row justify-between items-center mb-2 mx-3">
+                  <Text className="font-[Rounded-Bold] text-base text-main dark:text-[#E0E2EE]">
+                    {moment(date).isSame(moment(), "day")
+                      ? "Today"
+                      : moment(date).format("ddd, MMM DD")}
+                  </Text>
 
-                <Text className="font-[Rounded-Bold] text-base text-main dark:text-[#E0E2EE]">
-                  {format(
-                    transactions.reduce((acc, cur) => {
-                      if (cur.type === "Income") {
-                        return acc + cur.amount;
+                  <Text className="font-[Rounded-Bold] text-base text-main dark:text-[#E0E2EE]">
+                    {formatCurrency(
+                      transactions.reduce((acc, cur) => {
+                        if (cur.type === "Income") {
+                          return acc + cur.amount;
+                        }
+
+                        if (cur.type === "Expense") {
+                          return acc - cur.amount;
+                        }
+
+                        return acc;
+                      }, 0),
+                      {
+                        showSign: "always",
+                        spacing: true,
                       }
+                    )}
+                  </Text>
+                </View>
 
-                      if (cur.type === "Expense") {
-                        return acc - cur.amount;
-                      }
-
-                      return acc;
-                    }, 0)
-                  )}
-                </Text>
-              </View>
-
-              {transactions.map((transaction) => (
-                <Transaction key={transaction.id} transaction={transaction} />
-              ))}
-            </>
+                {transactions.map((transaction) => (
+                  <Transaction key={transaction.id} transaction={transaction} />
+                ))}
+              </>
+            ))
           )}
         </View>
       </ScrollView>
