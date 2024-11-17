@@ -12,12 +12,10 @@ interface Props {
 const OverallBalance = ({ dateRange }: Props) => {
   const { accounts } = useTypedSelector((state) => state.accounts);
 
-  const totalBalance = formatCurrency(
-    accounts.reduce(
-      (acc, { includeInOverallBalance, currentBalance }) =>
-        includeInOverallBalance ? acc + currentBalance : acc,
-      0
-    )
+  const totalBalance = accounts.reduce(
+    (acc, account) =>
+      account.includeInOverallBalance ? acc + account.currentBalance : acc,
+    0
   );
 
   return (
@@ -27,7 +25,9 @@ const OverallBalance = ({ dateRange }: Props) => {
       </Text>
 
       <Text className="text-main dark:text-[#F5F5F5] font-[Rounded-Bold] text-3.5xl">
-        {totalBalance}
+        {formatCurrency(totalBalance, {
+          spacing: true,
+        })}
       </Text>
 
       {dateRange && <DateRange />}

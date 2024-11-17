@@ -20,7 +20,7 @@ export default function Header({ overallBalance, dateRange }: Props) {
           <HeaderAction icon="menu" />
 
           <Text className="ml-1 font-[Rounded-Bold] text-xl text-main dark:text-[#f5f5f5]">
-            Monety
+            Hi, Axel
           </Text>
         </View>
 
