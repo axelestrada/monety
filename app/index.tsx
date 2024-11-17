@@ -1,3 +1,4 @@
+import lodash from "lodash";
 import {
   Dimensions,
   RefreshControl,
@@ -442,11 +443,17 @@ export default function Index() {
     return (screenWidth - 88) / (data.length - 1);
   };
 
-  const yAxisLabelTexts = getYAxisLabelTexts(minValue, maxValue, 3);
+  const yAxisLabelTexts = getYAxisLabelTexts(
+    minValue,
+    calculateMaxValue(minValue, maxValue),
+    3
+  );
 
   const diff = maxValue - minValue;
 
   //#endregion
+
+  
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
