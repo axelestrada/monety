@@ -73,12 +73,18 @@ export default function Index() {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const [incomes, setIncomes] = useState<lineDataItem[]>([{ value: 0 }, { value: 0 }]);
-  const [expenses, setExpenses] = useState<lineDataItem[]>([{ value: 0 }, { value: 0 }]);
+  const [incomes, setIncomes] = useState<lineDataItem[]>([
+    { value: 0 },
+    { value: 0 },
+  ]);
+  const [expenses, setExpenses] = useState<lineDataItem[]>([
+    { value: 0 },
+    { value: 0 },
+  ]);
 
   const [maxValue, setMaxValue] = useState(100);
   const [minValue, setMinValue] = useState(0);
-  const [breakpoints, setBreakpoints] = useState<number[]>([]);
+  const [breakpoints, setBreakpoints] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<number>(0);
 
   const { colorScheme, toggleColorScheme } = useColorScheme();
@@ -274,7 +280,7 @@ export default function Index() {
           .filter((tr) => tr.type !== "Transfer")
           .map((tr) => tr.date * 1000)
       )
-    ).startOf(timeRange.interval === "day" ? "hour" : timeRange.interval);
+    ).startOf(timeRange.interval === "day" ? "hour" : "day");
 
     setStartDate(startDate.unix());
 
@@ -284,12 +290,14 @@ export default function Index() {
           .filter((tr) => tr.type !== "Transfer")
           .map((tr) => tr.date * 1000)
       )
-    ).endOf(timeRange.interval === "day" ? "hour" : timeRange.interval);
+    ).endOf(timeRange.interval === "day" ? "hour" : "day");
 
     const newIncomes: lineDataItem[] = [];
     const newExpenses: lineDataItem[] = [];
 
     let newMaxValue: number = 0;
+
+    const breakpoints: string[] = [];
 
     if (timeRange.interval !== "day") {
       const daysOfDifference = moment(endDate).diff(startDate, "days");
@@ -376,12 +384,16 @@ export default function Index() {
         newExpenses.push({
           value: expensesAmount,
         });
+
+        breakpoints.push(moment(currentDate).startOf("hour").format("hh:mm"));
       }
     }
 
+    setBreakpoints(breakpoints);
+
     if (newIncomes.length === 0 && newExpenses.length === 0) {
-      setIncomes([{value: 0}, {value: 0}]);
-      setExpenses([{value: 0}, {value: 0}]);
+      setIncomes([{ value: 0 }, { value: 0 }]);
+      setExpenses([{ value: 0 }, { value: 0 }]);
       setMaxValue(100);
       setMinValue(0);
       return;
@@ -452,8 +464,6 @@ export default function Index() {
   const diff = maxValue - minValue;
 
   //#endregion
-
-  
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -632,11 +642,11 @@ export default function Index() {
                   spacing={spacing(incomes)}
                   endSpacing={-(spacing(incomes) - 12)}
                   hideDataPoints
-                  yAxisLabelWidth={45}
                   yAxisLabelTexts={yAxisLabelTexts}
                   stepHeight={150 / 3}
                   noOfSections={3}
                   maxValue={calculateMaxValue(minValue, maxValue)}
+                  yAxisLabelWidth={45}
                   xAxisThickness={0}
                   yAxisThickness={0}
                   yAxisTextStyle={{
