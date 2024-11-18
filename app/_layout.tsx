@@ -10,44 +10,20 @@ export default function Layout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
         <SQLiteProvider databaseName="todos.db">
-          <Drawer>
-             <Drawer.Screen
-                options={{
-                  headerShown: false
-                }}
-                name="index" // This is the name of the page and must match the url from root
-              />
-              <Drawer.Screen
-              options={{
-                headerShown: false
-              }}
-                name="accounts" // This is the name of the page and must match the url from root
-              />
-              <Drawer.Screen
-              options={{
-                headerShown: false
-              }}
-                name="add-account" // This is the name of the page and must match the url from root
-              />
+          <Drawer
+            screenOptions={{
+              headerShown: false,
+              drawerType: "front",
+              lazy: false,
+            }}
+          >
+            <Drawer.Screen name="index" />
+            <Drawer.Screen name="accounts" />
+            <Drawer.Screen name="add-account" />
 
-              <Drawer.Screen
-              options={{
-                headerShown: false
-              }}
-                name="add-category" // This is the name of the page and must match the url from root
-              />
-              <Drawer.Screen
-              options={{
-                headerShown: false
-              }}
-                name="categories" // This is the name of the page and must match the url from root
-              />
-              <Drawer.Screen
-              options={{
-                headerShown: false
-              }}
-                name="transactions" // This is the name of the page and must match the url from root
-              />
+            <Drawer.Screen name="add-category" />
+            <Drawer.Screen name="categories" />
+            <Drawer.Screen name="transactions" />
           </Drawer>
         </SQLiteProvider>
       </Provider>

@@ -101,8 +101,8 @@ const Transactions = () => {
             <NoTransactions />
           ) : (
             groupedTransactions.map(({ date, transactions }) => (
-              <>
-                <View key={date} className="flex flex-row justify-between items-center mb-2 mx-3">
+              <View key={"summary" + date}>
+                <View className="flex flex-row justify-between items-center mb-2 mx-3">
                   <Text className="font-[Rounded-Bold] text-base text-main dark:text-[#E0E2EE]">
                     {moment(date).isSame(moment(), "day")
                       ? "Today"
@@ -133,7 +133,7 @@ const Transactions = () => {
                 {transactions.map((transaction) => (
                   <Transaction key={transaction.id} transaction={transaction} />
                 ))}
-              </>
+              </View>
             ))
           )}
         </View>

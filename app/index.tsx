@@ -544,10 +544,11 @@ export default function Index() {
                     pointer2Color:
                       colorScheme === "dark" ? "#FF8092" : "#FF8092",
                     autoAdjustPointerLabelPosition: true,
+                    stripOverPointer: true,
                     pointerLabelHeight: 45,
                     activatePointersDelay: 200,
                     radius: 5,
-                    pointerVanishDelay: 0,
+                    pointerVanishDelay: 1000,
                     pointerLabelComponent: (
                       items: any,
                       si: any,
