@@ -10,7 +10,7 @@ export default function Layout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
         <SQLiteProvider databaseName="todos.db">
-          <Drawer >
+          <Drawer>
              <Drawer.Screen
                 options={{
                   headerShown: false

@@ -24,7 +24,6 @@ import { transactionServices } from "@/reducers/transactionsSlice";
 import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
 import moment from "moment";
-import _ from "lodash";
 import { formatCurrency } from "@/utils";
 
 const Transactions = () => {
@@ -74,7 +73,6 @@ const Transactions = () => {
   };
 
   const groupedTransactions = groupTransactionsByDate(transactions);
-  console.log(groupedTransactions);
 
   return (
     <SafeAreaView className="flex-1 bg-light-background dark:bg-[#0D0D0D]">
@@ -104,7 +102,7 @@ const Transactions = () => {
           ) : (
             groupedTransactions.map(({ date, transactions }) => (
               <>
-                <View className="flex flex-row justify-between items-center mb-2 mx-3">
+                <View key={date} className="flex flex-row justify-between items-center mb-2 mx-3">
                   <Text className="font-[Rounded-Bold] text-base text-main dark:text-[#E0E2EE]">
                     {moment(date).isSame(moment(), "day")
                       ? "Today"
