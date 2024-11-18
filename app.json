@@ -5,7 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
