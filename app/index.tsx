@@ -535,7 +535,7 @@ export default function Index() {
                   data={incomes}
                   data2={expenses}
                   overflowTop={100}
-                  isAnimated
+                  isAnimated={false}
                   height={150}
                   width={spacing(incomes) > 48 ? screenWidth - 69 : undefined}
                   pointerConfig={{
