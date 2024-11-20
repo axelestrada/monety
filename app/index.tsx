@@ -56,6 +56,8 @@ import calculateMaxValue from "@/utils/calculateMaxValue";
 
 const screenWidth = Dimensions.get("window").width;
 
+SplashScreen.preventAutoHideAsync();
+
 export default function Index() {
   const db = useSQLiteContext();
   const { timeRange } = useTypedSelector((state) => state.userPreferences);
@@ -430,21 +432,22 @@ export default function Index() {
   }, [transactions]);
 
   // #region Load Fonts
-  const [fontsLoaded, fontError] = useFonts({
+  const [loaded, error] = useFonts({
     "Rounded-Regular": require("../assets/fonts/Rounded-Regular.ttf"),
     "Rounded-Medium": require("../assets/fonts/Rounded-Medium.ttf"),
     "Rounded-Bold": require("../assets/fonts/Rounded-Bold.ttf"),
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [loaded, error]);
 
-  if (!fontsLoaded && !fontError) {
+  if (!loaded && !error) {
     return null;
   }
+
 
   const spacing = (data: lineDataItem[]) => {
     if (data.length === 0) return 0;
@@ -476,7 +479,7 @@ export default function Index() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaView
         className="flex flex-1 bg-light-background dark:bg-[#0D0D0D]"
-        onLayout={onLayoutRootView}
+        
       >
         <StatusBar
           style={colorScheme === "dark" ? "light" : "dark"}
@@ -534,9 +537,9 @@ export default function Index() {
                   data={incomes}
                   data2={expenses}
                   overflowTop={100}
-                  isAnimated={false}
+                  isAnimated
                   height={150}
-                  width={spacing(incomes) > 48 ? screenWidth - 69 : undefined}
+                  customDataPoint={() => (<></>)}
                   pointerConfig={{
                     activatePointersOnLongPress: true,
                     pointer1Color:
@@ -548,7 +551,6 @@ export default function Index() {
                     pointerLabelHeight: 45,
                     activatePointersDelay: 200,
                     radius: 5,
-                    pointerVanishDelay: 1000,
                     pointerLabelComponent: (
                       items: any,
                       si: any,
@@ -634,7 +636,6 @@ export default function Index() {
                     pointerLabelWidth: 80,
                     showPointerStrip: false,
                     resetPointerOnDataChange: false,
-                    pointerEvents: "auto",
                   }}
                   hideRules
                   areaChart={colorScheme === "light"}

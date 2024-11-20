@@ -5,7 +5,6 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "newArchEnabled": false,
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
@@ -23,11 +22,7 @@
       },
       "package": "com.axelestrada.moneymanager"
     },
-    "plugins": [
-      "expo-router",
-      "expo-asset",
-      "expo-font"
-    ],
+    "plugins": ["expo-router", "expo-asset", "expo-font"],
     "experiments": {
       "typedRoutes": true
     },

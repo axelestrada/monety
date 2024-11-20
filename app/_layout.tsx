@@ -1,4 +1,4 @@
-import { Drawer } from "expo-router/drawer";
+import { Stack } from "expo-router";
 import { SQLiteProvider } from "expo-sqlite";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -10,21 +10,19 @@ export default function Layout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
         <SQLiteProvider databaseName="todos.db">
-          <Drawer
+          <Stack
             screenOptions={{
               headerShown: false,
-              drawerType: "front",
-              lazy: false,
             }}
           >
-            <Drawer.Screen name="index" />
-            <Drawer.Screen name="accounts" />
-            <Drawer.Screen name="add-account" />
+            <Stack.Screen name="index" />
+            <Stack.Screen name="accounts" />
+            <Stack.Screen name="add-account" />
 
-            <Drawer.Screen name="add-category" />
-            <Drawer.Screen name="categories" />
-            <Drawer.Screen name="transactions" />
-          </Drawer>
+            <Stack.Screen name="add-category" />
+            <Stack.Screen name="categories" />
+            <Stack.Screen name="transactions" />
+          </Stack>
         </SQLiteProvider>
       </Provider>
     </GestureHandlerRootView>
