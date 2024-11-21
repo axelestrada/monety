@@ -531,11 +531,10 @@ export default function Index() {
 
               <View className="mt-3">
                 <LineChart
-                  isAnimated
+                 areaChart={colorScheme === "light"}
                   data={incomes}
+                  isAnimated
                   data2={expenses}
-                  width={spacing(incomes) > 48 ? screenWidth - 69 : undefined}
-                  height={150}
                   pointerConfig={{
                     activatePointersOnLongPress: true,
                     pointer1Color:
@@ -634,7 +633,6 @@ export default function Index() {
                     resetPointerOnDataChange: false,
                   }}
                   hideRules
-                  areaChart={colorScheme === "light"}
                   color1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
                   color2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
                   startFillColor1="#02AB5B"
