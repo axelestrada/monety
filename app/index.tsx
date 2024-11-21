@@ -312,8 +312,8 @@ export default function Index() {
             .filter((tr) => tr.type === "Income")
             .filter(
               (tr) =>
-                tr.date >= moment(currentDate).startOf("day").unix() &&
-                tr.date <= moment(currentDate).endOf("day").unix()
+                tr.createdAt >= moment(currentDate).startOf("day").unix() &&
+                tr.createdAt <= moment(currentDate).endOf("day").unix()
             )
             .reduce((acc, curr) => acc + curr.amount, 0)
         );
@@ -324,8 +324,8 @@ export default function Index() {
             .filter((tr) => tr.type === "Expense")
             .filter(
               (tr) =>
-                tr.date >= moment(currentDate).startOf("day").unix() &&
-                tr.date <= moment(currentDate).endOf("day").unix()
+                tr.createdAt >= moment(currentDate).startOf("day").unix() &&
+                tr.createdAt <= moment(currentDate).endOf("day").unix()
             )
             .reduce((acc, curr) => acc + curr.amount, 0)
         );
@@ -448,7 +448,6 @@ export default function Index() {
     return null;
   }
 
-
   const spacing = (data: lineDataItem[]) => {
     if (data.length === 0) return 0;
 
@@ -529,22 +528,98 @@ export default function Index() {
                 </View>
               </View>
 
+              <View className="absolute pointer-events-none opacity-0">
+                <LineChart
+                  areaChart
+                  curved
+                  data={incomes}
+                  data2={expenses}
+                  hideDataPoints
+                  spacing={68}
+                  color1="#8a56ce"
+                  color2="#56acce"
+                  startFillColor1="#8a56ce"
+                  startFillColor2="#56acce"
+                  endFillColor1="#8a56ce"
+                  endFillColor2="#56acce"
+                  startOpacity={0.9}
+                  endOpacity={0.2}
+                  initialSpacing={0}
+                  noOfSections={4}
+                  yAxisColor="white"
+                  yAxisThickness={0}
+                  rulesType="solid"
+                  rulesColor="gray"
+                  yAxisTextStyle={{ color: "gray" }}
+                  yAxisLabelSuffix="%"
+                  xAxisColor="lightgray"
+                  pointerConfig={{
+                    pointerStripUptoDataPoint: true,
+                    pointerStripColor: "lightgray",
+                    pointerStripWidth: 2,
+                    strokeDashArray: [2, 5],
+                    pointerColor: "lightgray",
+                    radius: 4,
+                    pointerLabelWidth: 100,
+                    pointerLabelHeight: 120,
+                    pointerLabelComponent: (items: any) => {
+                      return (
+                        <View
+                          style={{
+                            height: 120,
+                            width: 100,
+                            backgroundColor: "#282C3E",
+                            borderRadius: 4,
+                            justifyContent: "center",
+                            paddingLeft: 16,
+                          }}
+                        >
+                          <Text style={{ color: "lightgray", fontSize: 12 }}>
+                            {2018}
+                          </Text>
+                          <Text style={{ color: "white", fontWeight: "bold" }}>
+                            {items[0].value}
+                          </Text>
+                          <Text
+                            style={{
+                              color: "lightgray",
+                              fontSize: 12,
+                              marginTop: 12,
+                            }}
+                          >
+                            {2019}
+                          </Text>
+                          <Text style={{ color: "white", fontWeight: "bold" }}>
+                            {items[1].value}
+                          </Text>
+                        </View>
+                      );
+                    },
+                  }}
+                />
+              </View>
+
               <View className="mt-3">
                 <LineChart
-                 areaChart={colorScheme === "light"}
+                  areaChart={colorScheme === "light"}
                   data={incomes}
-                  isAnimated
                   data2={expenses}
+                  height={150}
+                  width={spacing(incomes) > 48 ? screenWidth - 69 : undefined}
+                  nestedScrollEnabled
+                  disableScroll={!scrollEnabled}
+                  adjustToWidth
+                  isAnimated
                   pointerConfig={{
-                    activatePointersOnLongPress: true,
                     pointer1Color:
                       colorScheme === "dark" ? "#5bbe77" : "#02AB5B",
                     pointer2Color:
                       colorScheme === "dark" ? "#FF8092" : "#FF8092",
                     autoAdjustPointerLabelPosition: true,
                     stripOverPointer: false,
+                    activatePointersOnLongPress: true,
                     pointerLabelHeight: 45,
-                    activatePointersDelay: 200,
+                    pointerVanishDelay: 500,
                     radius: 5,
                     pointerLabelComponent: (
                       items: any,
@@ -630,7 +705,7 @@ export default function Index() {
                     },
                     pointerLabelWidth: 80,
                     showPointerStrip: false,
-                    resetPointerOnDataChange: false,
+                    activatePointersDelay: 200,
                   }}
                   hideRules
                   color1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
