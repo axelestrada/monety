@@ -477,10 +477,7 @@ export default function Index() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView
-        className="flex flex-1 bg-light-background dark:bg-[#0D0D0D]"
-        
-      >
+      <SafeAreaView className="flex flex-1 bg-light-background dark:bg-[#0D0D0D]">
         <StatusBar
           style={colorScheme === "dark" ? "light" : "dark"}
           backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#0D0D0D"}
@@ -534,12 +531,11 @@ export default function Index() {
 
               <View className="mt-3">
                 <LineChart
+                  isAnimated
                   data={incomes}
                   data2={expenses}
-                  overflowTop={100}
-                  isAnimated
+                  width={spacing(incomes) > 48 ? screenWidth - 69 : undefined}
                   height={150}
-                  customDataPoint={() => (<></>)}
                   pointerConfig={{
                     activatePointersOnLongPress: true,
                     pointer1Color:
@@ -547,7 +543,7 @@ export default function Index() {
                     pointer2Color:
                       colorScheme === "dark" ? "#FF8092" : "#FF8092",
                     autoAdjustPointerLabelPosition: true,
-                    stripOverPointer: true,
+                    stripOverPointer: false,
                     pointerLabelHeight: 45,
                     activatePointersDelay: 200,
                     radius: 5,
