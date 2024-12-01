@@ -5,6 +5,8 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import store from "../store";
 import { Provider } from "react-redux";
 
+import "../global.css";
+
 export default function Layout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
