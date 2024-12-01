@@ -5,5 +5,5 @@ interface ScreenProps {
 }
 
 export default function Screen({ children }: ScreenProps) {
-  return <SafeAreaView className="flex-1 bg-red">{children}</SafeAreaView>;
+  return <SafeAreaView className="flex-1 bg-main-background">{children}</SafeAreaView>;
 }

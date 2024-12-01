@@ -24,7 +24,7 @@ import { transactionServices } from "@/reducers/transactionsSlice";
 import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
 import moment from "moment";
-import { formatCurrency } from "@/utils";
+import formatCurrency from "@/utils/formatCurrency";
 
 const Transactions = () => {
   const { transactions }: { transactions: ITransaction[] } = useTypedSelector(

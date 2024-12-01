@@ -1,7 +1,7 @@
 import { Text, View } from "react-native";
 
 import { useTypedSelector } from "@/store";
-import { formatCurrency } from "@/utils";
+import formatCurrency from "@/utils/formatCurrency";
 
 import DateRange from "@/components/DateRange";
 

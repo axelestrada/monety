@@ -1,4 +1,5 @@
-/** @type {import('tailwindcss').Config} */
+import type { Config } from "tailwindcss";
+
 module.exports = {
   content: [
     "./app/**/*.{js,jsx,ts,tsx}",
@@ -9,6 +10,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
+        "main-background": {
+          DEFAULT: "var(--color-main-background-default)",
+          light: "var(--color-main-background-light)",
+        },
         main: "#1B1D1C",
         "light-background": "#f5f6f7",
         "main-50": "#1B1D1C80",
@@ -30,4 +35,4 @@ module.exports = {
     },
   },
   plugins: [],
-};
+} satisfies Config;
