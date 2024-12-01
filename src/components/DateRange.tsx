@@ -7,7 +7,7 @@ import { useAppDispatch, useTypedSelector } from "@/store";
 import { userPreferencesServices } from "@/reducers/userPreferencesSlice";
 import { useColorScheme } from "nativewind";
 import IconButton from "@/components/ui/IconButton";
-import DateRangeIntervalSelector from "./DateRangeIntervalSelector";
+import DateRangeIntervalSelector from "@/components/DateRangeIntervalSelector";
 
 const DateRange = () => {
   const [showSelector, setShowSelector] = useState(false);

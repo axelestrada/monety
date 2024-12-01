@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import Modal from "../Modal/Modal";
+import Modal from "@/components/Modal";
 import { Ionicons } from "@expo/vector-icons";
 import { useColorScheme } from "nativewind";
 import { useAppDispatch, useTypedSelector } from "@/store";

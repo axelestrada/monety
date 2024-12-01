@@ -5,7 +5,7 @@ import { useColorScheme } from "nativewind";
 
 import HeaderAction from "./HeaderAction";
 
-import OverallBalance from "@/components/OverallBalance/OverallBalance";
+import OverallBalance from "@/components/OverallBalance";
 
 
 interface Props {

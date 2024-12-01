@@ -14,15 +14,7 @@ export default function Layout() {
             screenOptions={{
               headerShown: false,
             }}
-          >
-            <Stack.Screen name="index" />
-            <Stack.Screen name="accounts" />
-            <Stack.Screen name="add-account" />
-
-            <Stack.Screen name="add-category" />
-            <Stack.Screen name="categories" />
-            <Stack.Screen name="transactions" />
-          </Stack>
+          />
         </SQLiteProvider>
       </Provider>
     </GestureHandlerRootView>
