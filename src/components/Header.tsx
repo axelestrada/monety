@@ -1,38 +1,32 @@
-import { Text, View } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { View } from "react-native";
 
-import { useColorScheme } from "nativewind";
-
-import HeaderAction from "./HeaderAction";
-
+import CustomText from "@/components/CustomText";
+import HeaderAction from "@/components/HeaderAction";
 import OverallBalance from "@/components/OverallBalance";
 
-
-interface Props {
+interface HeaderProps {
   overallBalance?: boolean;
   dateRange?: boolean;
+  children?: React.ReactNode;
 }
 
-export default function Header({ overallBalance, dateRange }: Props) {
-  const navigation = useNavigation();
-
-  const { toggleColorScheme } = useColorScheme();
-
-   return (
-    <View className="py-2 px-2 bg-white dark:bg-[#0D0D0D] z-20 shadow-2xl shadow-[#1b1d1c4d]">
+export default function Header({
+  overallBalance,
+  dateRange,
+  children,
+}: HeaderProps) {
+  return (
+    <View className="py-2 px-2 bg-header-background z-20 shadow-2xl shadow-shadow-30 dark:shadow-none">
       <View className="flex-row justify-between items-center mb-2">
         <View className="flex-row items-center">
-          <HeaderAction icon="menu"/>
+          <HeaderAction icon="menu" />
 
-          <Text className="ml-1 font-[Rounded-Bold] text-xl text-main dark:text-[#f5f5f5]">
-            Hi, Axel
-          </Text>
+          <CustomText className="ml-1 font-[Rounded-Bold] text-lg text-text-primary">
+            Monety
+          </CustomText>
         </View>
 
-        <View className="flex-row items-center">
-          <HeaderAction icon="bell" badge />
-          <HeaderAction icon="search" onPress={toggleColorScheme} />
-        </View>
+        <View className="flex-row items-center">{children}</View>
       </View>
 
       {overallBalance && <OverallBalance dateRange={dateRange} />}

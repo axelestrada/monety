@@ -17,6 +17,18 @@ module.exports = {
         "header-background": {
           DEFAULT: "var(--color-header-background)",
         },
+        "shadow-30": {
+          DEFAULT: "var(--color-shadow-30)",
+        },
+        "text-primary": {
+          DEFAULT: "var(--color-text-primary)",
+        },
+        "icons-outline": {
+          DEFAULT: "var(--color-icons-outline)",
+        },
+        accent: {
+          DEFAULT: "var(--color-accent)",
+        },
         main: "#1B1D1C",
         "light-background": "#f5f6f7",
         "main-50": "#1B1D1C80",
@@ -26,8 +38,6 @@ module.exports = {
         green: "#02AB5B",
         "green-10": "#02AB5B1A",
         red: "#FF8092",
-        accent: "#FF2883",
-        "dark-accent": "#f43385",
         "red-10": "#FF80921A",
         yellow: "#FFE56E",
       },
