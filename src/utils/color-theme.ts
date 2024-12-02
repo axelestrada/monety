@@ -1,10 +1,7 @@
 import { vars } from "nativewind";
+import colors from "@/constants/colors";
 
 export const themes = {
-  light: vars({
-    "--color-main-background-default": "#F5F6F7",
-  }),
-  dark: vars({
-    "--color-main-background-default": "#0D0D0D",
-  }),
+  light: vars(colors.light),
+  dark: vars(colors.dark),
 };

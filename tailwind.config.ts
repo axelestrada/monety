@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import colors from "@/constants/colors";
 
 module.exports = {
   content: [
@@ -11,8 +12,10 @@ module.exports = {
     extend: {
       colors: {
         "main-background": {
-          DEFAULT: "var(--color-main-background-default)",
-          light: "var(--color-main-background-light)",
+          DEFAULT: "var(--color-main-background)",
+        },
+        "header-background": {
+          DEFAULT: "var(--color-header-background)",
         },
         main: "#1B1D1C",
         "light-background": "#f5f6f7",
