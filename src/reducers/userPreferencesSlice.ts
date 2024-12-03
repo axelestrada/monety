@@ -1,15 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { ITimeRange } from "@/interfaces";
+import IDateRange from "@/interfaces/dateRange";
 
 import moment from "moment";
 
 interface IInitialState {
-  timeRange: ITimeRange;
+  dateRange: IDateRange;
   loading: boolean;
 }
 
 const initialState: IInitialState = {
-  timeRange: {
+  dateRange: {
     from: moment().startOf("day").unix(),
     to: moment().endOf("day").unix(),
     interval: "day",
@@ -21,8 +21,13 @@ const userPreferencesSlice = createSlice({
   name: "userPreferencesSlice",
   initialState,
   reducers: {
-    updateTimeRange: (state, action) => {
-      state.timeRange = { ...state.timeRange, ...action.payload };
+    updateDateRange: (
+      state,
+      action: {
+        payload: Partial<IDateRange>;
+      }
+    ) => {
+      state.dateRange = { ...state.dateRange, ...action.payload };
     },
     setLoading: (
       state,

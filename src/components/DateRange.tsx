@@ -12,7 +12,7 @@ import DateRangeIntervalSelector from "@/components/DateRangeIntervalSelector";
 const DateRange = () => {
   const [showSelector, setShowSelector] = useState(false);
 
-  const { timeRange, loading } = useTypedSelector(
+  const { dateRange, loading } = useTypedSelector(
     (state) => state.userPreferences
   );
   const dispatch = useAppDispatch();
@@ -22,18 +22,18 @@ const DateRange = () => {
   const previousDay = () => {
     if (
       loading ||
-      timeRange.interval === "custom" ||
-      timeRange.interval === "all time"
+      dateRange.interval === "custom" ||
+      dateRange.interval === "all time"
     )
       return;
 
     dispatch(
-      userPreferencesServices.actions.updateTimeRange({
-        from: moment(timeRange.from * 1000)
-          .subtract(1, timeRange.interval)
+      userPreferencesServices.actions.updateDateRange({
+        from: moment(dateRange.from * 1000)
+          .subtract(1, dateRange.interval)
           .unix(),
-        to: moment(timeRange.to * 1000)
-          .subtract(1, timeRange.interval)
+        to: moment(dateRange.to * 1000)
+          .subtract(1, dateRange.interval)
           .unix(),
       })
     );
@@ -42,18 +42,18 @@ const DateRange = () => {
   const nextDay = () => {
     if (
       loading ||
-      timeRange.interval === "custom" ||
-      timeRange.interval === "all time"
+      dateRange.interval === "custom" ||
+      dateRange.interval === "all time"
     )
       return;
 
     dispatch(
-      userPreferencesServices.actions.updateTimeRange({
-        from: moment(timeRange.from * 1000)
-          .add(1, timeRange.interval)
+      userPreferencesServices.actions.updateDateRange({
+        from: moment(dateRange.from * 1000)
+          .add(1, dateRange.interval)
           .unix(),
-        to: moment(timeRange.to * 1000)
-          .add(1, timeRange.interval)
+        to: moment(dateRange.to * 1000)
+          .add(1, dateRange.interval)
           .unix(),
       })
     );
@@ -84,16 +84,16 @@ const DateRange = () => {
           onPress={() => setShowSelector(!showSelector)}
         >
           <Text className="text-main dark:text-[#f5f5f5] text-base font-[Rounded-Medium]">
-            {timeRange.interval === "week"
-              ? moment(timeRange.from * 1000).format("MMM DD") +
+            {dateRange.interval === "week"
+              ? moment(dateRange.from * 1000).format("MMM DD") +
                 " - " +
-                moment(timeRange.to * 1000).format("MMM DD")
-              : moment(timeRange.from * 1000).format(
-                  timeRange.interval === "day"
+                moment(dateRange.to * 1000).format("MMM DD")
+              : moment(dateRange.from * 1000).format(
+                  dateRange.interval === "day"
                     ? "MMMM DD YYYY"
-                    : timeRange.interval === "year"
+                    : dateRange.interval === "year"
                     ? "YYYY"
-                    : timeRange.interval === "month"
+                    : dateRange.interval === "month"
                     ? "MMMM"
                     : "MMMM DD YYYY"
                 )}

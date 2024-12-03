@@ -50,14 +50,14 @@ const intervals: {
 
 export default function DateRangeIntervalSelector({ active, ...props }: Props) {
   const dispatch = useAppDispatch();
-  const { timeRange } = useTypedSelector((state) => state.userPreferences);
+  const { dateRange } = useTypedSelector((state) => state.userPreferences);
 
-  const updateTimeRange = (
+  const updateDateRange = (
     interval: "day" | "week" | "month" | "year" | "all time" | "custom"
   ) => {
     if (interval !== "custom" && interval !== "all time")
       dispatch(
-        userPreferencesServices.actions.updateTimeRange({
+        userPreferencesServices.actions.updateDateRange({
           from: moment().startOf(interval).unix(),
           to: moment().endOf(interval).unix(),
           interval: interval,
@@ -73,10 +73,10 @@ export default function DateRangeIntervalSelector({ active, ...props }: Props) {
 
         {intervals.map(({ title, icon }) => (
           <IntervalItem
-            active={title === timeRange.interval}
+            active={title === dateRange.interval}
             title={title}
             icon={icon}
-            updateInterval={() => updateTimeRange(title)}
+            updateInterval={() => updateDateRange(title)}
             key={title + icon}
           />
         ))}

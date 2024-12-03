@@ -1,34 +1,29 @@
-import { Text, View } from "react-native";
-
-import { useTypedSelector } from "@/store";
-import formatCurrency from "@/utils/formatCurrency";
+import { View } from "react-native";
 
 import DateRange from "@/components/DateRange";
+import CustomText from "@/components/CustomText";
 
-interface Props {
+import formatCurrency from "@/utils/formatCurrency";
+import calculateOverallBalance from "@/utils/calculateOverallBalance";
+
+interface OverallBalanceProps {
   dateRange?: boolean;
 }
 
-const OverallBalance = ({ dateRange }: Props) => {
-  const { accounts } = useTypedSelector((state) => state.accounts);
-
-  const totalBalance = accounts.reduce(
-    (acc, account) =>
-      account.includeInOverallBalance ? acc + account.currentBalance : acc,
-    0
-  );
+const OverallBalance = ({ dateRange }: OverallBalanceProps) => {
+  const totalBalance = calculateOverallBalance();
 
   return (
-    <View className={`justify-center items-center`}>
-      <Text className="text-main-75 dark:text-[#F5F5F5bf] text-xs">
+    <View className="justify-center items-center">
+      <CustomText className="text-xs text-text-primary-75">
         Overall balance
-      </Text>
+      </CustomText>
 
-      <Text className="text-main dark:text-[#F5F5F5] font-[Rounded-Bold] text-3.5xl">
+      <CustomText className="font-[Rounded-Bold] text-3.5xl text-text-primary">
         {formatCurrency(totalBalance, {
           spacing: true,
         })}
-      </Text>
+      </CustomText>
 
       {dateRange && <DateRange />}
     </View>

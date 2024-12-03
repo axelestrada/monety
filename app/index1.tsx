@@ -44,7 +44,7 @@ import { transactionServices } from "@/reducers/transactionsSlice";
 import NoTransactions from "@/components/NoTransactions";
 import Transaction from "@/components/Transaction";
 import SeeAllButton from "@/components/ui/SeeAllButton";
-import { ITransaction } from "@/interfaces";
+import ITransaction from "@/interfaces/transaction";
 
 import { Alert } from "react-native";
 import * as Updates from "expo-updates";
@@ -60,7 +60,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function Index() {
   const db = useSQLiteContext();
-  const { timeRange } = useTypedSelector((state) => state.userPreferences);
+  const { dateRange } = useTypedSelector((state) => state.userPreferences);
   const dispatch = useAppDispatch();
 
   const { loadAccounts } = useAccounts();
@@ -105,12 +105,12 @@ export default function Index() {
     loadTransactions,
     loadAccounts,
     loadCategories,
-    timeRange,
+    dateRange,
   ]);
 
   useEffect(() => {
     loadTransactions();
-  }, [timeRange, loadTransactions]);
+  }, [dateRange, loadTransactions]);
 
   useEffect(() => {
     async function checkForUpdates() {
@@ -272,7 +272,7 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
-    if (timeRange.interval === "all time" || timeRange.interval === "custom")
+    if (dateRange.interval === "all time" || dateRange.interval === "custom")
       return;
 
     const startDate = moment(
@@ -281,7 +281,7 @@ export default function Index() {
           .filter((tr) => tr.type !== "Transfer")
           .map((tr) => tr.date * 1000)
       )
-    ).startOf(timeRange.interval === "day" ? "hour" : "day");
+    ).startOf(dateRange.interval === "day" ? "hour" : "day");
 
     setStartDate(startDate.unix());
 
@@ -291,7 +291,7 @@ export default function Index() {
           .filter((tr) => tr.type !== "Transfer")
           .map((tr) => tr.date * 1000)
       )
-    ).endOf(timeRange.interval === "day" ? "hour" : "day");
+    ).endOf(dateRange.interval === "day" ? "hour" : "day");
 
     const newIncomes: lineDataItem[] = [];
     const newExpenses: lineDataItem[] = [];
@@ -300,7 +300,7 @@ export default function Index() {
 
     const breakpoints: string[] = [];
 
-    if (timeRange.interval !== "day") {
+    if (dateRange.interval !== "day") {
       const daysOfDifference = moment(endDate).diff(startDate, "days");
 
       for (let i = 0; i <= daysOfDifference; i++) {
@@ -588,7 +588,7 @@ export default function Index() {
                               fontSize: 12,
                             }}
                           >
-                            {timeRange.interval === "day"
+                            {dateRange.interval === "day"
                               ? moment(startDate * 1000)
                                   .add(idx, "hour")
                                   .format("hh:mm A")

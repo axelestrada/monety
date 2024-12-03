@@ -22,6 +22,7 @@ module.exports = {
         },
         "text-primary": {
           DEFAULT: "var(--color-text-primary)",
+          "75": "var(--color-text-primary-75)",
         },
         "icons-outline": {
           DEFAULT: "var(--color-icons-outline)",
@@ -43,7 +44,8 @@ module.exports = {
       },
       fontSize: {
         "4.5xl": "40px",
-        "3.5xl": "34px",
+        "3.5xl": "30px",
+        "xs": "10px",
       },
     },
   },
