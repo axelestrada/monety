@@ -21,7 +21,7 @@ export default function Header({
         <View className="flex-row items-center">
           <HeaderAction icon="menu" />
 
-          <CustomText className="ml-1 font-[Rounded-Bold] text-lg text-text-primary">
+          <CustomText className="ml-1 font-[Rounded-Bold] text-xl text-text-primary">
             Monety
           </CustomText>
         </View>
