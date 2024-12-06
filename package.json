@@ -21,6 +21,7 @@
     "@react-navigation/drawer": "^6.5.8",
     "@reduxjs/toolkit": "^2.2.7",
     "@types/react-redux": "^7.1.33",
+    "dayjs": "^1.11.13",
     "expo": "^51.0.38",
     "expo-asset": "~10.0.10",
     "expo-constants": "~16.0.2",
