@@ -11,10 +11,7 @@ export default function Screen({ children }: ScreenProps) {
 
   return (
     <SafeAreaView className="flex-1 bg-main-background">
-      <StatusBar
-        style="auto"
-        backgroundColor={colors["--color-header-background"]}
-      />
+      <StatusBar backgroundColor={colors["--color-header-background"]} />
 
       {children}
     </SafeAreaView>
