@@ -31,6 +31,7 @@ module.exports = {
         },
         accent: {
           DEFAULT: "var(--color-accent)",
+          "50": "var(--color-accent-50)",
         },
         "card-background": {
           DEFAULT: "var(--color-card-background)",
