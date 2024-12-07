@@ -3,8 +3,6 @@ import IDateRange from "@/interfaces/dateRange";
 import moment from "moment";
 
 export const formatDateRange = ({ from, to, interval }: IDateRange): string => {
-  console.log(`${from} - ${to}`);
-
   if (interval === "day") {
     return moment(from * 1000).format("MMMM DD YYYY");
   }
