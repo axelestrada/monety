@@ -39,6 +39,9 @@ module.exports = {
         "icon-button-background": {
           DEFAULT: "var(--color-icon-button-background)",
         },
+        "modal-background": {
+          DEFAULT: "var(--color-modal-background)",
+        },
         main: "#1B1D1C",
         "light-background": "#f5f6f7",
         "main-50": "#1B1D1C80",
