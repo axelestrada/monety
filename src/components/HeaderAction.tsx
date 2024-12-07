@@ -20,13 +20,17 @@ export default function HeaderAction({
     <TouchableOpacity
       {...props}
       activeOpacity={0.5}
-      className="border border-icons-outline rounded-full w-10 h-10 mx-1 justify-center items-center"
+      className="mx-1 justify-center items-center"
+      style={{
+        shadowColor: colors["--color-shadow-50"],
+        elevation: 10,
+        backgroundColor: colors["--color-icon-button-background"],
+        borderRadius: 6,
+        width: 36,
+        height: 36,
+      }}
     >
-      <Feather
-        name={icon}
-        size={20}
-        color={colors["--color-text-primary"]}
-      />
+      <Feather name={icon} size={20} color={colors["--color-text-primary"]} />
 
       {badge && (
         <View className="bg-accent w-2 h-2 rounded-full absolute top-[7] right-[10]" />
