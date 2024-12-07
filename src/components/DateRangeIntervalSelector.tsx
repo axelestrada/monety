@@ -1,25 +1,23 @@
-import React, { useEffect, useState } from "react";
-import {
-  ModalProps,
-  NativeSyntheticEvent,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import React, { useState } from "react";
+import { TouchableOpacity, View } from "react-native";
 import Modal from "@/components/Modal";
 import { Ionicons } from "@expo/vector-icons";
-import { useColorScheme } from "nativewind";
 import { useAppDispatch, useTypedSelector } from "@/store";
 import { userPreferencesServices } from "@/reducers/userPreferencesSlice";
 import moment from "moment";
+import IDateRange from "@/interfaces/dateRange";
+import DateTimePicker from "react-native-ui-datepicker";
+import DateRangePicker from "./DateRangePicker";
+import CustomText from "./CustomText";
+import useThemeColors from "@/hooks/useThemeColors";
 
 interface Props {
   active: boolean;
   onRequestClose: () => void;
 }
 
-const intervals: {
-  title: "day" | "week" | "month" | "year" | "all time" | "custom";
+const intervalsIcons: {
+  title: IDateRange["interval"];
   icon: keyof typeof Ionicons.glyphMap;
 }[] = [
   {
@@ -39,49 +37,102 @@ const intervals: {
     icon: "calendar-clear-outline",
   },
   {
-    title: "all time",
-    icon: "infinite-outline",
-  },
-  {
     title: "custom",
     icon: "create-outline",
+  },
+  {
+    title: "all time",
+    icon: "infinite-outline",
   },
 ];
 
 export default function DateRangeIntervalSelector({ active, ...props }: Props) {
   const dispatch = useAppDispatch();
+  const [dateRangePickerVisible, setDateRangePickerVisible] = useState(false);
   const { dateRange } = useTypedSelector((state) => state.userPreferences);
 
-  const updateDateRange = (
-    interval: "day" | "week" | "month" | "year" | "all time" | "custom"
-  ) => {
-    if (interval !== "custom" && interval !== "all time")
+  const updateDateRange = (interval: IDateRange["interval"]) => {
+    if (interval === "all time") {
       dispatch(
         userPreferencesServices.actions.updateDateRange({
-          from: moment().startOf(interval).unix(),
-          to: moment().endOf(interval).unix(),
+          from: 0,
+          to: moment().unix(),
           interval: interval,
         })
       );
-  };
-  return (
-    <Modal visible={active} {...props}>
-      <View className="rounded-t-3xl bg-light-background dark:bg-[#121212] p-3">
-        <Text className="text-center text-xl font-[Rounded-Bold] text-main dark:text-[#f5f5f5]">
-          Select Interval
-        </Text>
 
-        {intervals.map(({ title, icon }) => (
-          <IntervalItem
-            active={title === dateRange.interval}
-            title={title}
-            icon={icon}
-            updateInterval={() => updateDateRange(title)}
-            key={title + icon}
-          />
-        ))}
-      </View>
-    </Modal>
+      props.onRequestClose();
+
+      return;
+    }
+
+    if (interval === "custom") {
+      if (dateRange.interval === "custom") {
+        setDateRangePickerVisible(true);
+      }
+
+      setDateRangePickerVisible(true);
+
+      return;
+    }
+
+    dispatch(
+      userPreferencesServices.actions.updateDateRange({
+        from: moment().startOf(interval).unix(),
+        to: moment().endOf(interval).unix(),
+        interval: interval,
+      })
+    );
+
+    props.onRequestClose();
+  };
+
+  return (
+    <>
+      <Modal visible={active} {...props}>
+        <View className="rounded-t-3xl bg-main-background p-3">
+          <CustomText className="text-center text-lg font-[Rounded-Bold] text-text-primary">
+            Select Interval
+          </CustomText>
+
+          {intervalsIcons.map(({ title, icon }) => (
+            <IntervalItem
+              active={title === dateRange.interval}
+              title={title}
+              icon={icon}
+              updateInterval={() => updateDateRange(title)}
+              key={title + icon}
+            />
+          ))}
+        </View>
+      </Modal>
+
+      <DateRangePicker
+        visible={dateRangePickerVisible}
+        onRequestClose={() => setDateRangePickerVisible(false)}
+        initialRange={{
+          startDate:
+            dateRange.interval === "custom"
+              ? moment(dateRange.from * 1000).toDate()
+              : undefined,
+          endDate:
+            dateRange.interval === "custom"
+              ? moment(dateRange.to * 1000).toDate()
+              : undefined,
+        }}
+        callback={(range) => {
+          dispatch(
+            userPreferencesServices.actions.updateDateRange({
+              from: moment(range.startDate?.valueOf()).unix(),
+              to: moment(range.endDate?.valueOf()).unix(),
+              interval: "custom",
+            })
+          );
+
+          props.onRequestClose();
+        }}
+      />
+    </>
   );
 }
 
@@ -92,49 +143,38 @@ function IntervalItem({
   updateInterval,
 }: {
   active?: boolean;
-  title: "day" | "week" | "month" | "year" | "all time" | "custom";
+  title: IDateRange["interval"];
   icon: keyof typeof Ionicons.glyphMap;
   updateInterval: () => void;
 }) {
-  const { colorScheme } = useColorScheme();
-
-  const isDisabled =
-    title === "custom" || title === "all time" || title === "year";
+  const colors = useThemeColors();
 
   return (
     <TouchableOpacity
       activeOpacity={0.5}
-      className="bg-white dark:bg-[#1E1E1E] rounded-2xl p-3 py-4 mt-3 shadow-md shadow-main-25"
-      style={{ opacity: isDisabled ? 0.5 : 1 }}
+      className="bg-card-background rounded-2xl p-3 py-5 mt-3 shadow-md shadow-main-25 dark:shadow-none"
       onPress={updateInterval}
-      key={title}
-      disabled={isDisabled}
+      key={"IntervalSelectorItem" + title}
     >
       <View className="flex-row items-center">
         <Ionicons
           name={icon}
-          color={colorScheme === "light" ? "#1b1d1c" : "#f5f5f5"}
-          size={18}
+          color={colors["--color-text-primary"]}
+          size={20}
         />
 
         <View className="ml-1.5" style={{ flex: 1 }}>
-          <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium] text-base">
+          <CustomText className="text-text-primary font-[Rounded-Medium] text-sm">
             {title[0].toUpperCase() + title.slice(1).toLowerCase()}
-          </Text>
+          </CustomText>
         </View>
 
         {active && (
-          <View className="justify-center items-center bg-[#ff288284] w-3.5 h-3.5 rounded-full">
-            <View className="bg-accent dark:bg-dark-accent w-[9] h-[9] rounded-full" />
+          <View className="justify-center items-center rounded-full bg-accent-50 w-3.5 h-3.5">
+            <View className="bg-accent w-[9] h-[9] rounded-full" />
           </View>
         )}
       </View>
-
-      {isDisabled && (
-        <Text className="text-[#1b1d1c80] dark:text-[#f5f5f5] font-[Rounded-Medium] text-base absolute bottom-4 right-3">
-          Coming Soon!
-        </Text>
-      )}
     </TouchableOpacity>
   );
 }
