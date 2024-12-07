@@ -1,113 +1,121 @@
-import { Feather } from "@expo/vector-icons";
 import React, { useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Feather } from "@expo/vector-icons";
+import { TouchableOpacity, View } from "react-native";
 
 import moment from "moment";
+
 import { useAppDispatch, useTypedSelector } from "@/store";
 import { userPreferencesServices } from "@/reducers/userPreferencesSlice";
-import { useColorScheme } from "nativewind";
+
+import CustomText from "@/components/CustomText";
 import IconButton from "@/components/ui/IconButton";
 import DateRangeIntervalSelector from "@/components/DateRangeIntervalSelector";
 
-const DateRange = () => {
-  const [showSelector, setShowSelector] = useState(false);
+import useThemeColors from "@/hooks/useThemeColors";
 
-  const { dateRange, loading } = useTypedSelector(
-    (state) => state.userPreferences
-  );
+import { formatDateRange } from "@/utils/formatDateRange";
+
+import IDateRange from "@/interfaces/dateRange";
+
+const DateRange = () => {
+  const colors = useThemeColors();
   const dispatch = useAppDispatch();
 
-  const { colorScheme } = useColorScheme();
+  const [showIntervalSelector, setShowIntervalSelector] = useState(false);
 
-  const previousDay = () => {
-    if (
-      loading ||
-      dateRange.interval === "custom" ||
-      dateRange.interval === "all time"
-    )
-      return;
+  const { dateRange } = useTypedSelector((state) => state.userPreferences);
+
+  const previousDate = (
+    interval: IDateRange["interval"],
+    daysOfDifference?: number
+  ) => {
+    if (interval === "all time") return;
 
     dispatch(
       userPreferencesServices.actions.updateDateRange({
         from: moment(dateRange.from * 1000)
-          .subtract(1, dateRange.interval)
+          .subtract(
+            interval === "custom" ? daysOfDifference : 1,
+            interval === "custom" ? "days" : interval
+          )
           .unix(),
         to: moment(dateRange.to * 1000)
-          .subtract(1, dateRange.interval)
+          .subtract(
+            interval === "custom" ? daysOfDifference : 1,
+            interval === "custom" ? "days" : interval
+          )
           .unix(),
       })
     );
   };
 
-  const nextDay = () => {
-    if (
-      loading ||
-      dateRange.interval === "custom" ||
-      dateRange.interval === "all time"
-    )
-      return;
+  const nextDate = (
+    interval: IDateRange["interval"],
+    daysOfDifference?: number
+  ) => {
+    if (interval === "all time") return;
 
     dispatch(
       userPreferencesServices.actions.updateDateRange({
         from: moment(dateRange.from * 1000)
-          .add(1, dateRange.interval)
+          .add(
+            interval === "custom" ? daysOfDifference : 1,
+            interval === "custom" ? "days" : interval
+          )
           .unix(),
         to: moment(dateRange.to * 1000)
-          .add(1, dateRange.interval)
+          .add(
+            interval === "custom" ? daysOfDifference : 1,
+            interval === "custom" ? "days" : interval
+          )
           .unix(),
       })
     );
+  };
+
+  const handleArrowClick = (direction: "left" | "right") => {
+    if (dateRange.interval === "all time") return;
+
+    const daysOfDifference =
+      moment(dateRange.to * 1000).diff(moment(dateRange.from * 1000), "days") +
+      1;
+
+    if (direction === "left") {
+      previousDate(dateRange.interval, daysOfDifference);
+    } else {
+      nextDate(dateRange.interval, daysOfDifference);
+    }
   };
 
   return (
     <>
       <DateRangeIntervalSelector
-        active={showSelector}
-        onRequestClose={() => setShowSelector(false)}
+        active={showIntervalSelector}
+        onRequestClose={() => setShowIntervalSelector(false)}
       />
 
       <View className="justify-between items-center flex-row w-full -my-2">
-        <IconButton
-          onPress={() => {
-            previousDay();
-          }}
-        >
+        <IconButton onPress={() => handleArrowClick("left")}>
           <Feather
             name="chevron-left"
-            color={colorScheme === "dark" ? "#f5f5f5" : "#1B1D1C"}
+            color={colors["--color-text-primary"]}
             size={24}
           />
         </IconButton>
 
         <TouchableOpacity
           activeOpacity={0.5}
-          onPress={() => setShowSelector(!showSelector)}
+          onPress={() => setShowIntervalSelector(!showIntervalSelector)}
         >
-          <Text className="text-main dark:text-[#f5f5f5] text-base font-[Rounded-Medium]">
-            {dateRange.interval === "week"
-              ? moment(dateRange.from * 1000).format("MMM DD") +
-                " - " +
-                moment(dateRange.to * 1000).format("MMM DD")
-              : moment(dateRange.from * 1000).format(
-                  dateRange.interval === "day"
-                    ? "MMMM DD YYYY"
-                    : dateRange.interval === "year"
-                    ? "YYYY"
-                    : dateRange.interval === "month"
-                    ? "MMMM"
-                    : "MMMM DD YYYY"
-                )}
-          </Text>
+          <CustomText className="text-text-primary text-sm font-[Rounded-Medium]">
+            {formatDateRange(dateRange)}
+          </CustomText>
         </TouchableOpacity>
 
-        <IconButton
-          onPress={() => {
-            nextDay();
-          }}
-        >
+        <IconButton onPress={() => handleArrowClick("right")}>
           <Feather
             name="chevron-right"
-            color={colorScheme === "dark" ? "#f5f5f5" : "#1B1D1C"}
+            color={colors["--color-text-primary"]}
             size={24}
           />
         </IconButton>
