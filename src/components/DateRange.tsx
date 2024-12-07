@@ -94,11 +94,11 @@ const DateRange = () => {
         onRequestClose={() => setShowIntervalSelector(false)}
       />
 
-      <View className="justify-between items-center flex-row w-full -my-2">
-        <IconButton onPress={() => handleArrowClick("left")}>
+      <View className="justify-between items-center flex-row w-full -mt-2 mb-1 px-1">
+        <IconButton onPress={() => handleArrowClick("left")} shadow>
           <Feather
             name="chevron-left"
-            color={colors["--color-text-primary"]}
+            color={colors["--color-accent"]}
             size={24}
           />
         </IconButton>
@@ -112,10 +112,10 @@ const DateRange = () => {
           </CustomText>
         </TouchableOpacity>
 
-        <IconButton onPress={() => handleArrowClick("right")}>
+        <IconButton onPress={() => handleArrowClick("right")} shadow>
           <Feather
             name="chevron-right"
-            color={colors["--color-text-primary"]}
+            color={colors["--color-accent"]}
             size={24}
           />
         </IconButton>
