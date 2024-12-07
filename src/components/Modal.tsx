@@ -9,9 +9,10 @@ import {
 
 interface Props extends ModalProps {
   children: React.ReactNode;
+  marginTop?: boolean;
 }
 
-export default function Modal({ children, ...props }: Props) {
+export default function Modal({ children, marginTop = true, ...props }: Props) {
   const { onRequestClose } = props;
 
   return (
@@ -23,7 +24,9 @@ export default function Modal({ children, ...props }: Props) {
       {...props}
     >
       <TouchableOpacity
-        className="flex-[1] pt-24 justify-end bg-[#00000080]"
+        className={`flex-[1] bg-modal-background ${
+          marginTop ? "pt-24 justify-end" : "justify-center items-center"
+        }`}
         activeOpacity={1}
         onPress={onRequestClose}
       >
