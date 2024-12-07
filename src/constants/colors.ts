@@ -25,8 +25,8 @@ const colors = {
     "--color-icons-outline": "#F5F5F50D",
     "--color-accent": "#f43385",
     "--color-accent-50": "#f4338584",
-    "--color-card-background": "#0D0D0D",
-    "--color-icon-button-background": "#121212",
+    "--color-card-background": "#1A1A1A",
+    "--color-icon-button-background": "#1A1A1A",
     "--color-modal-background": "#00000080",
   },
 };

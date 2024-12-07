@@ -87,10 +87,12 @@ const CustomDateTimePicker = ({
       yearContainerStyle={{
         borderRadius: 12,
         borderColor: colors["--color-icons-outline"],
+        backgroundColor: colors["--color-card-background"],
       }}
       monthContainerStyle={{
         borderRadius: 12,
         borderColor: colors["--color-icons-outline"],
+        backgroundColor: colors["--color-card-background"],
       }}
       displayFullDays
       startDate={startDate}

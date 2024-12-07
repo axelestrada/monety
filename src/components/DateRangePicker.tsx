@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import moment from "moment";
 
-import { DateType } from "react-native-ui-datepicker";
 import { ModalProps, View } from "react-native";
 
 import useThemeColors from "@/hooks/useThemeColors";
@@ -61,7 +60,7 @@ const DateRangePicker = ({
         setRange({ startDate: undefined, endDate: undefined });
       }}
     >
-      <View className="bg-card-background mx-10 p-3 rounded-2xl">
+      <View className="bg-card-background dark:bg-main-background mx-10 p-3 rounded-2xl">
         <CustomDateTimePicker
           mode="range"
           startDate={range.startDate}
