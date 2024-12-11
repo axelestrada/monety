@@ -1,13 +1,35 @@
-import { View } from "react-native";
+import useThemeColors from "@/hooks/useThemeColors";
+import { useState } from "react";
+
+import { RefreshControl, ScrollView } from "react-native";
 
 interface MainContainerProps {
   children: React.ReactNode;
+  onRefresh?: () => void;
+  refreshing?: boolean;
 }
 
-export default function MainContainer({children}: MainContainerProps) {
+export default function MainContainer({
+  children,
+  onRefresh = () => {},
+  refreshing = false,
+}: MainContainerProps) {
+  const colors = useThemeColors();
+
   return (
-    <View className="flex-1 bg-main">
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      className="bg-main-background"
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={onRefresh}
+          colors={[colors["--color-text-primary"]]}
+          progressBackgroundColor={colors["--color-main-background"]}
+        />
+      }
+    >
       {children}
-    </View>
+    </ScrollView>
   );
 }
