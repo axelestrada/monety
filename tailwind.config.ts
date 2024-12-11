@@ -42,6 +42,12 @@ module.exports = {
         "modal-background": {
           DEFAULT: "var(--color-modal-background)",
         },
+        income: {
+          DEFAULT: "var(--color-income)",
+        },
+        expense: {
+          DEFAULT: "var(--color-expense)",
+        },
         main: "#1B1D1C",
         "light-background": "#f5f6f7",
         "main-50": "#1B1D1C80",

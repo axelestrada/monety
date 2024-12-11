@@ -13,6 +13,8 @@ const colors = {
     "--color-card-background": "#FFFFFF",
     "--color-icon-button-background": "#FFFFFF",
     "--color-modal-background": "#00000080",
+    "--color-income": "#02AB5B",
+    "--color-expense": "#FF8092",
   },
   dark: {
     "--color-main-background": "#0D0D0D",
@@ -28,6 +30,8 @@ const colors = {
     "--color-card-background": "#1A1A1A",
     "--color-icon-button-background": "#1A1A1A",
     "--color-modal-background": "#00000080",
+    "--color-income": "#5BBE77",
+    "--color-expense": "#FF8092",
   },
 };
 
