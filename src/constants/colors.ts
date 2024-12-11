@@ -15,6 +15,7 @@ const colors = {
     "--color-modal-background": "#00000080",
     "--color-income": "#02AB5B",
     "--color-expense": "#FF8092",
+    "--color-chip-background": "#FFFFFF",
   },
   dark: {
     "--color-main-background": "#0D0D0D",
@@ -32,6 +33,7 @@ const colors = {
     "--color-modal-background": "#00000080",
     "--color-income": "#5BBE77",
     "--color-expense": "#FF8092",
+    "--color-chip-background": "#383838",
   },
 };
 

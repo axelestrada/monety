@@ -20,12 +20,8 @@ export default function HeaderAction({
     <TouchableOpacity
       {...props}
       activeOpacity={0.5}
-      className="mx-1 justify-center items-center"
+      className="justify-center items-center"
       style={{
-        shadowColor: colors["--color-shadow-50"],
-        elevation: 10,
-        backgroundColor: colors["--color-icon-button-background"],
-        borderRadius: 6,
         width: 36,
         height: 36,
       }}

@@ -79,7 +79,7 @@ const CustomDateTimePicker = ({
         borderColor: colors["--color-icons-outline"],
       }}
       weekDaysTextStyle={{
-        color: colors["--color-text-primary-40"],
+        color: colors["--color-text-primary-75"],
         fontFamily: "Rounded-Medium",
         fontStyle: "normal",
         fontWeight: "normal",
