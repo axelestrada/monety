@@ -48,6 +48,12 @@ module.exports = {
         expense: {
           DEFAULT: "var(--color-expense)",
         },
+        "chip-background": {
+          DEFAULT: "var(--color-chip-background)",
+        },
+        "icon-primary": {
+          DEFAULT: "var(--color-icon-primary)",
+        },
         main: "#1B1D1C",
         "light-background": "#f5f6f7",
         "main-50": "#1B1D1C80",
