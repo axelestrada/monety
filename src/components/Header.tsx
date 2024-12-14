@@ -3,6 +3,7 @@ import { View } from "react-native";
 import CustomText from "@/components/CustomText";
 import HeaderAction from "@/components/HeaderAction";
 import OverallBalance from "@/components/OverallBalance";
+import useThemeColors from "@/hooks/useThemeColors";
 
 interface HeaderProps {
   overallBalance?: boolean;
@@ -15,13 +16,15 @@ export default function Header({
   dateRange,
   children,
 }: HeaderProps) {
-  return (
-    <View className="py-2 px-3 bg-header-background z-20 shadow-2xl shadow-shadow-30 dark:shadow-none">
-      <View className="flex-row justify-between items-center mb-2 -mx-2">
-        <View className="flex-row items-center">
-          <HeaderAction icon="menu" />
+  const colors = useThemeColors();
 
-          <CustomText className="ml-1 font-[Rounded-Bold] text-xl text-text-primary">
+  return (
+    <View className="pt-2 px-2 bg-header-background z-20">
+      <View className="flex-row justify-between items-center -mx-0.5 mb-2">
+        <View className="flex-row items-center">
+          <HeaderAction icon="menu" color={colors["--color-accent"]} />
+
+          <CustomText className="font-[Rounded-Bold] text-xl text-text-primary">
             Monety
           </CustomText>
         </View>

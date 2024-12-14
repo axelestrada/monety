@@ -88,7 +88,7 @@ const DateRange = () => {
   };
 
   return (
-    <View className="-mx-3">
+    <View className="mx-1 mt-2">
       <DateRangeIntervalSelector
         active={showIntervalSelector}
         onRequestClose={() => setShowIntervalSelector(false)}
@@ -98,7 +98,7 @@ const DateRange = () => {
         <IconButton onPress={() => handleArrowClick("left")}>
           <Feather
             name="chevron-left"
-            color={colors["--color-text-primary"]}
+            color={colors["--color-icon-primary"]}
             size={24}
           />
         </IconButton>
@@ -107,7 +107,7 @@ const DateRange = () => {
           activeOpacity={0.5}
           onPress={() => setShowIntervalSelector(!showIntervalSelector)}
         >
-          <CustomText className="text-text-primary text-sm font-[Rounded-Medium]">
+          <CustomText className="text-icon-primary text-sm font-[Rounded-Medium]">
             {formatDateRange(dateRange)}
           </CustomText>
         </TouchableOpacity>
@@ -115,7 +115,7 @@ const DateRange = () => {
         <IconButton onPress={() => handleArrowClick("right")}>
           <Feather
             name="chevron-right"
-            color={colors["--color-text-primary"]}
+            color={colors["--color-icon-primary"]}
             size={24}
           />
         </IconButton>

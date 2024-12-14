@@ -7,11 +7,13 @@ import useThemeColors from "@/hooks/useThemeColors";
 interface HeaderActionProps extends TouchableOpacityProps {
   icon: keyof typeof Feather.glyphMap;
   badge?: boolean;
+  color?: string;
 }
 
 export default function HeaderAction({
   icon,
   badge,
+  color,
   ...props
 }: HeaderActionProps) {
   const colors = useThemeColors();
@@ -20,16 +22,16 @@ export default function HeaderAction({
     <TouchableOpacity
       {...props}
       activeOpacity={0.5}
-      className="justify-center items-center"
-      style={{
-        width: 36,
-        height: 36,
-      }}
+      className="justify-center items-center mx-1.5 w-7 h-7"
     >
-      <Feather name={icon} size={20} color={colors["--color-text-primary"]} />
+      <Feather
+        name={icon}
+        size={22}
+        color={color || colors["--color-icon-primary"]}
+      />
 
       {badge && (
-        <View className="bg-accent w-2 h-2 rounded-full absolute top-[7] right-[10]" />
+        <View className="bg-accent w-2 h-2 rounded-full absolute top-[0] right-[5]" />
       )}
     </TouchableOpacity>
   );
