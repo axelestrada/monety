@@ -73,10 +73,8 @@ const CustomAreaChart = ({
     [data, spacing]
   );
 
-  console.log("spacing", spacing);
-
   return (
-    <View className="bg-card-background rounded-2xl shadow-md shadow-shadow-30">
+    <View className="bg-card-background rounded-2xl">
       <View className="m-3 flex-row justify-between items-center">
         <CustomText className="text-text-primary text-base font-[Rounded-Bold]">
           {title}
@@ -89,7 +87,7 @@ const CustomAreaChart = ({
         data={data}
         areaChart={colorScheme === "light"}
         height={150}
-        startOpacity={0.4}
+        startOpacity={0.3}
         endOpacity={0}
         spacing={spacing}
         initialSpacing={7}
@@ -128,8 +126,6 @@ const CustomAreaChart = ({
                       height: 40,
                       backgroundColor: colors["--color-chip-background"],
                       borderRadius: 8,
-                      elevation: colorScheme === "light" ? 8 : 0,
-                      shadowColor: "#1B1D1C80",
                       top: 0,
                       left: calculateLabelPosition(data, spacing, idx),
                     },
@@ -154,7 +150,7 @@ interface LegendProps {
 
 const Legend = ({ items }: LegendProps) => {
   return (
-    <View className="flex-row items-center justify-center -mr-1">
+    <View className="flex-row items-center justify-center -mr-2">
       {items.map(({ color, label }, index) => (
         <LegendItem
           key={"LegendItem:" + index + label}
@@ -175,13 +171,13 @@ const LegendItem = ({ color, label }: LegendItemProps) => {
   return (
     <View className="flex-row items-center justify-center mr-2">
       <View
-        className="w-2 h-2 mr-1 rounded-full"
+        className="w-1.5 h-1.5 mr-1 rounded-full"
         style={{
           backgroundColor: color,
         }}
       ></View>
 
-      <CustomText className="text-text-primary text-sm font-[Rounded-Medium]">
+      <CustomText className="text-text-primary text-xs font-[Rounded-Regular]">
         {label}
       </CustomText>
     </View>
