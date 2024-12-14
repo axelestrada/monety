@@ -19,7 +19,7 @@ export default function MainContainer({
   return (
     <ScrollView
       contentContainerStyle={{ flexGrow: 1 }}
-      className="bg-main-background py-4 dark:py-2 px-3"
+      className="bg-main-background py-4 px-3"
       refreshControl={
         <RefreshControl
           refreshing={refreshing}
