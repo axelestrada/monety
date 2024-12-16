@@ -12,7 +12,7 @@ export default function Layout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
-        <SQLiteProvider databaseName="todos.db">
+        <SQLiteProvider databaseName="monety.db">
           <ThemeProvider>
             <Stack
               screenOptions={{
