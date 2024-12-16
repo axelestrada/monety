@@ -1,9 +1,9 @@
-import colors from "@/constants/colors";
+import themeColors from "@/constants/themeColors";
 
 import { useColorScheme } from "nativewind";
 
 export default function useThemeColors() {
   const { colorScheme } = useColorScheme();
 
-  return colors[colorScheme || "light"];
+  return themeColors[colorScheme || "light"];
 }

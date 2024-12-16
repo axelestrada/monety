@@ -1,11 +1,10 @@
 import type { Config } from "tailwindcss";
-import colors from "@/constants/colors";
 
 module.exports = {
   content: [
     "./app/**/*.{js,jsx,ts,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}",
-    "./src/components/**/*.{js,jsx,ts,tsx}",
+    "./src/**/*.{js,jsx,ts,tsx}",
   ],
   presets: [require("nativewind/preset")],
   theme: {
@@ -53,6 +52,15 @@ module.exports = {
         },
         "icon-primary": {
           DEFAULT: "var(--color-icon-primary)",
+        },
+        "text-secondary": {
+          DEFAULT: "var(--color-text-secondary)",
+        },
+        "text-white": {
+          DEFAULT: "var(--color-text-white)",
+        },
+        error: {
+          DEFAULT: "var(--color-error)",
         },
         main: "#1B1D1C",
         "light-background": "#f5f6f7",
