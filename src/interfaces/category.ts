@@ -1,10 +1,7 @@
-import { colors } from "@/constants/colors";
-import { icons } from "@/constants/icons";
-
 export default interface ICategory {
-  id: string;
+  id: number;
   name: string;
-  icon: typeof icons[number];
-  color: typeof colors[number];
-  type: "Income" | "Expense";
+  icon: number;
+  color: number;
+  type: "income" | "expense";
 }
