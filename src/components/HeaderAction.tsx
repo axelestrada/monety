@@ -27,7 +27,7 @@ export default function HeaderAction({
       <Feather
         name={icon}
         size={22}
-        color={color || colors["--color-icon-primary"]}
+        color={color || colors["--color-text-secondary"]}
       />
 
       {badge && (

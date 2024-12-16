@@ -98,7 +98,7 @@ const DateRange = () => {
         <IconButton onPress={() => handleArrowClick("left")}>
           <Feather
             name="chevron-left"
-            color={colors["--color-icon-primary"]}
+            color={colors["--color-text-secondary"]}
             size={24}
           />
         </IconButton>
@@ -107,7 +107,7 @@ const DateRange = () => {
           activeOpacity={0.5}
           onPress={() => setShowIntervalSelector(!showIntervalSelector)}
         >
-          <CustomText className="text-icon-primary text-sm font-[Rounded-Medium]">
+          <CustomText className="text-text-secondary text-sm font-[Rounded-Medium]">
             {formatDateRange(dateRange)}
           </CustomText>
         </TouchableOpacity>
@@ -115,7 +115,7 @@ const DateRange = () => {
         <IconButton onPress={() => handleArrowClick("right")}>
           <Feather
             name="chevron-right"
-            color={colors["--color-icon-primary"]}
+            color={colors["--color-text-secondary"]}
             size={24}
           />
         </IconButton>
