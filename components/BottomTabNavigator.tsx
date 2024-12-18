@@ -80,7 +80,7 @@ const BottomTabNavigator = () => {
         />
       </IconButton>
 
-      <IconButton active={pathname === "/statistics"}>
+      <IconButton active={pathname === "/statistics"} onPress={() => router.navigate("/statistics")}>
         <Feather
           name="bar-chart-2"
           size={20}

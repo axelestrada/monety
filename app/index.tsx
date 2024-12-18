@@ -139,22 +139,23 @@ export default function Index() {
 
     if (categories.length === 0) {
       const initializeDatabase = async () => {
-        try {
-          await db.execAsync(`
+        await db.withTransactionAsync(async () => {
+          try {
+            await db.execAsync(`
             PRAGMA journal_mode = WAL;
             PRAGMA foreign_keys = ON;
           `);
-        } catch (error) {
-          console.error(error);
-        }
+          } catch (error) {
+            console.error(error);
+          }
 
-        const categoriesTable = await db.getAllAsync(`
+          const categoriesTable = await db.getAllAsync(`
           SELECT name FROM sqlite_master WHERE type='table' AND name='Categories';
           `);
 
-        if (categoriesTable.length === 0) {
-          try {
-            await db.execAsync(`
+          if (categoriesTable.length === 0) {
+            try {
+              await db.execAsync(`
               CREATE TABLE IF NOT EXISTS Categories (
                 id TEXT PRIMARY KEY NOT NULL,
                 name TEXT NOT NULL,
@@ -163,32 +164,32 @@ export default function Index() {
                 type TEXT NOT NULL CHECK (type IN ('Expense', 'Income'))
             );`);
 
-            defaultCategories.forEach(
-              async ({ id, name, icon, color, type }) => {
-                try {
-                  await db.runAsync(
-                    `
+              defaultCategories.forEach(
+                async ({ id, name, icon, color, type }) => {
+                  try {
+                    await db.runAsync(
+                      `
                   INSERT INTO Categories (id, name, icon, color, type) VALUES (?, ?, ?, ?, ?);
                 `,
-                    [id, name, icon, color, type]
-                  );
-                } catch (error) {
-                  console.error();
+                      [id, name, icon, color, type]
+                    );
+                  } catch (error) {
+                    console.error();
+                  }
                 }
-              }
-            );
-          } catch (error) {
-            console.error(error);
+              );
+            } catch (error) {
+              console.error(error);
+            }
           }
-        }
 
-        const accountsTable = await db.getAllAsync(`
+          const accountsTable = await db.getAllAsync(`
           SELECT name FROM sqlite_master WHERE type='table' AND name='Accounts';
           `);
 
-        if (accountsTable.length === 0) {
-          try {
-            await db.execAsync(`
+          if (accountsTable.length === 0) {
+            try {
+              await db.execAsync(`
               CREATE TABLE IF NOT EXISTS Accounts (
                 id TEXT PRIMARY KEY NOT NULL,
                 name TEXT NOT NULL,
@@ -200,29 +201,29 @@ export default function Index() {
                 includeInOverallBalance INTEGER NOT NULL
             );`);
 
-            await db.runAsync(
-              `
+              await db.runAsync(
+                `
                 INSERT INTO Accounts (id, name, icon, color, type, currentBalance, includeInOverallBalance) VALUES (?, ?, ?, ?, ?, ?, ?);
                 `,
-              [
-                uuid.v4().toString(),
-                "Cash",
-                "cash-outline",
-                "00AD74",
-                "Regular",
-                0,
-                1,
-              ]
-            );
-          } catch (error) {
-            console.error(error);
+                [
+                  uuid.v4().toString(),
+                  "Cash",
+                  "cash-outline",
+                  "00AD74",
+                  "Regular",
+                  0,
+                  1,
+                ]
+              );
+            } catch (error) {
+              console.error(error);
+            }
           }
-        }
 
-        try {
-          // await db.execAsync(`DROP TABLE Transactions`);
+          try {
+            // await db.execAsync(`DROP TABLE Transactions`);
 
-          await db.execAsync(`
+            await db.execAsync(`
             CREATE TABLE IF NOT EXISTS Transactions (
               id TEXT PRIMARY KEY NOT NULL,
               category_id TEXT,
@@ -237,9 +238,10 @@ export default function Index() {
               FOREIGN KEY (account_id) REFERENCES Accounts (id),
               FOREIGN KEY (destination_account) REFERENCES Accounts (id)
           );`);
-        } catch (error) {
-          console.error(error);
-        }
+          } catch (error) {
+            console.error(error);
+          }
+        });
       };
 
       initializeDatabase();
@@ -625,7 +627,7 @@ export default function Index() {
                           </View>
                         </View>
                       ) : (
-                        <></>
+                        <View></View>
                       );
                     },
                     pointerLabelWidth: 80,
