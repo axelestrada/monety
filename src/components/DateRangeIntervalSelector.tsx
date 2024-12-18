@@ -10,6 +10,7 @@ import DateTimePicker from "react-native-ui-datepicker";
 import DateRangePicker from "./DateRangePicker";
 import CustomText from "./CustomText";
 import useThemeColors from "@/hooks/useThemeColors";
+import { useDateRangePicker } from "@/context/DateRangePickerContext";
 
 interface Props {
   active: boolean;
@@ -48,8 +49,9 @@ const intervalsIcons: {
 
 export default function DateRangeIntervalSelector({ active, ...props }: Props) {
   const dispatch = useAppDispatch();
-  const [dateRangePickerVisible, setDateRangePickerVisible] = useState(false);
   const { dateRange } = useTypedSelector((state) => state.userPreferences);
+
+  const { isModalVisible, setIsModalVisible } = useDateRangePicker();
 
   const updateDateRange = (interval: IDateRange["interval"]) => {
     if (interval === "all time") {
@@ -68,10 +70,10 @@ export default function DateRangeIntervalSelector({ active, ...props }: Props) {
 
     if (interval === "custom") {
       if (dateRange.interval === "custom") {
-        setDateRangePickerVisible(true);
+        setIsModalVisible(true);
       }
 
-      setDateRangePickerVisible(true);
+      setIsModalVisible(true);
 
       return;
     }
@@ -108,8 +110,8 @@ export default function DateRangeIntervalSelector({ active, ...props }: Props) {
       </Modal>
 
       <DateRangePicker
-        visible={dateRangePickerVisible}
-        onRequestClose={() => setDateRangePickerVisible(false)}
+        visible={isModalVisible}
+        onRequestClose={() => setIsModalVisible(false)}
         initialRange={{
           startDate:
             dateRange.interval === "custom"
