@@ -104,7 +104,7 @@ const CustomAreaChart = ({
         yAxisLabelWidth={45}
         yAxisTextStyle={{
           fontSize: 12,
-          color: colors["--color-text-primary-75"],
+          color: colors["--color-text-secondary"],
           fontFamily: "Rounded-Regular",
         }}
         yAxisTextNumberOfLines={2}
@@ -177,7 +177,7 @@ const LegendItem = ({ color, label }: LegendItemProps) => {
         }}
       ></View>
 
-      <CustomText className="text-text-primary text-xs font-[Rounded-Regular]">
+      <CustomText className="text-text-secondary text-xs font-[Rounded-Regular]">
         {label}
       </CustomText>
     </View>
