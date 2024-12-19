@@ -25,7 +25,6 @@ const IconButton = ({
       className={`w-7 h-7 justify-center items-center rounded-full relative ${
         highlight && "bg-text-primary"
       }`}
-      activeOpacity={0.5}
       onPress={onPress}
       style={
         shadow

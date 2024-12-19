@@ -153,7 +153,6 @@ function IntervalItem({
 
   return (
     <TouchableOpacity
-      activeOpacity={0.5}
       className="bg-card-background rounded-2xl p-3 py-5 mt-3 shadow-md shadow-main-25 dark:shadow-none"
       onPress={updateInterval}
       key={"IntervalSelectorItem" + title}

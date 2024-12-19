@@ -104,7 +104,6 @@ const DateRange = () => {
         </IconButton>
 
         <TouchableOpacity
-          activeOpacity={0.5}
           onPress={() => setShowIntervalSelector(!showIntervalSelector)}
         >
           <CustomText className="text-text-secondary text-sm font-[Rounded-Medium]">

@@ -21,7 +21,6 @@ export default function HeaderAction({
   return (
     <TouchableOpacity
       {...props}
-      activeOpacity={0.5}
       className="justify-center items-center mx-1.5 w-7 h-7"
     >
       <Feather
