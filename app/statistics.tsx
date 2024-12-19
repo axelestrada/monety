@@ -5,6 +5,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 // for exporting data to CSV
 import * as FileSystem from "expo-file-system";
+import { StorageAccessFramework } from "expo-file-system";
 import { SQLiteDatabase, useSQLiteContext } from "expo-sqlite";
 
 const Statistics = () => {
@@ -33,7 +34,7 @@ const Statistics = () => {
 
 const exportDataToCSV = async (db: SQLiteDatabase, tables: string[]) => {
   try {
-    let csvContent = "\uFEFF";
+    let csvContent = "";
 
     for (const table of tables) {
       // get all data from the table
@@ -45,24 +46,70 @@ const exportDataToCSV = async (db: SQLiteDatabase, tables: string[]) => {
         const header = `Table: ${table}\n${columns.join(",")}`;
 
         // get the data of the table
-        const tableData = result.map((row) => {
-          return columns.map((column) => row[column]).join(",");
-        }).join("\n");
+        const tableData = result
+          .map((row) => {
+            return columns.map((column) => row[column]).join(",");
+          })
+          .join("\n");
 
         // add the header and data to the CSV content
         csvContent += `${header}\n${tableData}\n\n`;
       }
     }
 
-    // write the CSV content to a file
-    const uri = FileSystem.documentDirectory + "monety_backup.csv";
-    await FileSystem.writeAsStringAsync(uri, csvContent);
-
-    console.log("Data exported to CSV", uri);
-    return uri;
+    // save the CSV content to Downloads
+    await saveCSVToDownloads(csvContent);
   } catch (error) {
     console.error("Error exporting data to CSV", error);
+
+    alert("Error exporting data to CSV " + error);
     return null;
+  }
+};
+
+const saveCSVToDownloads = async (csvContent: string) => {
+  try {
+    // Define el nombre del archivo
+    const fileName = "monety_backup.csv";
+
+    // Ruta temporal para almacenar el archivo CSV
+    const tempFileUri = `${FileSystem.cacheDirectory}${fileName}`;
+
+    // Escribe el contenido del archivo CSV en la ubicación temporal
+    await FileSystem.writeAsStringAsync(tempFileUri, "\uFEFF" + csvContent, {
+      encoding: FileSystem.EncodingType.UTF8,
+    });
+
+    // Solicitar permisos para acceder a la carpeta Descargas
+    const permissions =
+      await StorageAccessFramework.requestDirectoryPermissionsAsync();
+
+    if (!permissions.granted) {
+      alert("No se han otorgado permisos para acceder al almacenamiento");
+      console.error(
+        "No se han otorgado permisos para acceder al almacenamiento"
+      );
+      return;
+    }
+
+    try {
+      await StorageAccessFramework.createFileAsync(permissions.directoryUri, fileName, "text/csv").then(async(uri) => {
+        await FileSystem.writeAsStringAsync(uri, "\uFEFF" + csvContent, { encoding: FileSystem.EncodingType.UTF8 });
+        alert("Archivo CSV guardado en " + uri);
+        console.log("Archivo CSV guardado en", uri);
+      }).catch((error) => {
+        alert("Error al guardar el archivo CSV en Descargas: " + error);
+        console.error("Error al guardar el archivo CSV en Descargas:", error);});
+    } catch (error) {
+      alert("Error al guardar el archivo CSV en Descargas: " + error);
+      console.error("Error al guardar el archivo CSV en Descargas:", error);
+    }
+
+    alert("Archivo CSV guardado en " + tempFileUri);
+    console.log("Archivo CSV guardado en", tempFileUri);
+  } catch (error) {
+    alert("Error al guardar el archivo CSV en Descargas: " + error);
+    console.error("Error al guardar el archivo CSV en Descargas:", error);
   }
 };
 
