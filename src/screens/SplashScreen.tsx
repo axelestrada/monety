@@ -4,6 +4,7 @@ import Screen from "@/components/Screen";
 import CustomText from "@/components/CustomText";
 
 import useThemeColors from "@/hooks/useThemeColors";
+import { LoadingIndicator } from "@/components/LoadingIndicator";
 
 export const SplashScreen = () => {
   const colors = useThemeColors();
@@ -24,11 +25,9 @@ export const SplashScreen = () => {
         <CustomText className="text-text-primary text-3xl font-[Rounded-Bold] mt-2">Monety</CustomText>
       </View>
 
-      <ActivityIndicator
-        size={"large"}
-        className="mb-4"
-        color={colors["--color-accent"]}
-      />
+      <View className="mb-4">
+        <LoadingIndicator />
+      </View>
     </Screen>
   );
 };
