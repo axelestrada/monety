@@ -28,9 +28,10 @@ const IncomesExpenses = ({
       } px-3 py-3 rounded-2xl flex-[1] flex-row items-center`}
     >
       <View
-        className="justify-center items-center p-4 mr-2 rounded-full"
+        className="justify-center items-center p-4 mr-2"
         style={{
-          backgroundColor: colors[`--color-${type}`] + "1A",
+          backgroundColor: colors[`--color-${type}`] + "26",
+          borderRadius: 16,
         }}
       >
         <Feather
