@@ -10,8 +10,8 @@ const themeColors = {
     "--color-text-secondary": "#6D4953",
     "--color-icons-outline": "#F5F6F7",
     "--color-accent": "#CB3A5B",
-    "--color-accent-gradient-start": "#E73A58",
-    "--color-accent-gradient-end": "#A11351",
+    "--color-accent-gradient-start": "#D25F79",
+    "--color-accent-gradient-end": "#C93C5C",
     "--color-accent-50": "#CB3A5B84",
     "--color-card-background": "#F4EBEC",
     "--color-icon-button-background": "#F4EBEC",
@@ -22,6 +22,7 @@ const themeColors = {
     "--color-chip-background": "#EDE2E6",
     "--color-error": "#E03957",
     "--color-text-white": "#FFFFFF",
+    "--color-separator": "#F4EBEC",
   },
   dark: {
     "--color-main-background": "#121212",
@@ -34,8 +35,8 @@ const themeColors = {
     "--color-icons-outline": "#FFFFFF0D",
     "--color-text-secondary": "#A5A5A5",
     "--color-accent": "#C53A5B",
-    "--color-accent-gradient-start": "#E73A58",
-    "--color-accent-gradient-end": "#A11351",
+    "--color-accent-gradient-start": "#D25F79",
+    "--color-accent-gradient-end": "#C93C5C",
     "--color-accent-50": "#C53A5B84",
     "--color-card-background": "#1C1C1C",
     "--color-icon-button-background": "#1C1C1C",
@@ -46,6 +47,7 @@ const themeColors = {
     "--color-chip-background": "#242424",
     "--color-error": "#FE4459",
     "--color-text-white": "#FFFFFF",
+    "--color-separator": "#F4EBEC1A",
   },
 };
 

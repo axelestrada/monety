@@ -5,6 +5,7 @@ module.exports = {
     "./app/**/*.{js,jsx,ts,tsx}",
     "./components/**/*.{js,jsx,ts,tsx}",
     "./src/**/*.{js,jsx,ts,tsx}",
+    "./src/components/**/*.{js,jsx,ts,tsx}",
   ],
   presets: [require("nativewind/preset")],
   theme: {
@@ -61,6 +62,9 @@ module.exports = {
         },
         error: {
           DEFAULT: "var(--color-error)",
+        },
+        "separator": {
+          DEFAULT: "var(--color-separator)",
         },
         main: "#1B1D1C",
         "light-background": "#f5f6f7",
