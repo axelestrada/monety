@@ -9,23 +9,25 @@ interface HeaderProps {
   overallBalance?: boolean;
   dateRange?: boolean;
   children?: React.ReactNode;
+  title?: string;
 }
 
 export default function Header({
   overallBalance,
   dateRange,
   children,
+  title,
 }: HeaderProps) {
   const colors = useThemeColors();
 
   return (
-    <View className="pt-2 px-2 bg-header-background z-20">
+    <View className="py-2 px-2 bg-header-background z-20">
       <View className="flex-row justify-between items-center -mx-0.5 mb-2">
         <View className="flex-row items-center">
           <HeaderAction icon="menu" color={colors["--color-accent"]} />
 
           <CustomText className="font-[Rounded-Bold] text-xl text-text-primary">
-            Monety
+            {title || "Monety"}
           </CustomText>
         </View>
 
