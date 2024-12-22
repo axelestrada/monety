@@ -20,6 +20,7 @@ export default function Layout() {
               <Stack
                 screenOptions={{
                   headerShown: false,
+                  animation: "fade",
                 }}
               />
             </DateRangePickerProvider>
