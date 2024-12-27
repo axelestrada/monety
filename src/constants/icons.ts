@@ -1,4 +1,9 @@
-export const icons = [
+import { Ionicons } from "@expo/vector-icons";
+
+export const icons: {
+  id: number;
+  name: keyof typeof Ionicons.glyphMap;
+}[] = [
   { id: 1, name: "accessibility-outline" },
   { id: 2, name: "add-outline" },
   { id: 3, name: "airplane-outline" },

@@ -19,7 +19,7 @@ export const defaultCategories: ICategory[] = [
     id: 3,
     name: "Entertainment",
     icon: 18,
-    color: 25,
+    color: 20,
     type: "expense",
   },
   {

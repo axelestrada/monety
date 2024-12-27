@@ -6,6 +6,6 @@ export default interface IAccount {
   color:number;
   type: "regular" | "savings";
   currentBalance: number;
-  includeInOverallBalance: boolean;
+  includeInOverallBalance: number;
   goal?: number;
 }

@@ -1,14 +1,10 @@
 export default interface ITransaction {
-  id: string;
-  icon: {
-    id: number;
-    color: number;
-  };
-  originId: number;
-  destinationId: number;
+  id: number;
   date: number;
   createdAt: number;
   amount: number;
   comment?: string;
+  originId: number;
+  destinationId: number;
   type: "transfer" | "expense" | "income";
 }
