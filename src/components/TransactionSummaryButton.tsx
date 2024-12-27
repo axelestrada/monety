@@ -5,19 +5,19 @@ import { CustomText } from "@/components/CustomText";
 import formatCurrency from "@/utils/formatCurrency";
 import useThemeColors from "@/hooks/useThemeColors";
 
-interface IncomesExpensesProps {
+interface TransactionSummaryButtonProps {
   type: "income" | "expense";
   value: number;
   onPress?: () => void;
   active: boolean;
 }
 
-const IncomesExpenses = ({
+export const TransactionSummaryButton = ({
   active,
   type,
   value,
   onPress,
-}: IncomesExpensesProps) => {
+}: TransactionSummaryButtonProps) => {
   const colors = useThemeColors();
 
   return (
@@ -61,5 +61,3 @@ const IncomesExpenses = ({
     </TouchableOpacity>
   );
 };
-
-export default IncomesExpenses;
