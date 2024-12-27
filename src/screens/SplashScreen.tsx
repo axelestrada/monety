@@ -1,7 +1,7 @@
 import { ActivityIndicator, Image, View } from "react-native";
 
 import Screen from "@/components/Screen";
-import CustomText from "@/components/CustomText";
+import { CustomText } from "@/components/CustomText";
 
 import useThemeColors from "@/hooks/useThemeColors";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
@@ -22,10 +22,12 @@ export const SplashScreen = () => {
           }}
         />
 
-        <CustomText className="text-text-primary text-3xl font-[Rounded-Bold] mt-2">Monety</CustomText>
+        <CustomText className="text-text-primary text-3xl font-[Rounded-Bold] mt-2">
+          Monety
+        </CustomText>
       </View>
 
-      <View className="mb-4">
+      <View className="absolute bottom-4 w-full">
         <LoadingIndicator />
       </View>
     </Screen>

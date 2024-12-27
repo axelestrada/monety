@@ -1,7 +1,7 @@
 import { View } from "react-native";
 
 import DateRange from "@/components/DateRange";
-import CustomText from "@/components/CustomText";
+import { CustomText } from "@/components/CustomText";
 
 import formatCurrency from "@/utils/formatCurrency";
 import calculateOverallBalance from "@/utils/calculateOverallBalance";
@@ -10,7 +10,7 @@ interface OverallBalanceProps {
   dateRange?: boolean;
 }
 
-const OverallBalance = ({ dateRange }: OverallBalanceProps) => {
+export const OverallBalance = ({ dateRange }: OverallBalanceProps) => {
   const totalBalance = calculateOverallBalance();
 
   return (
@@ -29,5 +29,3 @@ const OverallBalance = ({ dateRange }: OverallBalanceProps) => {
     </View>
   );
 };
-
-export default OverallBalance;

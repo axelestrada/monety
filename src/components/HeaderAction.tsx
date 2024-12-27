@@ -10,12 +10,12 @@ interface HeaderActionProps extends TouchableOpacityProps {
   color?: string;
 }
 
-export default function HeaderAction({
+export const HeaderAction = ({
   icon,
   badge,
   color,
   ...props
-}: HeaderActionProps) {
+}: HeaderActionProps) => {
   const colors = useThemeColors();
 
   return (
@@ -34,4 +34,4 @@ export default function HeaderAction({
       )}
     </TouchableOpacity>
   );
-}
+};

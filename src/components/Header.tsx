@@ -1,8 +1,8 @@
 import { View } from "react-native";
 
-import CustomText from "@/components/CustomText";
-import HeaderAction from "@/components/HeaderAction";
-import OverallBalance from "@/components/OverallBalance";
+import { CustomText } from "@/components/CustomText";
+import { HeaderAction } from "@/components/HeaderAction";
+import { OverallBalance } from "@/components/OverallBalance";
 import useThemeColors from "@/hooks/useThemeColors";
 
 interface HeaderProps {

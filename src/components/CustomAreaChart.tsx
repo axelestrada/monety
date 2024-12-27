@@ -8,7 +8,7 @@ import {
   lineDataItem,
 } from "react-native-gifted-charts";
 
-import CustomText from "@/components/CustomText";
+import { CustomText } from "@/components/CustomText";
 import useThemeColors from "@/hooks/useThemeColors";
 
 interface CustomAreaChartProps extends LineChartPropsType {

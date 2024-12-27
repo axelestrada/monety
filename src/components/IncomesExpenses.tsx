@@ -1,7 +1,7 @@
 import { TouchableOpacity, View } from "react-native";
 import { Feather } from "@expo/vector-icons";
 
-import CustomText from "@/components/CustomText";
+import { CustomText } from "@/components/CustomText";
 import formatCurrency from "@/utils/formatCurrency";
 import useThemeColors from "@/hooks/useThemeColors";
 

@@ -17,7 +17,7 @@ module.exports = {
         "header-background": {
           DEFAULT: "var(--color-header-background)",
         },
-        "shadow": {
+        shadow: {
           "30": "var(--color-shadow-30)",
           "50": "var(--color-shadow-50)",
         },
@@ -48,6 +48,9 @@ module.exports = {
         expense: {
           DEFAULT: "var(--color-expense)",
         },
+        transfer: {
+          DEFAULT: "var(--color-transfer)",
+        },
         "chip-background": {
           DEFAULT: "var(--color-chip-background)",
         },
@@ -63,7 +66,7 @@ module.exports = {
         error: {
           DEFAULT: "var(--color-error)",
         },
-        "separator": {
+        separator: {
           DEFAULT: "var(--color-separator)",
         },
         main: "#1B1D1C",

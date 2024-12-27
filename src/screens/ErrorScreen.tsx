@@ -4,7 +4,7 @@ import { TouchableOpacity, View } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 import Screen from "@/components/Screen";
-import CustomText from "@/components/CustomText";
+import { CustomText } from "@/components/CustomText";
 
 import useThemeColors from "@/hooks/useThemeColors";
 import { StatusBar } from "expo-status-bar";

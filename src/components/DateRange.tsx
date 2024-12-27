@@ -7,7 +7,7 @@ import moment from "moment";
 import { useAppDispatch, useTypedSelector } from "@/store";
 import { userPreferencesServices } from "@/reducers/userPreferencesSlice";
 
-import CustomText from "@/components/CustomText";
+import { CustomText } from "@/components/CustomText";
 import IconButton from "@/components/ui/IconButton";
 import DateRangeIntervalSelector from "@/components/DateRangeIntervalSelector";
 
