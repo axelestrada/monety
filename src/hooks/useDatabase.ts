@@ -4,11 +4,37 @@ import { useSQLiteContext } from "expo-sqlite";
 import { defaultAccounts } from "@/constants/defaultAccounts";
 import { defaultCategories } from "@/constants/defaultCategories";
 
+import ITransaction from "@/interfaces/transaction";
+
 const useDatabase = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const db = useSQLiteContext();
+
+  const insertTransaction = useCallback(async (transaction: ITransaction) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      await db.runAsync(
+        "INSERT INTO Transactions (date, created_at, amount, comment, origin_id, destination_id, type) VALUES (?, ?, ?, ?, ?, ?, ?);",
+        [
+          transaction.date,
+          transaction.createdAt,
+          transaction.amount,
+          transaction.comment || null,
+          transaction.originId,
+          transaction.destinationId,
+          transaction.type,
+        ]
+      );
+    } catch (error) {
+      console.error("Error inserting transaction: ", error);
+    }
+
+    setLoading(false);
+  }, []);
 
   const initializeDatabase = useCallback(async () => {
     setLoading(true);
@@ -102,7 +128,7 @@ const useDatabase = () => {
     }
   }, []);
 
-  return { error, loading, initializeDatabase };
+  return { error, loading, initializeDatabase, insertTransaction };
 };
 
 export default useDatabase;
