@@ -1,5 +1,4 @@
 import useThemeColors from "@/hooks/useThemeColors";
-import { useState } from "react";
 
 import { RefreshControl, ScrollView } from "react-native";
 
