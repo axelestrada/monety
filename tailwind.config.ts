@@ -69,6 +69,9 @@ module.exports = {
         separator: {
           DEFAULT: "var(--color-separator)",
         },
+        "accent-background": {
+          DEFAULT: "var(--color-accent-background)",
+        },
         main: "#1B1D1C",
         "light-background": "#f5f6f7",
         "main-50": "#1B1D1C80",
@@ -85,6 +88,7 @@ module.exports = {
         "4.5xl": "40px",
         "3.5xl": "30px",
         xs: "10px",
+        s: "12px",
       },
     },
   },
