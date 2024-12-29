@@ -1,6 +1,6 @@
 import AccountCategorySelector from "@/components/AccountCategorySelector";
 import BottomTabNavigator from "@/components/BottomTabNavigator";
-import Header from "@/components/Header/Header";
+import Header from "@/components/Header";
 import NewTransaction from "@/components/NewTransaction";
 import OverallBalance from "@/components/OverallBalance";
 import IconButton from "@/components/ui/IconButton";

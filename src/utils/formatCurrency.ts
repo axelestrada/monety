@@ -1,7 +1,7 @@
 export default function formatCurrency(
   value: number,
   options: {
-    showSign?: "always" | "only-positive" | "only-negative";
+    showSign?: "always" | "only-positive" | "only-negative" | "never";
     spacing?: boolean;
   } = {
     showSign: "only-negative",
@@ -22,6 +22,8 @@ export default function formatCurrency(
   }
 
   if (decimals?.length === 1) formattedNumber += "0";
+
+  if (showSign === "never") return `L${spacing ? " " : ""}${formattedNumber}`;
 
   if (showSign === "always")
     return `${sign}L${spacing ? " " : ""}${formattedNumber}`;
