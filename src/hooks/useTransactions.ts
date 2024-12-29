@@ -159,5 +159,7 @@ export default function useTransactions() {
     }
   }, [timeRange]);
 
+  
+
   return { loadTransactions, deleteTransaction, transactions };
 }
