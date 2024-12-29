@@ -8,7 +8,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAppDispatch, useTypedSelector } from "../store";
-import Header from "@/components/Header/Header";
+import Header from "@/components/Header";
 import IconButton from "@/components/ui/IconButton";
 import { Feather } from "@expo/vector-icons";
 import OverallBalance from "@/components/OverallBalance";
@@ -24,7 +24,7 @@ import { transactionServices } from "@/reducers/transactionsSlice";
 import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
 import moment from "moment";
-import { formatCurrency } from "@/utils";
+import formatCurrency from "@/utils/formatCurrency";
 
 const Transactions = () => {
   const { transactions }: { transactions: ITransaction[] } = useTypedSelector(

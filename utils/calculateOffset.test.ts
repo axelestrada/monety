@@ -1,3 +1,6 @@
+
+import { expect, test } from "@jest/globals";
+
 import calculateOffset from "./calculateOffset";
 
 test("El resultado de 0 y 100 debe dar 10", () => {
