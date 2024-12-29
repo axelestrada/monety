@@ -20,9 +20,8 @@ const CashFlowItem = ({ type, value, onPress, active = true }: Props) => {
       onPress={onPress}
       activeOpacity={0.75}
       className={`${
-        active && "bg-white dark:bg-[#1A1A1A]"
-      } flex flex-1 rounded-2xl py-2.5 px-2 mx-1.5 flex-row items-center`}
-      style={active ? { elevation: 16, shadowColor: "#1b1d1c1f" } : {}}
+        active && "bg-white dark:bg-[#1A1A1A] shadow-md shadow-main-25"
+      } flex  dark:bg-none flex-1 rounded-2xl py-2.5 px-2 mx-1.5 flex-row items-center dark:shadow-none`}
     >
       <View
         className={`${

@@ -119,59 +119,43 @@ export default function useTransactions() {
     [accounts]
   );
 
-  // const dbTransactions = useMemo(async () => {
-  //   console.log("Obteniendo data");
-
-  //   try {
-  //     const result = await db.getAllAsync<ITransaction>(
-  //       `
-  //     SELECT Transactions.id, Transactions.created_at as createdAt, Transactions.comment, Transactions.date, Transactions.amount,
-  //       Transactions.type, Categories.color AS categoryColor, Categories.icon AS categoryIcon,
-  //       Categories.name AS categoryName, A1.name as accountName, A1.id as accountId,
-  //       A2.name as destinationAccountName, A2.color as destinationAccountColor,
-  //       A2.icon as destinationAccountIcon, A2.id as destinationAccountId
-  //     FROM Transactions
-  //     LEFT JOIN Categories ON Categories.id = Transactions.category_id
-  //     LEFT JOIN Accounts AS A1 ON A1.id = Transactions.account_id
-  //     LEFT JOIN Accounts AS A2 ON A2.id = Transactions.destination_account
-  //     WHERE Transactions.created_at >= ? AND Transactions.created_at <= ?
-  //     ORDER BY Transactions.date DESC;
-  //   `,
-  //       [timeRange.from, timeRange.to]
-  //     );
-
-  //     return result;
-  //   } catch (error) {
-  //     console.error(error);
-  //     return [];
-  //   }
-  // }, [timeRange]);
-
   const loadTransactions = useCallback(async () => {
+    dispatch(userPreferencesServices.actions.setLoading(true));
+
+    const query = `
+      SELECT
+        Transactions.id,
+        Transactions.created_at AS createdAt,
+        Transactions.comment,
+        Transactions.date,
+        Transactions.amount,
+        Transactions.type,
+        Categories.color AS categoryColor,
+        Categories.icon AS categoryIcon,
+        Categories.name AS categoryName,
+        A1.name AS accountName,
+        A1.id AS accountId,
+        A2.name AS destinationAccountName,
+        A2.color AS destinationAccountColor,
+        A2.icon AS destinationAccountIcon,
+        A2.id AS destinationAccountId
+      FROM Transactions
+      LEFT JOIN Categories ON Categories.id = Transactions.category_id
+      LEFT JOIN Accounts AS A1 ON A1.id = Transactions.account_id
+      LEFT JOIN Accounts AS A2 ON A2.id = Transactions.destination_account
+      WHERE Transactions.created_at >= ? AND Transactions.created_at <= ?
+      ORDER BY Transactions.date DESC;
+    `;
+
+    const params = [timeRange.from, timeRange.to];
+
     try {
-      dispatch(userPreferencesServices.actions.setLoading(true));
-
-      const result = await db.getAllAsync<ITransaction>(
-        `
-        SELECT Transactions.id, Transactions.created_at as createdAt, Transactions.comment, Transactions.date, Transactions.amount,
-          Transactions.type, Categories.color AS categoryColor, Categories.icon AS categoryIcon,
-          Categories.name AS categoryName, A1.name as accountName, A1.id as accountId,
-          A2.name as destinationAccountName, A2.color as destinationAccountColor,
-          A2.icon as destinationAccountIcon, A2.id as destinationAccountId
-        FROM Transactions
-        LEFT JOIN Categories ON Categories.id = Transactions.category_id
-        LEFT JOIN Accounts AS A1 ON A1.id = Transactions.account_id
-        LEFT JOIN Accounts AS A2 ON A2.id = Transactions.destination_account
-        WHERE Transactions.created_at >= ? AND Transactions.created_at <= ?
-        ORDER BY Transactions.date DESC;
-      `,
-        [timeRange.from, timeRange.to]
-      );
-
+      const result = await db.getAllAsync<ITransaction>(query, params);
       dispatch(transactionServices.actions.updateTransactions(result));
       dispatch(userPreferencesServices.actions.setLoading(false));
     } catch (error) {
-      console.error(error);
+      console.error("Error retrieving transactions:", error);
+      throw error;
     }
   }, [timeRange]);
 

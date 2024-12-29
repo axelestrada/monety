@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 
 export default function Layout() {
   return (
-    
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
         <SQLiteProvider databaseName="todos.db">
           <Stack
@@ -17,13 +17,14 @@ export default function Layout() {
           >
             <Stack.Screen name="index" />
             <Stack.Screen name="accounts" />
-            <Stack.Screen name="categories" />
-            <Stack.Screen name="add-category" />
             <Stack.Screen name="add-account" />
+
+            <Stack.Screen name="add-category" />
+            <Stack.Screen name="categories" />
             <Stack.Screen name="transactions" />
           </Stack>
         </SQLiteProvider>
       </Provider>
-    
+    </GestureHandlerRootView>
   );
 }

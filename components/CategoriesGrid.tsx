@@ -1,4 +1,11 @@
-import { Dimensions, FlatList, RefreshControlProps, ScrollView, TouchableOpacity } from "react-native";
+import {
+  Dimensions,
+  FlatList,
+  RefreshControlProps,
+  ScrollView,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import Category from "./Category";
 import { ICategory } from "@/interfaces";
 import { Feather } from "@expo/vector-icons";
@@ -6,23 +13,31 @@ import { useRouter } from "expo-router";
 import { ReactElement, useState } from "react";
 import { useTypedSelector } from "@/store";
 import { useColorScheme } from "nativewind";
+import CashFlowItem from "./CashFlowItem";
 
 interface Props {
   categories: ICategory[];
   openModal: () => void;
   setCurrentCategory: (category: ICategory) => void;
-  refreshControl: ReactElement<RefreshControlProps, string | React.JSXElementConstructor<any>>
+  refreshControl: ReactElement<
+    RefreshControlProps,
+    string | React.JSXElementConstructor<any>
+  >;
+  type: string;
+  setType: React.Dispatch<React.SetStateAction<"Income" | "Expense">>;
 }
 
 const CategoriesGrid = ({
   categories,
   openModal,
   setCurrentCategory,
-  refreshControl
+  refreshControl,
+  type,
+  setType,
 }: Props) => {
   const windowWidth = Dimensions.get("window").width;
   const router = useRouter();
-  const {colorScheme} = useColorScheme()
+  const { colorScheme } = useColorScheme();
 
   const { transactions } = useTypedSelector((state) => state.transactions);
 
@@ -30,11 +45,32 @@ const CategoriesGrid = ({
     <FlatList
       data={categories}
       refreshControl={refreshControl}
+      ListHeaderComponent={() => (
+        <View className="flex flex-row mx-1.5 mb-3 dark:-mt-4 py-1.5 bg-[#ffffff80] dark:bg-[#E0E2EE00] dark:mx-0 rounded-2xl">
+          <CashFlowItem
+            type="Incomes"
+            value={transactions
+              .filter((transaction) => transaction.type === "Income")
+              .reduce((acc, curr) => acc + curr.amount, 0)}
+            active={type === "Income"}
+            onPress={() => setType("Income")}
+          />
+
+          <CashFlowItem
+            type="Expenses"
+            value={transactions
+              .filter((transaction) => transaction.type === "Expense")
+              .reduce((acc, curr) => acc + curr.amount, 0)}
+            active={type === "Expense"}
+            onPress={() => setType("Expense")}
+          />
+        </View>
+      )}
       renderItem={({ item }) =>
         item.id === "" ? (
           <TouchableOpacity
             activeOpacity={0.5}
-            className="mb-3 mx-1.5 rounded-2xl justify-center items-center py-[23]"
+            className="mb-3 mx-1.5 rounded-2xl justify-center items-center py-6"
             onPress={() => {
               router.navigate(`/add-category?type=${item.type}`);
             }}
@@ -45,7 +81,11 @@ const CategoriesGrid = ({
               borderColor: colorScheme === "dark" ? "#6F717D" : "#1B1D1C",
             }}
           >
-            <Feather name="plus" color={colorScheme === "dark" ? "#6F717D" : "#1B1D1C"} size={18} />
+            <Feather
+              name="plus"
+              color={colorScheme === "dark" ? "#6F717D" : "#1B1D1C"}
+              size={18}
+            />
           </TouchableOpacity>
         ) : (
           <Category
@@ -69,8 +109,8 @@ const CategoriesGrid = ({
       numColumns={2}
       contentContainerStyle={{
         flexGrow: 1,
-        paddingTop: 16,
-        paddingBottom: 4,
+        paddingTop: 20,
+        paddingBottom: 8,
         paddingHorizontal: 6,
       }}
     />

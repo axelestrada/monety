@@ -22,9 +22,15 @@
       },
       "package": "com.axelestrada.moneymanager"
     },
-    "plugins": ["expo-router", "expo-asset"],
+    "plugins": ["expo-router", "expo-asset", "expo-font"],
     "experiments": {
       "typedRoutes": true
+    },
+    "updates": {
+      "enabled": true,
+      "checkAutomatically": "ON_ERROR_RECOVERY",
+      "fallbackToCacheTimeout": 30000,
+      "url": "https://u.expo.dev/686c38a4-bd1a-4dcc-b4f7-1f14061454a0"
     },
     "extra": {
       "router": {
@@ -33,6 +39,9 @@
       "eas": {
         "projectId": "686c38a4-bd1a-4dcc-b4f7-1f14061454a0"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
     }
   }
 }

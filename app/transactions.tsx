@@ -8,7 +8,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useAppDispatch, useTypedSelector } from "../store";
-import Header from "@/components/Header";
+import Header from "@/components/Header/Header";
 import IconButton from "@/components/ui/IconButton";
 import { Feather } from "@expo/vector-icons";
 import OverallBalance from "@/components/OverallBalance";
@@ -23,6 +23,8 @@ import { useSQLiteContext } from "expo-sqlite";
 import { transactionServices } from "@/reducers/transactionsSlice";
 import { useColorScheme } from "nativewind";
 import { StatusBar } from "expo-status-bar";
+import moment from "moment";
+import { formatCurrency } from "@/utils";
 
 const Transactions = () => {
   const { transactions }: { transactions: ITransaction[] } = useTypedSelector(
@@ -46,49 +48,43 @@ const Transactions = () => {
 
   const { colorScheme } = useColorScheme();
 
-  const format = (number: number) => {
-    const formattedNumber = Intl.NumberFormat("en-US").format(number);
+  const groupTransactionsByDate = (
+    transactions: ITransaction[]
+  ): { date: number; transactions: ITransaction[] }[] => {
+    const grouped = transactions.reduce((groups, transaction) => {
+      const dateKey = moment(transaction.createdAt * 1000)
+        .startOf("day")
+        .valueOf()
+        .toString(); // Convertimos la fecha a string para usarla como clave
+      if (!groups[dateKey]) {
+        groups[dateKey] = [];
+      }
+      groups[dateKey].push(transaction);
+      return groups;
+    }, {} as Record<string, ITransaction[]>);
 
-    if (number < 0) {
-      return "- L " + formattedNumber.toString().slice(1);
-    }
-
-    if (number === 0) {
-      return "L " + formattedNumber;
-    }
-
-    if (number > 0) {
-      return "+ L " + formattedNumber;
-    }
+    // Transformar el objeto a un arreglo con la estructura deseada
+    return Object.entries(grouped)
+      .map(([date, transactions]) => ({
+        date: Number(date), // Convertimos la clave nuevamente a número
+        transactions,
+      }))
+      .sort((a, b) => b.date - a.date);
   };
 
+  const groupedTransactions = groupTransactionsByDate(transactions);
+
   return (
-    <SafeAreaView className="flex-1 bg-light-background dark:bg-[#121212]">
-      <StatusBar style={colorScheme === "dark" ? "light" : "dark"} />
+    <SafeAreaView className="flex-1 bg-light-background dark:bg-[#0D0D0D]">
+      <StatusBar
+        style={colorScheme === "dark" ? "light" : "dark"}
+        backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#0D0D0D"}
+      />
 
-      {loading && (
-        <View className="absolute top-0 left-0 right-0 bottom-0 z-50 bg-[#00000080] justify-center items-center">
-          <ActivityIndicator color={"#FFFFFF"} size={32} />
-        </View>
-      )}
-
-      <Header title="Transactions">
-        <IconButton>
-          <Feather
-            name="filter"
-            color={colorScheme === "dark" ? "#E0E2EE" : "#1B1D1C"}
-            size={20}
-          />
-        </IconButton>
-      </Header>
-
-      <OverallBalance>
-        <TimeRange />
-      </OverallBalance>
+      <Header overallBalance dateRange />
 
       <ScrollView
         contentContainerStyle={{ flexGrow: 1 }}
-        className="-mb-6"
         refreshControl={
           <RefreshControl
             refreshing={refreshing}
@@ -100,37 +96,45 @@ const Transactions = () => {
           />
         }
       >
-        <View className="rounded-md grow mb-6">
-          {transactions.length <= 0 ? (
+        <View className="grow mt-4 dark:mt-2 mb-2 dark:mb-0">
+          {groupedTransactions.length <= 0 ? (
             <NoTransactions />
           ) : (
-            <>
-              <View className="flex flex-row justify-between items-center mb-2 mx-3">
-                <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#E0E2EE]">
-                  Today
-                </Text>
+            groupedTransactions.map(({ date, transactions }) => (
+              <View key={"summary" + date}>
+                <View className="flex flex-row justify-between items-center mb-2 mx-3">
+                  <Text className="font-[Rounded-Bold] text-base text-main dark:text-[#E0E2EE]">
+                    {moment(date).isSame(moment(), "day")
+                      ? "Today"
+                      : moment(date).format("ddd, MMM DD")}
+                  </Text>
 
-                <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#E0E2EE]">
-                  {format(
-                    transactions.reduce((acc, cur) => {
-                      if (cur.type === "Income") {
-                        return acc + cur.amount;
+                  <Text className="font-[Rounded-Bold] text-base text-main dark:text-[#E0E2EE]">
+                    {formatCurrency(
+                      transactions.reduce((acc, cur) => {
+                        if (cur.type === "Income") {
+                          return acc + cur.amount;
+                        }
+
+                        if (cur.type === "Expense") {
+                          return acc - cur.amount;
+                        }
+
+                        return acc;
+                      }, 0),
+                      {
+                        showSign: "always",
+                        spacing: true,
                       }
+                    )}
+                  </Text>
+                </View>
 
-                      if (cur.type === "Expense") {
-                        return acc - cur.amount;
-                      }
-
-                      return acc;
-                    }, 0)
-                  )}
-                </Text>
+                {transactions.map((transaction) => (
+                  <Transaction key={transaction.id} transaction={transaction} />
+                ))}
               </View>
-
-              {transactions.map((transaction) => (
-                <Transaction key={transaction.id} transaction={transaction} />
-              ))}
-            </>
+            ))
           )}
         </View>
       </ScrollView>

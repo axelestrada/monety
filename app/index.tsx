@@ -13,13 +13,12 @@ import { StatusBar } from "expo-status-bar";
 import { Link, SplashScreen, useRouter } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 
-import Header from "@/components/Header";
 import BottomTabNavigator from "@/components/BottomTabNavigator";
 import OverallBalance from "@/components/OverallBalance";
 import CashFlowItem from "@/components/CashFlowItem";
 import TransactionsList from "@/components/TransactionsList";
 import IconButton from "@/components/ui/IconButton";
-import { Octicons } from "@expo/vector-icons";
+import { Feather, Octicons } from "@expo/vector-icons";
 import { useSQLiteContext } from "expo-sqlite";
 
 import { LineChart, lineDataItem } from "react-native-gifted-charts";
@@ -47,7 +46,17 @@ import Transaction from "@/components/Transaction";
 import SeeAllButton from "@/components/ui/SeeAllButton";
 import { ITransaction } from "@/interfaces";
 
+import { Alert } from "react-native";
+import * as Updates from "expo-updates";
+import calculateOffset from "@/utils/calculateOffset";
+import getYAxisLabelTexts from "@/utils/getYAxisLabelTexts";
+import calculateStepValue from "@/utils/calculateStepValue";
+import Header from "@/components/Header/Header";
+import calculateMaxValue from "@/utils/calculateMaxValue";
+
 const screenWidth = Dimensions.get("window").width;
+
+SplashScreen.preventAutoHideAsync();
 
 export default function Index() {
   const db = useSQLiteContext();
@@ -65,12 +74,18 @@ export default function Index() {
 
   const [refreshing, setRefreshing] = useState(false);
 
-  const [incomes, setIncomes] = useState<lineDataItem[]>([{ value: 0 }]);
-  const [expenses, setExpenses] = useState<lineDataItem[]>([{ value: 0 }]);
+  const [incomes, setIncomes] = useState<lineDataItem[]>([
+    { value: 0 },
+    { value: 0 },
+  ]);
+  const [expenses, setExpenses] = useState<lineDataItem[]>([
+    { value: 0 },
+    { value: 0 },
+  ]);
 
   const [maxValue, setMaxValue] = useState(100);
   const [minValue, setMinValue] = useState(0);
-  const [breakpoints, setBreakpoints] = useState<number[]>([]);
+  const [breakpoints, setBreakpoints] = useState<string[]>([]);
   const [startDate, setStartDate] = useState<number>(0);
 
   const { colorScheme, toggleColorScheme } = useColorScheme();
@@ -98,24 +113,49 @@ export default function Index() {
   }, [timeRange, loadTransactions]);
 
   useEffect(() => {
+    async function checkForUpdates() {
+      try {
+        const update = await Updates.checkForUpdateAsync();
+        if (update.isAvailable) {
+          Alert.alert(
+            "Nueva actualización",
+            "Hay una nueva versión disponible. ¿Quieres actualizar?",
+            [
+              { text: "No", style: "cancel" },
+              {
+                text: "Sí",
+                onPress: () =>
+                  Updates.fetchUpdateAsync().then(() => Updates.reloadAsync()),
+              },
+            ]
+          );
+        }
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    checkForUpdates();
+
     if (categories.length === 0) {
       const initializeDatabase = async () => {
-        try {
-          await db.execAsync(`
+        await db.withTransactionAsync(async () => {
+          try {
+            await db.execAsync(`
             PRAGMA journal_mode = WAL;
             PRAGMA foreign_keys = ON;
           `);
-        } catch (error) {
-          console.error(error);
-        }
+          } catch (error) {
+            console.error(error);
+          }
 
-        const categoriesTable = await db.getAllAsync(`
+          const categoriesTable = await db.getAllAsync(`
           SELECT name FROM sqlite_master WHERE type='table' AND name='Categories';
           `);
 
-        if (categoriesTable.length === 0) {
-          try {
-            await db.execAsync(`
+          if (categoriesTable.length === 0) {
+            try {
+              await db.execAsync(`
               CREATE TABLE IF NOT EXISTS Categories (
                 id TEXT PRIMARY KEY NOT NULL,
                 name TEXT NOT NULL,
@@ -124,32 +164,32 @@ export default function Index() {
                 type TEXT NOT NULL CHECK (type IN ('Expense', 'Income'))
             );`);
 
-            defaultCategories.forEach(
-              async ({ id, name, icon, color, type }) => {
-                try {
-                  await db.runAsync(
-                    `
+              defaultCategories.forEach(
+                async ({ id, name, icon, color, type }) => {
+                  try {
+                    await db.runAsync(
+                      `
                   INSERT INTO Categories (id, name, icon, color, type) VALUES (?, ?, ?, ?, ?);
                 `,
-                    [id, name, icon, color, type]
-                  );
-                } catch (error) {
-                  console.error();
+                      [id, name, icon, color, type]
+                    );
+                  } catch (error) {
+                    console.error();
+                  }
                 }
-              }
-            );
-          } catch (error) {
-            console.error(error);
+              );
+            } catch (error) {
+              console.error(error);
+            }
           }
-        }
 
-        const accountsTable = await db.getAllAsync(`
+          const accountsTable = await db.getAllAsync(`
           SELECT name FROM sqlite_master WHERE type='table' AND name='Accounts';
           `);
 
-        if (accountsTable.length === 0) {
-          try {
-            await db.execAsync(`
+          if (accountsTable.length === 0) {
+            try {
+              await db.execAsync(`
               CREATE TABLE IF NOT EXISTS Accounts (
                 id TEXT PRIMARY KEY NOT NULL,
                 name TEXT NOT NULL,
@@ -161,29 +201,29 @@ export default function Index() {
                 includeInOverallBalance INTEGER NOT NULL
             );`);
 
-            await db.runAsync(
-              `
+              await db.runAsync(
+                `
                 INSERT INTO Accounts (id, name, icon, color, type, currentBalance, includeInOverallBalance) VALUES (?, ?, ?, ?, ?, ?, ?);
                 `,
-              [
-                uuid.v4().toString(),
-                "Cash",
-                "cash-outline",
-                "00AD74",
-                "Regular",
-                0,
-                1,
-              ]
-            );
-          } catch (error) {
-            console.error(error);
+                [
+                  uuid.v4().toString(),
+                  "Cash",
+                  "cash-outline",
+                  "00AD74",
+                  "Regular",
+                  0,
+                  1,
+                ]
+              );
+            } catch (error) {
+              console.error(error);
+            }
           }
-        }
 
-        try {
-          // await db.execAsync(`DROP TABLE Transactions`);
+          try {
+            // await db.execAsync(`DROP TABLE Transactions`);
 
-          await db.execAsync(`
+            await db.execAsync(`
             CREATE TABLE IF NOT EXISTS Transactions (
               id TEXT PRIMARY KEY NOT NULL,
               category_id TEXT,
@@ -198,12 +238,34 @@ export default function Index() {
               FOREIGN KEY (account_id) REFERENCES Accounts (id),
               FOREIGN KEY (destination_account) REFERENCES Accounts (id)
           );`);
-        } catch (error) {
-          console.error(error);
-        }
+          } catch (error) {
+            console.error(error);
+          }
+        });
       };
 
       initializeDatabase();
+
+      async function createIndexes() {
+        const indexQueries = [
+          `CREATE INDEX IF NOT EXISTS idx_transactions_created_at ON Transactions (created_at);`,
+          `CREATE INDEX IF NOT EXISTS idx_transactions_category_id ON Transactions (category_id);`,
+          `CREATE INDEX IF NOT EXISTS idx_transactions_account_id ON Transactions (account_id);`,
+          `CREATE INDEX IF NOT EXISTS idx_transactions_destination_account ON Transactions (destination_account);`,
+        ];
+
+        try {
+          for (const query of indexQueries) {
+            await db.execAsync(query);
+          }
+          console.log("Indexes created successfully.");
+        } catch (error) {
+          console.error("Error creating indexes:", error);
+          throw error;
+        }
+      }
+
+      createIndexes();
 
       loadAccounts();
       loadTransactions();
@@ -212,13 +274,16 @@ export default function Index() {
   }, []);
 
   useEffect(() => {
+    if (timeRange.interval === "all time" || timeRange.interval === "custom")
+      return;
+
     const startDate = moment(
       Math.min(
         ...transactions
           .filter((tr) => tr.type !== "Transfer")
           .map((tr) => tr.date * 1000)
       )
-    ).startOf("hour");
+    ).startOf(timeRange.interval === "day" ? "hour" : "day");
 
     setStartDate(startDate.unix());
 
@@ -228,62 +293,110 @@ export default function Index() {
           .filter((tr) => tr.type !== "Transfer")
           .map((tr) => tr.date * 1000)
       )
-    ).endOf("hour");
-
-    const hoursOfDifference = moment(endDate).diff(startDate, "hours");
+    ).endOf(timeRange.interval === "day" ? "hour" : "day");
 
     const newIncomes: lineDataItem[] = [];
     const newExpenses: lineDataItem[] = [];
 
     let newMaxValue: number = 0;
 
-    for (let i = 0; i <= hoursOfDifference; i++) {
-      const currentDate = moment(startDate).add(i, "hour");
+    const breakpoints: string[] = [];
 
-      const incomesAmount = Math.round(
-        transactions
-          .filter((tr) => tr.type !== "Transfer")
-          .filter((tr) => tr.type === "Income")
-          .filter(
-            (tr) =>
-              tr.date >= moment(currentDate).startOf("hour").unix() &&
-              tr.date <= moment(currentDate).endOf("hour").unix()
-          )
-          .reduce((acc, curr) => acc + curr.amount, 0)
-      );
+    if (timeRange.interval !== "day") {
+      const daysOfDifference = moment(endDate).diff(startDate, "days");
 
-      const expensesAmount = Math.round(
-        transactions
-          .filter((tr) => tr.type !== "Transfer")
-          .filter((tr) => tr.type === "Expense")
-          .filter(
-            (tr) =>
-              tr.date >= moment(currentDate).startOf("hour").unix() &&
-              tr.date <= moment(currentDate).endOf("hour").unix()
-          )
-          .reduce((acc, curr) => acc + curr.amount, 0)
-      );
+      for (let i = 0; i <= daysOfDifference; i++) {
+        const currentDate = moment(startDate).add(i, "day");
 
-      const incomesLabelSize = (incomesAmount.toString().length + 1) * 14;
+        const incomesAmount = Math.round(
+          transactions
+            .filter((tr) => tr.type !== "Transfer")
+            .filter((tr) => tr.type === "Income")
+            .filter(
+              (tr) =>
+                tr.createdAt >= moment(currentDate).startOf("day").unix() &&
+                tr.createdAt <= moment(currentDate).endOf("day").unix()
+            )
+            .reduce((acc, curr) => acc + curr.amount, 0)
+        );
 
-      newMaxValue = incomesAmount > newMaxValue ? incomesAmount : newMaxValue;
+        const expensesAmount = Math.round(
+          transactions
+            .filter((tr) => tr.type !== "Transfer")
+            .filter((tr) => tr.type === "Expense")
+            .filter(
+              (tr) =>
+                tr.createdAt >= moment(currentDate).startOf("day").unix() &&
+                tr.createdAt <= moment(currentDate).endOf("day").unix()
+            )
+            .reduce((acc, curr) => acc + curr.amount, 0)
+        );
 
-      newIncomes.push({
-        value: incomesAmount,
-      });
+        newMaxValue = incomesAmount > newMaxValue ? incomesAmount : newMaxValue;
 
-      const expensesLabelSize = (expensesAmount.toString().length + 1) * 14;
+        newIncomes.push({
+          value: incomesAmount,
+        });
 
-      newMaxValue = expensesAmount > newMaxValue ? expensesAmount : newMaxValue;
+        newMaxValue =
+          expensesAmount > newMaxValue ? expensesAmount : newMaxValue;
 
-      newExpenses.push({
-        value: expensesAmount,
-      });
+        newExpenses.push({
+          value: expensesAmount,
+        });
+      }
+    } else {
+      const hoursOfDifference = moment(endDate).diff(startDate, "hours");
+
+      for (let i = 0; i <= hoursOfDifference; i++) {
+        const currentDate = moment(startDate).add(i, "hour");
+
+        const incomesAmount = Math.round(
+          transactions
+            .filter((tr) => tr.type !== "Transfer")
+            .filter((tr) => tr.type === "Income")
+            .filter(
+              (tr) =>
+                tr.date >= moment(currentDate).startOf("hour").unix() &&
+                tr.date <= moment(currentDate).endOf("hour").unix()
+            )
+            .reduce((acc, curr) => acc + curr.amount, 0)
+        );
+
+        const expensesAmount = Math.round(
+          transactions
+            .filter((tr) => tr.type !== "Transfer")
+            .filter((tr) => tr.type === "Expense")
+            .filter(
+              (tr) =>
+                tr.date >= moment(currentDate).startOf("hour").unix() &&
+                tr.date <= moment(currentDate).endOf("hour").unix()
+            )
+            .reduce((acc, curr) => acc + curr.amount, 0)
+        );
+
+        newMaxValue = incomesAmount > newMaxValue ? incomesAmount : newMaxValue;
+
+        newIncomes.push({
+          value: incomesAmount,
+        });
+
+        newMaxValue =
+          expensesAmount > newMaxValue ? expensesAmount : newMaxValue;
+
+        newExpenses.push({
+          value: expensesAmount,
+        });
+
+        breakpoints.push(moment(currentDate).startOf("hour").format("hh:mm"));
+      }
     }
 
+    setBreakpoints(breakpoints);
+
     if (newIncomes.length === 0 && newExpenses.length === 0) {
-      setIncomes([]);
-      setExpenses([]);
+      setIncomes([{ value: 0 }, { value: 0 }]);
+      setExpenses([{ value: 0 }, { value: 0 }]);
       setMaxValue(100);
       setMinValue(0);
       return;
@@ -307,7 +420,7 @@ export default function Index() {
       setIncomes(newIncomes);
       setExpenses(newExpenses);
 
-      let max = Math.max(
+      const max = Math.max(
         ...[...newIncomes, ...newExpenses].map((item) => item.value)
       );
 
@@ -315,53 +428,25 @@ export default function Index() {
         ...[...newIncomes, ...newExpenses].map((item) => item.value)
       );
 
-      const diff = max - min;
-
-      if (diff < 30) {
-        max = 30 - diff + diff;
-      }
-
       setMaxValue(max);
       setMinValue(min);
     }
-
-    let newBreakPoints: number[] = [];
-
-    if (hoursOfDifference <= 2) {
-      for (let index = 0; index <= hoursOfDifference; index++) {
-        newBreakPoints.push(moment(startDate).add(index, "hour").unix());
-      }
-    } else {
-      const middle = Math.ceil(hoursOfDifference / 2);
-
-      newBreakPoints.push(moment(startDate).unix());
-
-      newBreakPoints.push(moment(startDate).add(middle, "hour").unix());
-
-      newBreakPoints.push(moment(endDate).startOf("hour").unix());
-    }
-
-    setBreakpoints(
-      newBreakPoints.length === 1
-        ? [...newBreakPoints, moment(startDate).add(1, "hour").unix()]
-        : newBreakPoints
-    );
   }, [transactions]);
 
   // #region Load Fonts
-  const [fontsLoaded, fontError] = useFonts({
+  const [loaded, error] = useFonts({
     "Rounded-Regular": require("../assets/fonts/Rounded-Regular.ttf"),
     "Rounded-Medium": require("../assets/fonts/Rounded-Medium.ttf"),
     "Rounded-Bold": require("../assets/fonts/Rounded-Bold.ttf"),
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded || fontError) {
-      await SplashScreen.hideAsync();
+  useEffect(() => {
+    if (loaded || error) {
+      SplashScreen.hideAsync();
     }
-  }, [fontsLoaded, fontError]);
+  }, [loaded, error]);
 
-  if (!fontsLoaded && !fontError) {
+  if (!loaded && !error) {
     return null;
   }
 
@@ -373,76 +458,35 @@ export default function Index() {
     return (screenWidth - 88) / (data.length - 1);
   };
 
-  const getStepValue = (max: number) => {
-    return max / 3;
-  };
+  const yAxisLabelTexts = getYAxisLabelTexts(
+    minValue,
+    calculateMaxValue(minValue, maxValue),
+    3
+  );
 
-  const getYAxisLabelTexts = (max: number, min: number) => {
-    const stepValue = getStepValue(max);
+  const diff = maxValue - minValue;
 
-    const steps: number[] = [min];
+  moment.updateLocale("en", {
+    week: {
+      dow: 1,
+    },
+  });
 
-    for (let i = 1; i <= 3; i++) {
-      steps.push(i < 3 ? Math.round(i * stepValue) : max);
-    }
-
-    return steps
-      .map((val) => {
-        if (val <= 10) return val;
-
-        const stringValue = val.toString();
-
-        const lastDigit = parseInt(
-          stringValue.split("")[stringValue.length - 1]
-        );
-
-        if (lastDigit === 0 || lastDigit === 5) return val;
-
-        if (lastDigit < 5) return parseInt(stringValue.replace(/.$/, "0"));
-
-        if (lastDigit > 5)
-          return parseInt((val + 10).toString().replace(/.$/, "0"));
-
-        return val;
-      })
-      .map((val) => "L " + (val > 999 ? val / 1000 + "K" : val));
-  };
-
-  const offset = Math.round(((maxValue - minValue) * 10) / 100);
+  moment.locale("en");
 
   //#endregion
 
-  const longPress = Gesture.LongPress();
-
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <SafeAreaView
-        className="flex flex-1 bg-light-background dark:bg-[#0D0D0D]"
-        onLayout={onLayoutRootView}
-      >
+      <SafeAreaView className="flex flex-1 bg-light-background dark:bg-[#0D0D0D]">
         <StatusBar
           style={colorScheme === "dark" ? "light" : "dark"}
-          backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#1A1A1A"}
+          backgroundColor={colorScheme === "light" ? "#FFFFFF" : "#0D0D0D"}
         />
 
-        <View className="bg-white dark:bg-[#1A1A1A] rounded-b-3xl z-20">
-          <Header title="Home">
-            <IconButton onPress={toggleColorScheme}>
-              <Octicons
-                name="gear"
-                size={18}
-                color={colorScheme === "dark" ? "#F5F5F5" : "#1B1D1C"}
-              />
-            </IconButton>
-          </Header>
-
-          <OverallBalance>
-            <TimeRange />
-          </OverallBalance>
-        </View>
+        <Header overallBalance dateRange />
 
         <ScrollView
-          className="-mt-6 pt-9 -mb-6"
           contentContainerStyle={{ flexGrow: 1 }}
           scrollEnabled={scrollEnabled}
           onTouchEnd={() => {
@@ -463,28 +507,22 @@ export default function Index() {
             onLongPress={() => setScrollEnabled(false)}
             delayLongPress={200}
           >
-            <View
-              className="bg-white dark:bg-[#1A1A1A] rounded-2xl mx-3 overflow-hidden"
-              style={{
-                elevation: 16,
-                shadowColor: "#1b1d1c1f",
-              }}
-            >
-              <View className="mx-2 flex-row justify-between">
+            <View className="bg-white dark:bg-[#1A1A1A] rounded-2xl pt-2 mt-4 dark:mt-2 mx-3 shadow-md shadow-main-25">
+              <View className="mx-3 flex-row justify-between items-center">
                 <Text className="text-main dark:text-[#F5F5F5] text-lg font-[Rounded-Bold]">
                   Statistics
                 </Text>
 
-                <View className="flex-row gap-[4]">
-                  <View className="flex-row items-center gap-[4]">
-                    <View className="bg-green dark:bg-[#5bbe77] w-2 h-2 rounded-full"></View>
+                <View className="flex-row items-center justify-center">
+                  <View className="flex-row items-center justify-center mr-2.5">
+                    <View className="bg-green dark:bg-[#5bbe77] w-2 h-2 mr-1 rounded-full"></View>
                     <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium]">
                       Incomes
                     </Text>
                   </View>
 
-                  <View className="flex-row items-center gap-[4]">
-                    <View className="bg-red dark:bg-[#ff8092] w-2 h-2 rounded-full"></View>
+                  <View className="flex-row items-center">
+                    <View className="bg-red dark:bg-[#ff8092] w-2 h-2 mr-1 rounded-full"></View>
                     <Text className="text-main dark:text-[#f5f5f5] font-[Rounded-Medium]">
                       Expenses
                     </Text>
@@ -494,25 +532,22 @@ export default function Index() {
 
               <View className="mt-3">
                 <LineChart
+                  areaChart={colorScheme === "light"}
                   data={incomes}
                   data2={expenses}
-                  overflowTop={100}
-                  isAnimated
                   height={150}
+                  width={spacing(incomes) > 48 ? screenWidth - 69 : undefined}
                   pointerConfig={{
-                    activatePointersOnLongPress: true,
                     pointer1Color:
                       colorScheme === "dark" ? "#5bbe77" : "#02AB5B",
                     pointer2Color:
                       colorScheme === "dark" ? "#FF8092" : "#FF8092",
-                    pointerStripWidth: 2,
-                    strokeDashArray: [2, 5],
                     autoAdjustPointerLabelPosition: true,
+                    stripOverPointer: false,
+                    activatePointersOnLongPress: true,
                     pointerLabelHeight: 45,
-                    activatePointersDelay: 200,
+                    pointerVanishDelay: 500,
                     radius: 5,
-                    stripOverPointer: true,
-                    pointerVanishDelay: 0,
                     pointerLabelComponent: (
                       items: any,
                       si: any,
@@ -555,9 +590,13 @@ export default function Index() {
                               fontSize: 12,
                             }}
                           >
-                            {moment(startDate * 1000)
-                              .add(idx, "hour")
-                              .format("hh:mm A")}
+                            {timeRange.interval === "day"
+                              ? moment(startDate * 1000)
+                                  .add(idx, "hour")
+                                  .format("hh:mm A")
+                              : moment(startDate * 1000)
+                                  .add(idx, "day")
+                                  .format("MMM DD")}
                           </Text>
                           <View className="flex-row items-center justify-center flex-[1] w-full px-1">
                             <Text
@@ -588,16 +627,14 @@ export default function Index() {
                           </View>
                         </View>
                       ) : (
-                        <></>
+                        <View></View>
                       );
                     },
                     pointerLabelWidth: 80,
                     showPointerStrip: false,
-                    resetPointerOnDataChange: false,
-                    pointerEvents: "auto",
+                    activatePointersDelay: 200,
                   }}
                   hideRules
-                  areaChart={colorScheme === "light"}
                   color1={colorScheme === "dark" ? "#5bbe77" : "#02AB5B"}
                   color2={colorScheme === "dark" ? "#FF8092" : "#FF8092"}
                   startFillColor1="#02AB5B"
@@ -610,12 +647,11 @@ export default function Index() {
                   spacing={spacing(incomes)}
                   endSpacing={-(spacing(incomes) - 12)}
                   hideDataPoints
-                  yAxisLabelTexts={getYAxisLabelTexts(maxValue, minValue)}
+                  yAxisLabelTexts={yAxisLabelTexts}
+                  stepHeight={150 / 3}
+                  noOfSections={3}
+                  maxValue={calculateMaxValue(minValue, maxValue)}
                   yAxisLabelWidth={45}
-                  stepHeight={135 / 3}
-                  stepValue={getStepValue(maxValue + offset)}
-                  maxValue={maxValue + offset}
-                  yAxisOffset={minValue === 0 ? -offset : minValue - offset}
                   xAxisThickness={0}
                   yAxisThickness={0}
                   yAxisTextStyle={{
@@ -664,7 +700,7 @@ export default function Index() {
               }
             />
           </View>
-          <View className="flex flex-row justify-between items-center mt-3 mb-2 mx-3">
+          <View className="flex flex-row justify-between items-center mt-5 mb-2 mx-3">
             <Text className="font-[Rounded-Bold] text-lg text-main dark:text-[#F5F5F5]">
               Latest Transactions
             </Text>
@@ -672,7 +708,7 @@ export default function Index() {
             {transactions.length > 0 && <SeeAllButton />}
           </View>
 
-          <View className="grow mb-[60]">
+          <View className="grow mb-2 dark:mb-0">
             {transactions.length > 0 ? (
               transactions
                 .slice(0, 10)
