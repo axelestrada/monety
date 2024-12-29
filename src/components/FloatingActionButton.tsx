@@ -16,7 +16,7 @@ export const FloatingActionButton = ({
   const colors = useThemeColors();
   return (
     <TouchableOpacity
-      className="w-16 h-16 absolute bottom-7 right-3 z-20 bg-white"
+      className="w-16 h-16 absolute bottom-3 right-3 z-20 bg-white"
       style={{ borderRadius: 20, elevation: 5, shadowColor: colors["--color-shadow-75"] }}
       onPress={onPress}
     >
