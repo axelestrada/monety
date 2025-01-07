@@ -3,6 +3,7 @@ import { Feather } from "@expo/vector-icons";
 import { LinearGradient } from "expo-linear-gradient";
 
 import useThemeColors from "@/hooks/useThemeColors";
+import { useColorScheme } from "nativewind";
 
 interface FloatingActionButtonProps {
   icon: keyof typeof Feather.glyphMap;
@@ -14,10 +15,20 @@ export const FloatingActionButton = ({
   onPress,
 }: FloatingActionButtonProps) => {
   const colors = useThemeColors();
+  const { colorScheme } = useColorScheme();
   return (
     <TouchableOpacity
-      className="w-16 h-16 absolute bottom-3 right-3 z-20 bg-white"
-      style={{ borderRadius: 20, elevation: 5, shadowColor: colors["--color-shadow-75"] }}
+      className="w-16 h-16 absolute bottom-3 right-3 z-20"
+      style={
+        colorScheme === "light"
+          ? {
+            backgroundColor: "#FFFFFF",
+              borderRadius: 20,
+              elevation: 5,
+              shadowColor: colors["--color-shadow-75"],
+            }
+          : {}
+      }
       onPress={onPress}
     >
       <LinearGradient
