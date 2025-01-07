@@ -8,22 +8,17 @@ import { Provider } from "react-redux";
 import "../global.css";
 import { ThemeProvider } from "@/shared-components/providers/ThemeProviders";
 
-import { DateRangePickerProvider } from "@/context/DateRangePickerContext";
-
 export default function Layout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
         <SQLiteProvider databaseName="monety.db">
           <ThemeProvider>
-            <DateRangePickerProvider>
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                  animation: "fade",
-                }}
-              />
-            </DateRangePickerProvider>
+            <Stack
+              screenOptions={{
+                headerShown: false,
+              }}
+            />
           </ThemeProvider>
         </SQLiteProvider>
       </Provider>
