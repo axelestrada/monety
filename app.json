@@ -22,7 +22,11 @@
       },
       "package": "com.axelestrada.monety"
     },
-    "plugins": ["expo-router", "expo-asset", "expo-font"],
+    "plugins": [
+      "expo-router",
+      "expo-asset",
+      "expo-font"
+    ],
     "experiments": {
       "typedRoutes": true
     },
@@ -30,7 +34,7 @@
       "enabled": true,
       "checkAutomatically": "ON_ERROR_RECOVERY",
       "fallbackToCacheTimeout": 30000,
-      "url": "https://u.expo.dev/686c38a4-bd1a-4dcc-b4f7-1f14061454a0"
+      "url": "https://u.expo.dev/3e275147-8c6d-4037-96bf-60221905a714"
     },
     "extra": {
       "router": {
