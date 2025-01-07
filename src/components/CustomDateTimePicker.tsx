@@ -33,54 +33,57 @@ const CustomDateTimePicker = ({
   return (
     <DateTimePicker
       mode={mode}
+      height={280}
       buttonPrevIcon={
         <Feather
           name="chevron-left"
           color={colors["--color-accent"]}
-          size={24}
+          size={20}
         />
       }
       buttonNextIcon={
         <Feather
           name="chevron-right"
           color={colors["--color-accent"]}
-          size={24}
+          size={20}
         />
       }
       headerTextStyle={{
         color: colors["--color-text-primary"],
-        fontSize: 20,
-        fontFamily: "Rounded-Bold",
-        fontStyle: "normal",
-        fontWeight: "normal",
-      }}
-      headerButtonsPosition="right"
-      headerButtonStyle={{
-        backgroundColor: colors["--color-icon-button-background"],
-        elevation: 10,
-        borderRadius: 6,
-        shadowColor: colors["--color-shadow-50"],
-      }}
-      calendarTextStyle={{
-        color: colors["--color-text-primary"],
+        fontSize: 16,
         fontFamily: "Rounded-Medium",
         fontStyle: "normal",
         fontWeight: "normal",
       }}
+      headerButtonsPosition="around"
+      calendarTextStyle={{
+        color: colors["--color-text-secondary"],
+        fontFamily: "Rounded-Medium",
+        fontStyle: "normal",
+        fontWeight: "normal",
+        fontSize: 12,
+      }}
       todayContainerStyle={{
-        borderWidth: 2,
-        borderRadius: 12,
+        borderColor: "transparent",
+      }}
+      todayTextStyle={{
+        color: colors["--color-accent"],
       }}
       dayContainerStyle={{
-        borderRadius: 12,
+        borderRadius: 8,
+        width: 40,
+        height: 24,
       }}
       selectedItemColor={colors["--color-accent"]}
       weekDaysContainerStyle={{
         borderColor: colors["--color-icons-outline"],
+        borderBottomWidth: 0,
+        marginBottom: 6,
       }}
       weekDaysTextStyle={{
-        color: colors["--color-text-primary-75"],
-        fontFamily: "Rounded-Medium",
+        color: colors["--color-text-secondary"],
+        fontSize: 12,
+        fontFamily: "Rounded-Regular",
         fontStyle: "normal",
         fontWeight: "normal",
       }}
