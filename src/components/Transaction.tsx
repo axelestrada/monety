@@ -18,6 +18,7 @@ import ITransaction from "@/interfaces/transaction";
 import formatCurrency from "@/utils/formatCurrency";
 import IAccount from "@/interfaces/account";
 import ICategory from "@/interfaces/category";
+import { styles } from "@/styles/shadow";
 
 interface TransactionProps {
   transaction: ITransaction;
@@ -134,7 +135,10 @@ export const Transaction = ({ transaction }: TransactionProps) => {
       </View>
 
       <CustomText
-        className={`font-[Rounded-Medium] text-sm text-${transaction.type}`}
+        className={`font-[Rounded-Medium] text-sm`}
+        style={{
+          color: themeColors[`--color-${transaction.type}`],
+        }}
       >
         {transaction.type === "expense"
           ? "- "
