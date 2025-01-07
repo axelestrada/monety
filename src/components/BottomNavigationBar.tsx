@@ -18,9 +18,9 @@ export const BottomNavigationBar = () => {
         pathname="/"
         icon={({ isActive }) =>
           isActive ? (
-            <HomeFill fill={colors["--color-icon-primary"]} />
+            <HomeFill fill={colors["--color-navbar-item-active"]} />
           ) : (
-            <HomeOutline fill={colors["--color-icon-secondary"]} />
+            <HomeOutline fill={colors["--color-navbar-item"]} />
           )
         }
       />
@@ -32,7 +32,7 @@ export const BottomNavigationBar = () => {
           <Ionicons
             name={isActive ? "wallet" : "wallet-outline"}
             size={22}
-            color={colors[`--color-icon-${isActive ? "primary" : "secondary"}`]}
+            color={colors[`--color-navbar-item${isActive ? "-active" : ""}`]}
           />
         )}
       />
@@ -44,7 +44,7 @@ export const BottomNavigationBar = () => {
           <Ionicons
             name={isActive ? "grid" : "grid-outline"}
             size={22}
-            color={colors[`--color-icon-${isActive ? "primary" : "secondary"}`]}
+            color={colors[`--color-navbar-item${isActive ? "-active" : ""}`]}
           />
         )}
       />
@@ -54,9 +54,9 @@ export const BottomNavigationBar = () => {
         pathname="/transactions"
         icon={({ isActive }) => (
           <RowsOutline
-            fill={isActive ? colors["--color-icon-secondary"] : "none"}
+            fill={isActive ? colors["--color-navbar-item"] : "none"}
             stroke={
-              colors[`--color-icon-${isActive ? "primary" : "secondary"}`]
+              colors[`--color-navbar-item${isActive ? "-active" : ""}`]
             }
           />
         )}
@@ -67,9 +67,9 @@ export const BottomNavigationBar = () => {
         pathname="/statistics"
         icon={({ isActive }) => (
           <BarChartOutline
-            fill={isActive ? colors["--color-icon-secondary"] : "none"}
+            fill={isActive ? colors["--color-navbar-item"] : "none"}
             stroke={
-              colors[`--color-icon-${isActive ? "primary" : "secondary"}`]
+              colors[`--color-navbar-item${isActive ? "-active" : ""}`]
             }
           />
         )}

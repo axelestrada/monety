@@ -28,7 +28,9 @@ export const BottomNavigationItem = ({
       onPress={() => router.navigate(itemPathname)}
     >
       <View
-        className={`py-1.5 px-6 mb-1 ${itemPathname === "/transactions" ? "py-2" : ""}`}
+        className={`py-1.5 px-6 mb-1 ${
+          itemPathname === "/transactions" ? "py-2" : ""
+        }`}
         style={{
           borderRadius: 100,
           backgroundColor: isActive
@@ -41,9 +43,10 @@ export const BottomNavigationItem = ({
 
       <CustomText
         numberOfLines={1}
-        className={`text-s font-[Rounded-Medium] text-text-${
-          isActive ? "primary" : "secondary"
-        }`}
+        className={`text-s font-[Rounded-Medium]`}
+        style={{
+          color: colors[`--color-navbar-item${isActive ? "-active" : ""}`],
+        }}
       >
         {label}
       </CustomText>
