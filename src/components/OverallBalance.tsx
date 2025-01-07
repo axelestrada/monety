@@ -7,10 +7,10 @@ import formatCurrency from "@/utils/formatCurrency";
 import calculateOverallBalance from "@/utils/calculateOverallBalance";
 
 interface OverallBalanceProps {
-  dateRange?: boolean;
+  showDateRange?: boolean;
 }
 
-export const OverallBalance = ({ dateRange }: OverallBalanceProps) => {
+export const OverallBalance = ({ showDateRange }: OverallBalanceProps) => {
   const totalBalance = calculateOverallBalance();
 
   return (
@@ -25,7 +25,7 @@ export const OverallBalance = ({ dateRange }: OverallBalanceProps) => {
         })}
       </CustomText>
 
-      {dateRange && <DateRange />}
+      {showDateRange && <DateRange />}
     </View>
   );
 };
