@@ -1,10 +1,10 @@
-import { TouchableOpacity, View } from "react-native";
+import { View } from "react-native";
 
-import { CustomText } from "@/components/CustomText";
 import { HeaderAction } from "@/components/HeaderAction";
 import { OverallBalance } from "@/components/OverallBalance";
 import useThemeColors from "@/hooks/useThemeColors";
 import { IconMenu3 } from "@tabler/icons-react-native";
+import { HeaderTitle } from "@/components/HeaderTitle";
 
 interface HeaderProps {
   overallBalance?: boolean;
@@ -29,9 +29,7 @@ export default function Header({
             <IconMenu3 size={24} color={colors["--color-accent"]} />
           </HeaderAction>
 
-          <CustomText className="font-[Rounded-Bold] text-xl text-text-primary">
-            {title || "Monety"}
-          </CustomText>
+          <HeaderTitle>{title}</HeaderTitle>
         </View>
 
         <View className="flex-row items-center">{children}</View>
