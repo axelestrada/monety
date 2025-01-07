@@ -6,7 +6,6 @@ import { useAppDispatch, useTypedSelector } from "@/store";
 import { userPreferencesServices } from "@/reducers/userPreferencesSlice";
 import moment from "moment";
 import IDateRange from "@/interfaces/dateRange";
-import DateRangePicker from "@/components/DateRangePicker";
 import {CustomText} from "@/components/CustomText";
 import useThemeColors from "@/hooks/useThemeColors";
 import { useDateRangePicker } from "@/context/DateRangePickerContext";
