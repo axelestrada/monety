@@ -1,20 +1,21 @@
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 import { CustomText } from "@/components/CustomText";
 import { HeaderAction } from "@/components/HeaderAction";
 import { OverallBalance } from "@/components/OverallBalance";
 import useThemeColors from "@/hooks/useThemeColors";
+import { IconMenu3 } from "@tabler/icons-react-native";
 
 interface HeaderProps {
   overallBalance?: boolean;
-  dateRange?: boolean;
+  showDateRange?: boolean;
   children?: React.ReactNode;
   title?: string;
 }
 
 export default function Header({
   overallBalance,
-  dateRange,
+  showDateRange,
   children,
   title,
 }: HeaderProps) {
@@ -22,9 +23,11 @@ export default function Header({
 
   return (
     <View className="py-2 px-2 bg-header-background z-20">
-      <View className="flex-row justify-between items-center -mx-0.5 mb-2">
+      <View className="flex-row justify-between items-center -mx-1 mb-2">
         <View className="flex-row items-center">
-          <HeaderAction icon="menu" color={colors["--color-accent"]} />
+          <HeaderAction>
+            <IconMenu3 size={24} color={colors["--color-accent"]} />
+          </HeaderAction>
 
           <CustomText className="font-[Rounded-Bold] text-xl text-text-primary">
             {title || "Monety"}
@@ -34,7 +37,7 @@ export default function Header({
         <View className="flex-row items-center">{children}</View>
       </View>
 
-      {overallBalance && <OverallBalance dateRange={dateRange} />}
+      {overallBalance && <OverallBalance showDateRange={showDateRange} />}
     </View>
   );
 }
