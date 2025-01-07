@@ -11,8 +11,8 @@ export default function Screen({ children }: ScreenProps) {
   const colors = useThemeColors();
 
   return (
-    <SafeAreaView className="flex-1 bg-main-background">
-      <StatusBar backgroundColor={colors["--color-header-background"]} />
+    <SafeAreaView className="flex-[1] bg-main-background relative">
+      <StatusBar translucent backgroundColor="transparent" />
 
       {children}
 
