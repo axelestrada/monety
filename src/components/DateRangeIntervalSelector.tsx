@@ -50,7 +50,7 @@ export default function DateRangeIntervalSelector({ active, ...props }: Props) {
   const dispatch = useAppDispatch();
   const { dateRange } = useTypedSelector((state) => state.userPreferences);
 
-  const { isModalVisible, setIsModalVisible } = useDateRangePicker();
+  const { openDateRangePicker} = useDateRangePicker();
 
   const updateDateRange = (interval: IDateRange["interval"]) => {
     if (interval === "all time") {
@@ -69,10 +69,10 @@ export default function DateRangeIntervalSelector({ active, ...props }: Props) {
 
     if (interval === "custom") {
       if (dateRange.interval === "custom") {
-        setIsModalVisible(true);
+        openDateRangePicker();
       }
 
-      setIsModalVisible(true);
+      openDateRangePicker();
 
       return;
     }
@@ -107,32 +107,6 @@ export default function DateRangeIntervalSelector({ active, ...props }: Props) {
           ))}
         </View>
       </Modal>
-
-      <DateRangePicker
-        visible={isModalVisible}
-        onRequestClose={() => setIsModalVisible(false)}
-        initialRange={{
-          startDate:
-            dateRange.interval === "custom"
-              ? moment(dateRange.from * 1000).toDate()
-              : undefined,
-          endDate:
-            dateRange.interval === "custom"
-              ? moment(dateRange.to * 1000).toDate()
-              : undefined,
-        }}
-        callback={(range) => {
-          dispatch(
-            userPreferencesServices.actions.updateDateRange({
-              from: moment(range.startDate?.valueOf()).unix(),
-              to: moment(range.endDate?.valueOf()).unix(),
-              interval: "custom",
-            })
-          );
-
-          props.onRequestClose();
-        }}
-      />
     </>
   );
 }
@@ -152,7 +126,7 @@ function IntervalItem({
 
   return (
     <TouchableOpacity
-      className="bg-card-background rounded-2xl p-3 py-5 mt-3 shadow-md shadow-main-25 dark:shadow-none"
+      className="bg-card-background rounded-2xl p-3 py-4 mt-3"
       onPress={updateInterval}
       key={"IntervalSelectorItem" + title}
     >
