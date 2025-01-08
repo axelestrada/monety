@@ -26,7 +26,7 @@ export const HeaderAction = ({
   return (
     <TouchableOpacity
       onPress={icon === "calendar" ? openDateRangePicker : props.onPress}
-      className="justify-center items-center mx-2 w-7 h-7"
+      className="justify-center items-center w-11 h-11"
     >
       {icon && (
         <Feather

@@ -88,7 +88,7 @@ const DateRange = () => {
   };
 
   return (
-    <View className="mx-1 mt-2">
+    <View>
       <DateRangeIntervalSelector
         active={showIntervalSelector}
         onRequestClose={() => setShowIntervalSelector(false)}
