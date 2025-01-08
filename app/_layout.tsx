@@ -8,17 +8,21 @@ import { Provider } from "react-redux";
 import "../global.css";
 import { ThemeProvider } from "@/shared-components/providers/ThemeProviders";
 
+import { PortalProvider } from "@gorhom/portal";
+
 export default function Layout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
         <SQLiteProvider databaseName="monety.db">
           <ThemeProvider>
-            <Stack
-              screenOptions={{
-                headerShown: false,
-              }}
-            />
+            <PortalProvider>
+              <Stack
+                screenOptions={{
+                  headerShown: false,
+                }}
+              />
+            </PortalProvider>
           </ThemeProvider>
         </SQLiteProvider>
       </Provider>
