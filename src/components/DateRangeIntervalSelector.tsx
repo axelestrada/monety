@@ -1,14 +1,14 @@
-import React, { useState } from "react";
 import { TouchableOpacity, View } from "react-native";
-import Modal from "@/components/Modal";
-import { Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons } from "@expo/vector-icons";
 import { useAppDispatch, useTypedSelector } from "@/store";
 import { userPreferencesServices } from "@/reducers/userPreferencesSlice";
 import moment from "moment";
 import IDateRange from "@/interfaces/dateRange";
-import {CustomText} from "@/components/CustomText";
+import { CustomText } from "@/components/CustomText";
 import useThemeColors from "@/hooks/useThemeColors";
 import { useDateRangePicker } from "@/context/DateRangePickerContext";
+import { CustomModal } from "@/components/CustomModal";
+import IconButton from "@/components/ui/IconButton";
 
 interface Props {
   active: boolean;
@@ -49,7 +49,7 @@ export default function DateRangeIntervalSelector({ active, ...props }: Props) {
   const dispatch = useAppDispatch();
   const { dateRange } = useTypedSelector((state) => state.userPreferences);
 
-  const { openDateRangePicker} = useDateRangePicker();
+  const { openDateRangePicker } = useDateRangePicker();
 
   const updateDateRange = (interval: IDateRange["interval"]) => {
     if (interval === "all time") {
@@ -67,10 +67,7 @@ export default function DateRangeIntervalSelector({ active, ...props }: Props) {
     }
 
     if (interval === "custom") {
-      if (dateRange.interval === "custom") {
-        openDateRangePicker();
-      }
-
+      props.onRequestClose();
       openDateRangePicker();
 
       return;
@@ -88,25 +85,23 @@ export default function DateRangeIntervalSelector({ active, ...props }: Props) {
   };
 
   return (
-    <>
-      <Modal visible={active} {...props}>
-        <View className="rounded-t-3xl bg-main-background p-3">
-          <CustomText className="text-center text-lg font-[Rounded-Bold] text-text-primary">
-            Select Interval
-          </CustomText>
-
-          {intervalsIcons.map(({ title, icon }) => (
-            <IntervalItem
-              active={title === dateRange.interval}
-              title={title}
-              icon={icon}
-              updateInterval={() => updateDateRange(title)}
-              key={title + icon}
-            />
-          ))}
-        </View>
-      </Modal>
-    </>
+    <CustomModal
+      isVisible={active}
+      onRequestClose={props.onRequestClose}
+      position="bottom"
+    >
+      <View className="rounded-t-3xl bg-main-background">
+        {intervalsIcons.map(({ title, icon }) => (
+          <IntervalItem
+            active={title === dateRange.interval}
+            title={title}
+            icon={icon}
+            updateInterval={() => updateDateRange(title)}
+            key={title + icon}
+          />
+        ))}
+      </View>
+    </CustomModal>
   );
 }
 
@@ -125,28 +120,23 @@ function IntervalItem({
 
   return (
     <TouchableOpacity
-      className="bg-card-background rounded-2xl p-3 py-4 mt-3"
+      className="p-3 border-b border-separator"
       onPress={updateInterval}
       key={"IntervalSelectorItem" + title}
     >
       <View className="flex-row items-center">
-        <Ionicons
-          name={icon}
-          color={colors["--color-text-primary"]}
-          size={20}
-        />
+        <View
+          className="p-1.5 mr-3 rounded-full"
+          style={{ backgroundColor: colors["--color-accent"] + "1A" }}
+        >
+          <Ionicons name={icon} color={colors["--color-accent"]} size={18} />
+        </View>
 
-        <View className="ml-1.5" style={{ flex: 1 }}>
-          <CustomText className="text-text-primary font-[Rounded-Medium] text-sm">
+        <View className="" style={{ flex: 1 }}>
+          <CustomText className="text-text-primary font-[Rounded-Medium] text-s">
             {title[0].toUpperCase() + title.slice(1).toLowerCase()}
           </CustomText>
         </View>
-
-        {active && (
-          <View className="justify-center items-center rounded-full bg-accent-50 w-3.5 h-3.5">
-            <View className="bg-accent w-[9] h-[9] rounded-full" />
-          </View>
-        )}
       </View>
     </TouchableOpacity>
   );
