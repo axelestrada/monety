@@ -133,7 +133,7 @@ function IntervalItem({
         </View>
 
         <View className="" style={{ flex: 1 }}>
-          <CustomText className="text-text-primary font-[Rounded-Medium] text-s">
+          <CustomText className="text-text-primary font-[Rounded-Medium] text-sm">
             {title[0].toUpperCase() + title.slice(1).toLowerCase()}
           </CustomText>
         </View>

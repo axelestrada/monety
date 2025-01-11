@@ -84,7 +84,7 @@ export const DateRangePicker = () => {
             className="flex-[1] items-center p-5"
             onPress={handleClose}
           >
-            <CustomText className="font-[Rounded-Medium] text-sm text-text-primary">
+            <CustomText className="font-[Rounded-Medium] text-base text-text-primary">
               Close
             </CustomText>
           </TouchableOpacity>
@@ -93,7 +93,7 @@ export const DateRangePicker = () => {
             className="flex-[1] items-center p-5"
             onPress={setToday}
           >
-            <CustomText className="font-[Rounded-Medium] text-sm text-text-primary">
+            <CustomText className="font-[Rounded-Medium] text-base text-text-primary">
               Today
             </CustomText>
           </TouchableOpacity>

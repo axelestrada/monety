@@ -88,13 +88,13 @@ const DateRange = () => {
   };
 
   return (
-    <View>
+    <View className="-mt-2">
       <DateRangeIntervalSelector
         active={showIntervalSelector}
         onRequestClose={() => setShowIntervalSelector(false)}
       />
 
-      <View className="justify-between items-center flex-row w-full -mt-2">
+      <View className="justify-between items-center flex-row w-full">
         <IconButton onPress={() => handleArrowClick("left")}>
           <Feather
             name="chevron-left"
@@ -104,6 +104,7 @@ const DateRange = () => {
         </IconButton>
 
         <TouchableOpacity
+          className="h-11 justify-center items-center px-2"
           onPress={() => setShowIntervalSelector(!showIntervalSelector)}
         >
           <CustomText className="text-text-secondary text-sm font-[Rounded-Medium]">

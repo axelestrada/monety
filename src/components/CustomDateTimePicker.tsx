@@ -38,19 +38,19 @@ const CustomDateTimePicker = ({
         <Feather
           name="chevron-left"
           color={colors["--color-accent"]}
-          size={20}
+          size={22}
         />
       }
       buttonNextIcon={
         <Feather
           name="chevron-right"
           color={colors["--color-accent"]}
-          size={20}
+          size={22}
         />
       }
       headerTextStyle={{
         color: colors["--color-text-primary"],
-        fontSize: 16,
+        fontSize: 18,
         fontFamily: "Rounded-Medium",
         fontStyle: "normal",
         fontWeight: "normal",
@@ -61,7 +61,7 @@ const CustomDateTimePicker = ({
         fontFamily: "Rounded-Medium",
         fontStyle: "normal",
         fontWeight: "normal",
-        fontSize: 12,
+        fontSize: 14,
       }}
       todayContainerStyle={{
         borderColor: "transparent",

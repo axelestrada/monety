@@ -22,7 +22,7 @@ export default function Header({
   const colors = useThemeColors();
 
   return (
-    <View className="px-1 bg-header-background z-20 -mt-2">
+    <View className="px-1 bg-header-background z-20">
       <View className="flex-row justify-between items-center" >
         <View className="flex-row items-center">
           <HeaderAction>

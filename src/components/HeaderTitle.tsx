@@ -48,7 +48,7 @@ export const HeaderTitle = ({ children }: HeaderTitleProps) => {
   return (
     <Animated.Text
       allowFontScaling={false}
-      className="font-[Rounded-Bold] text-xl text-text-primary"
+      className="font-[Rounded-Bold] text-lg mx-1 text-text-primary"
       style={animatedStyle}
     >
       {text}
