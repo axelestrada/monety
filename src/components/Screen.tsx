@@ -1,22 +1,20 @@
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import useThemeColors from "@/hooks/useThemeColors";
 import { BottomNavigationBar } from "@/components/BottomNavigationBar";
 
 interface ScreenProps {
   children: React.ReactNode;
+  showBottomNavigationBar?: boolean;
 }
-export default function Screen({ children }: ScreenProps) {
-  const colors = useThemeColors();
-
+export default function Screen({ children, showBottomNavigationBar }: ScreenProps) {
   return (
     <SafeAreaView className="flex-[1] bg-main-background relative">
       <StatusBar translucent backgroundColor="transparent" />
 
       {children}
 
-      <BottomNavigationBar />
+      {showBottomNavigationBar && <BottomNavigationBar />}
     </SafeAreaView>
   );
 }
