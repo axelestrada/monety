@@ -24,12 +24,19 @@ export const DateRangePicker = () => {
   const dispatch = useAppDispatch();
 
   const [range, setRange] = useState<IDateRange>({
-    startDate: undefined,
-    endDate: undefined,
+    startDate: moment(dateRange.from * 1000).toDate(),
+    endDate: moment(dateRange.to * 1000).toDate(),
   });
 
   const handleClose = useCallback(() => {
     closeDateRangePicker();
+
+    if (
+      moment(range.startDate?.valueOf()).unix() === dateRange.from &&
+      moment(range.endDate?.valueOf()).unix() === dateRange.to
+    ) {
+      return;
+    }
 
     dispatch(
       userPreferencesServices.actions.updateDateRange({
