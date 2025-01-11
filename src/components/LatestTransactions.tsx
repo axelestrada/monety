@@ -13,6 +13,7 @@ import { LoadingIndicator } from "@/components/LoadingIndicator";
 import useThemeColors from "@/hooks/useThemeColors";
 
 import ITransaction from "@/interfaces/transaction";
+import IconButton from "@/components/ui/IconButton";
 
 interface LatestTransactionsProps {
   loading: boolean;
@@ -36,21 +37,21 @@ export const LatestTransactions = ({
 
   return (
     <View className="mt-4 grow">
-      <View className="flex-row justify-between items-center">
+      <View className="flex-row justify-between items-center -mr-2">
         <CustomText className="text-lg font-[Rounded-Bold] text-text-primary">
           Latest Transactions
         </CustomText>
 
-        <TouchableOpacity onPress={() => router.navigate("/transactions")}>
+        <IconButton onPress={() => router.navigate("/transactions")}>
           <Feather
             size={24}
             name="chevron-right"
             color={colors["--color-icon-primary"]}
           />
-        </TouchableOpacity>
+        </IconButton>
       </View>
 
-      <View className="my-1 flex-1">
+      <View className="flex-1">
         {error ? (
           <ErrorMessage />
         ) : loading ? (
