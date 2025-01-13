@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import IDateRange from "@/interfaces/dateRange";
+import IDateRange from "@/types/dateRange";
 
 import moment from "moment";
 
@@ -44,6 +44,4 @@ export const userPreferencesServices = {
   actions: userPreferencesSlice.actions,
 };
 
-const userPreferencesReducer = userPreferencesSlice.reducer;
-
-export default userPreferencesReducer;
+export const userPreferencesReducer = userPreferencesSlice.reducer;
