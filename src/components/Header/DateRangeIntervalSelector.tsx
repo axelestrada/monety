@@ -8,7 +8,6 @@ import { CustomText } from "@/components/CustomText";
 import useThemeColors from "@/hooks/useThemeColors";
 import { useDateRangePicker } from "@/components/DateRangePicker/hooks/useDateRangePicker";
 import { CustomModal } from "@/components/CustomModal";
-import { IconButton } from "@/components/IconButton";
 
 interface Props {
   active: boolean;
