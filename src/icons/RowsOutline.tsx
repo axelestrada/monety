@@ -1,4 +1,3 @@
-import React from "react";
 import Svg, { Rect, SvgProps } from "react-native-svg";
 
 export const RowsOutline = (props: SvgProps) => {
