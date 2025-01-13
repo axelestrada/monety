@@ -1,7 +1,7 @@
 import useThemeColors from "@/hooks/useThemeColors";
 
 import { RefreshControl, ScrollView, View } from "react-native";
-import { FloatingActionButton } from "@/components/FloatingActionButton";
+import { FloatingActionButton } from "@/components/FloatingActionButton/FloatingActionButton";
 
 interface MainContainerProps {
   children: React.ReactNode;

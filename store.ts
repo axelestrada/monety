@@ -1,12 +1,10 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { useDispatch, useSelector, TypedUseSelectorHook } from "react-redux";
 
-import {
-  accountsReducer,
-  categoriesReducer,
-  transactionsReducer,
-  userPreferencesReducer,
-} from "@/reducers";
+import { accountsReducer } from "@/features/accounts/redux/reducers/accountsSlice";
+import { categoriesReducer } from "@/features/categories/redux/reducers/categoriesSlice";
+import { transactionsReducer } from "@/features/transactions/redux/reducers/transactionsSlice";
+import { userPreferencesReducer } from "@/reducers/userPreferencesSlice";
 
 const store = configureStore({
   reducer: {

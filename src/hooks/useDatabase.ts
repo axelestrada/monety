@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
 
-import { defaultAccounts } from "@/constants/defaultAccounts";
-import { defaultCategories } from "@/constants/defaultCategories";
+import { defaultAccounts } from "@/features/accounts/constants/defaultAccounts";
+import { defaultCategories } from "@/features/categories/constants/defaultCategories";
 
-import ITransaction from "@/interfaces/transaction";
+import ITransaction from "@/features/transactions/types/transaction";
 
 const useDatabase = () => {
   const [loading, setLoading] = useState(true);
