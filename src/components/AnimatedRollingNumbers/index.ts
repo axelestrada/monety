@@ -1,3 +1,3 @@
-import { AnimatedRollingNumbers } from './AnimatedRollingNumbers';
+import { AnimatedRollingNumbers } from "./AnimatedRollingNumbers";
 
 export { AnimatedRollingNumbers };

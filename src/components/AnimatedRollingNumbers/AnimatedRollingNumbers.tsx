@@ -2,9 +2,17 @@ import Animated, {
   LinearTransition,
   FadeOut,
   FadeIn,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+  runOnJS,
+  withSpring,
 } from "react-native-reanimated";
 
 import { AnimatedDigit } from "@/components/AnimatedRollingNumbers/AnimatedDigit";
+import { AnimatedSign } from "@/components/AnimatedRollingNumbers/AnimatedSign";
+
+import { useEffect, useState } from "react";
 
 interface AnimatedRollingNumbersProps {
   value: number;
@@ -25,6 +33,8 @@ export const AnimatedRollingNumbers = ({
   currency = "$",
   spacing = false,
 }: AnimatedRollingNumbersProps) => {
+  const [sign, setSign] = useState("");
+
   let formattedNumber = Intl.NumberFormat(locale).format(value);
 
   const decimals = formattedNumber.split(".")[1];
@@ -32,22 +42,25 @@ export const AnimatedRollingNumbers = ({
 
   const digits = formattedNumber.split("");
 
-  const isNegative = value < 0;
+  useEffect(() => {
+    if (showPlusSign && value > 0) return setSign("+");
+    if (showMinusSign && value < 0) return setSign("-");
+
+    setSign("");
+  }, [showPlusSign, showMinusSign, value]);
+
+  const animatedViewStyle = useAnimatedStyle(() => ({
+    paddingLeft: withTiming(sign !== "" ? 45 : 32),
+    paddingRight: withTiming(sign !== "" ? 30 : 32),
+  }));
 
   return (
     <Animated.View
       layout={LinearTransition}
-      exiting={FadeOut}
-      entering={FadeIn}
+      style={animatedViewStyle}
       className="flex-row overflow-hidden"
     >
-      {showPlusSign && !isNegative && (
-        <AnimatedDigit key="AnimatedPlusSign" digit="+" />
-      )}
-
-      {showMinusSign && isNegative && (
-        <AnimatedDigit key="AnimatedMinusSign" digit="-" />
-      )}
+      <AnimatedSign sign={sign} visible={sign !== ""} />
 
       {showCurrency && (
         <AnimatedDigit
@@ -55,7 +68,6 @@ export const AnimatedRollingNumbers = ({
           digit={currency + (spacing ? " " : "")}
         />
       )}
-
       {digits
         .filter((digit) => digit !== "+" && digit !== "-")
         .map((digit, index) => (

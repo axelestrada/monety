@@ -1,13 +1,14 @@
+import { useEffect } from "react";
+
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withTiming,
   FadeIn,
   FadeOut,
+  withSpring,
 } from "react-native-reanimated";
 
-import { CustomText } from "@/components/CustomText";
-import { useEffect } from "react";
+import { AnimatedDigitTick } from "@/components/AnimatedRollingNumbers/AnimatedDigitTick";
 
 interface AnimatedDigitProps {
   digit: string;
@@ -22,15 +23,7 @@ export const AnimatedDigit = ({ digit }: AnimatedDigitProps) => {
   if (isNaN(digitValue)) {
     return (
       <Animated.View entering={FadeIn} exiting={FadeOut}>
-        <CustomText
-          className="font-[Rounded-Bold] text-text-primary"
-          style={{
-            fontSize: fontSize,
-            lineHeight: digitHeight,
-          }}
-        >
-          {digit}
-        </CustomText>
+        <AnimatedDigitTick digit={digit} />
       </Animated.View>
     );
   }
@@ -42,7 +35,7 @@ export const AnimatedDigit = ({ digit }: AnimatedDigitProps) => {
   }));
 
   useEffect(() => {
-    translateY.value = withTiming(-digitHeight * digitValue);
+    translateY.value = withSpring(-digitHeight * digitValue);
   }, [digitValue]);
 
   return (
@@ -57,17 +50,10 @@ export const AnimatedDigit = ({ digit }: AnimatedDigitProps) => {
       ]}
     >
       {Array.from({ length: 10 }, (_, index) => (
-        <CustomText
+        <AnimatedDigitTick
           key={"AnimatedDigitTick" + index}
-          className="font-[Rounded-Bold] text-text-primary"
-          style={{
-            fontVariant: ["tabular-nums"],
-            fontSize: fontSize,
-            lineHeight: digitHeight,
-          }}
-        >
-          {index}
-        </CustomText>
+          digit={index.toString()}
+        />
       ))}
     </Animated.View>
   );
