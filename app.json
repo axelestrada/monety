@@ -2,7 +2,7 @@
   "expo": {
     "name": "Monety",
     "slug": "monety",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "orientation": "portrait",
     "icon": "./src/assets/images/icon.png",
     "scheme": "myapp",
@@ -44,9 +44,7 @@
         "projectId": "3e275147-8c6d-4037-96bf-60221905a714"
       }
     },
-    "runtimeVersion": {
-      "policy": "appVersion"
-    },
+    "runtimeVersion": "0.1.1",
     "jsEngine": "hermes"
   }
 }

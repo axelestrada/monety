@@ -3,8 +3,8 @@ import { View } from "react-native";
 import DateRange from "@/components/Header/DateRange";
 import { CustomText } from "@/components/CustomText";
 
-import formatCurrency from "@/components/Header/utils/formatCurrency";
 import calculateOverallBalance from "@/components/Header/utils/calculateOverallBalance";
+import { AnimatedRollingNumbers } from "@/components/AnimatedRollingNumbers";
 
 interface OverallBalanceProps {
   showDateRange?: boolean;
@@ -19,11 +19,13 @@ export const OverallBalance = ({ showDateRange }: OverallBalanceProps) => {
         Overall balance
       </CustomText>
 
-      <CustomText className="font-[Rounded-Bold] text-3.5xl text-text-primary">
-        {formatCurrency(totalBalance, {
-          spacing: true,
-        })}
-      </CustomText>
+      <AnimatedRollingNumbers
+        showMinusSign
+        value={totalBalance}
+        showCurrency
+        currency="L"
+        spacing
+      />
 
       {showDateRange && <DateRange />}
     </View>
