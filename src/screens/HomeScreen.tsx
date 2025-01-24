@@ -206,7 +206,7 @@ export default function HomeScreen() {
   return (
     <Screen showBottomNavigationBar>
       <DateRangePickerProvider>
-        <Header overallBalance showDateRange title={getHeaderTitle()}>
+        <Header drawer overallBalance showDateRange title={getHeaderTitle()}>
           <HeaderAction
             icon={colorScheme === "dark" ? "sun" : "moon"}
             onPress={toggleColorScheme}
