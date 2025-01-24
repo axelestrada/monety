@@ -22,7 +22,7 @@ export const IconButton = ({
 
   return (
     <TouchableOpacity
-      className={`w-7 h-7 justify-center items-center rounded-full relative ${
+      className={`w-11 h-11 justify-center items-center rounded-full relative ${
         highlight && "bg-text-primary"
       }`}
       onPress={onPress}
