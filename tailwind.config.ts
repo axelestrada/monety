@@ -6,6 +6,8 @@ module.exports = {
     "./components/**/*.{js,jsx,ts,tsx}",
     "./src/**/*.{js,jsx,ts,tsx}",
     "./src/components/**/*.{js,jsx,ts,tsx}",
+    "./src/components/*.{js,jsx,ts,tsx}",
+    "./src/features/**/*.{js,jsx,ts,tsx}",
   ],
   presets: [require("nativewind/preset")],
   theme: {
@@ -32,6 +34,7 @@ module.exports = {
         accent: {
           DEFAULT: "var(--color-accent)",
           "50": "var(--color-accent-50)",
+          "25": "var(--color-accent-25)",
         },
         "card-background": {
           DEFAULT: "var(--color-card-background)",

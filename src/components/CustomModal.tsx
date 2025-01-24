@@ -20,10 +20,12 @@ interface CustomModalProps {
   isVisible: boolean;
   onRequestClose?: () => void;
   priority?: number;
-  position?: "bottom" | "center";
+  position?: "bottom" | "center" | "left";
+  animationType?: "slide-from-bottom" | "slide-from-left";
 }
 
 const screenHeight = Dimensions.get("window").height;
+const screenWidth = Dimensions.get("window").width;
 
 export const CustomModal = ({
   children,
@@ -31,21 +33,47 @@ export const CustomModal = ({
   onRequestClose,
   priority = 1,
   position = "center",
+  animationType = "slide-from-bottom",
 }: CustomModalProps) => {
   const zIndex = priority * 1000;
 
   const translateY = useSharedValue(0);
+  const translateX = useSharedValue(0);
+
   const opacity = useSharedValue(0);
 
+  const animations = {
+    "slide-from-bottom": {
+      in: () => {
+        translateX.value = 0;
+        opacity.value = withTiming(1, { duration: 200 });
+        translateY.value = withTiming(0, { duration: 200 });
+      },
+      out: () => {
+        opacity.value = withTiming(0, { duration: 200 });
+        translateY.value = withTiming(screenHeight + 50, { duration: 200 });
+      },
+    },
+    "slide-from-left": {
+      in: () => {
+        translateY.value = 0;
+        opacity.value = withTiming(1, { duration: 200 });
+        translateX.value = withTiming(0, { duration: 200 });
+      },
+      out: () => {
+        opacity.value = withTiming(0, { duration: 200 });
+        translateX.value = withTiming(-screenWidth - 50, { duration: 200 });
+      },
+    },
+  };
+
   const animateIn = useCallback(() => {
-    opacity.value = withTiming(1, { duration: 200 });
-    translateY.value = withTiming(0, { duration: 200 });
-  }, [opacity, translateY]);
+    animations[animationType].in();
+  }, [animationType]);
 
   const animateOut = useCallback(() => {
-    opacity.value = withTiming(0, { duration: 200 });
-    translateY.value = withTiming(screenHeight + 50, { duration: 200 });
-  }, [opacity, translateY]);
+    animations[animationType].out();
+  }, [animationType]);
 
   useEffect(() => {
     if (isVisible) {
@@ -74,8 +102,17 @@ export const CustomModal = ({
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
-    transform: [{ translateY: translateY.value }],
+    transform: [
+      { translateY: translateY.value },
+      { translateX: translateX.value },
+    ],
   }));
+
+  const positionStyle = {
+    bottom: "justify-end",
+    center: "justify-center items-center",
+    left: "justify-start items-start",
+  };
 
   return (
     <Portal>
@@ -83,11 +120,7 @@ export const CustomModal = ({
         style={[{ ...StyleSheet.absoluteFillObject, zIndex }, animatedStyle]}
       >
         <TouchableOpacity
-          className={`bg-modal-background ${
-            position === "center"
-              ? "justify-center items-center"
-              : "justify-end"
-          }`}
+          className={`bg-modal-background ${positionStyle[position]}`}
           onPress={onRequestClose}
           style={StyleSheet.absoluteFillObject}
           activeOpacity={1}
