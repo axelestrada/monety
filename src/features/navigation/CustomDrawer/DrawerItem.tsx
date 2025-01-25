@@ -25,7 +25,7 @@ export const DrawerItem = ({
       {icon({ isActive: active })}
 
       <CustomText
-        className={`font-[Rounded-Medium] mx-3 ${
+        className={`font-[Rounded-Medium] mx-3 text-s ${
           active ? "text-accent" : "text-text-secondary"
         }`}
       >

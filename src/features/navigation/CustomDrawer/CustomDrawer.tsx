@@ -143,7 +143,7 @@ export const CustomDrawer = ({ visible, closeDrawer }: CustomDrawerProps) => {
                 }
               />
             )}
-            label="Backup & Restore"
+            label="Backup & restore"
           />
 
           <Separator className="my-3.5" />
@@ -195,7 +195,7 @@ export const CustomDrawer = ({ visible, closeDrawer }: CustomDrawerProps) => {
 
           <View className="flex-1 justify-end py-3.5">
             <CustomText className="font-[Rounded-Regular] text-xs text-center text-text-secondary">
-              {Application.nativeApplicationVersion}
+              v {Application.nativeApplicationVersion}
             </CustomText>
           </View>
         </View>
