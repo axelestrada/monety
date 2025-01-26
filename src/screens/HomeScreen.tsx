@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { Alert, Modal, View } from "react-native";
+import { Alert, View } from "react-native";
 
 import moment from "moment";
 
@@ -14,18 +14,10 @@ import Screen from "@/components/Screen";
 import Header from "@/components/Header/Header";
 import { HeaderAction } from "@/components/Header/HeaderAction";
 import MainContainer from "@/components/MainContainer";
-import CustomAreaChart from "@/features/analytics-charts/LineAreaChart/CustomAreaChart";
 import { TransactionSummaryButton } from "@/features/transactions/components/TransactionSummaryButton";
 import { LatestTransactions } from "@/features/transactions/components/LatestTransactions";
-import PointerLabelComponent from "@/features/analytics-charts/LineAreaChart/PointerLabelComponent";
 
 import { useColorScheme } from "nativewind";
-import { lineDataItem } from "react-native-gifted-charts";
-
-import { getYAxisLabelTexts } from "@/features/analytics-charts/LineAreaChart/utils/getYAxisLabelTexts";
-import { calculateMaxValue } from "@/features/analytics-charts/LineAreaChart/utils/calculateMaxValue";
-
-import useThemeColors from "@/hooks/useThemeColors";
 import useDatabase from "@/hooks/useDatabase";
 
 import { DateRangePickerProvider } from "@/components/DateRangePicker/DateRangePickerContext";
@@ -36,40 +28,9 @@ import { normalizeCategory } from "@/features/categories/normalizers/normalizeCa
 import { accountsServices } from "@/features/accounts/redux/reducers/accountsSlice";
 import { normalizeAccount } from "@/features/accounts/normalizers/normalizeAccount";
 import { DateRangePicker } from "@/components/DateRangePicker/DateRangePicker";
-
-const data: {
-  incomes: lineDataItem[];
-  expenses: lineDataItem[];
-} = {
-  incomes: [
-    { value: 0 },
-    { value: 230 },
-    { value: 130 },
-    { value: 97 },
-    { value: 189 },
-    { value: 50 },
-    { value: 0 },
-    { value: 190 },
-    { value: 79 },
-    { value: 120 },
-  ],
-  expenses: [
-    { value: 120 },
-    { value: 0 },
-    { value: 49 },
-    { value: 79 },
-    { value: 16 },
-    { value: 150 },
-    { value: 200 },
-    { value: 98 },
-    { value: 0 },
-    { value: 18 },
-  ],
-};
+import { HomeAnalyticsChart } from "@/components/HomeAnalyticsChart";
 
 export default function HomeScreen() {
-  const colors = useThemeColors();
-
   const { toggleColorScheme, colorScheme } = useColorScheme();
 
   const { dateRange } = useTypedSelector((state) => state.userPreferences);
@@ -80,22 +41,11 @@ export default function HomeScreen() {
   const latestTransactions = useLatestTransactions();
   const db = useSQLiteContext();
 
-  const onRefresh = useCallback(async () => {
-    setRefreshing(true);
-
-    await latestTransactions.getLatestTransactions();
-
-    setRefreshing(false);
-  }, []);
-
   const dispatch = useAppDispatch();
 
   const getData = useCallback(async () => {
     const categories = await db.getAllAsync<any>("SELECT * FROM Categories;");
     const accounts = await db.getAllAsync<any>("SELECT * FROM Accounts;");
-
-    console.table(categories);
-    console.table(accounts);
 
     dispatch(
       categoriesServices.actions.setCategories(
@@ -109,6 +59,14 @@ export default function HomeScreen() {
       )
     );
   }, []);
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+
+    await latestTransactions.getLatestTransactions();
+
+    setRefreshing(false);
+  }, [getData, latestTransactions]);
 
   useEffect(() => {
     initializeDatabase();
@@ -165,23 +123,6 @@ export default function HomeScreen() {
     );
   }
 
-  const legendItems = [
-    { color: colors["--color-income"], label: "Incomes" },
-    { color: colors["--color-expense"], label: "Expenses" },
-  ];
-
-  const max = Math.max(
-    ...[...data.incomes, ...data.expenses].map((item) => item.value)
-  );
-
-  const maxValue = calculateMaxValue(0, max);
-  const yAxisLabelTexts = getYAxisLabelTexts(0, max, 3);
-
-  const getPointerLabelComponentTitle = (index: number): string =>
-    moment(dateRange.from * 1000)
-      .add(index, "hours")
-      .format("hh:mm A");
-
   const getHeaderTitle = (): string => {
     const from = moment(dateRange.from * 1000);
     const to = moment(dateRange.to * 1000);
@@ -218,34 +159,7 @@ export default function HomeScreen() {
       </DateRangePickerProvider>
 
       <MainContainer onRefresh={onRefresh} refreshing={refreshing}>
-        <CustomAreaChart
-          title="Statistics"
-          legendItems={legendItems}
-          data={data.incomes}
-          data2={data.expenses}
-          color1={colors["--color-income"]}
-          color2={colors["--color-expense"]}
-          startFillColor1={colors["--color-income"]}
-          startFillColor2={colors["--color-expense"]}
-          yAxisLabelTexts={yAxisLabelTexts}
-          maxValue={maxValue}
-          pointerConfig={{
-            pointer1Color: colors["--color-income"],
-            pointer2Color: colors["--color-expense"],
-          }}
-          pointerLabelComponent={(items, index) => (
-            <PointerLabelComponent
-              title={getPointerLabelComponentTitle(index)}
-              items={items.map((item, index) => ({
-                value: (index === 0 ? "+" : "-") + "L" + item.value,
-                color:
-                  index === 0
-                    ? colors["--color-income"]
-                    : colors["--color-expense"],
-              }))}
-            />
-          )}
-        />
+        <HomeAnalyticsChart />
 
         <View className="flex-row mt-3">
           <TransactionSummaryButton type="income" value={230} active />
