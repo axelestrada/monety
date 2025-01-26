@@ -1,4 +1,4 @@
-import React, { ReactElement, useCallback, useEffect } from "react";
+import React, { ReactElement, useCallback, useEffect, useState } from "react";
 import { useColorScheme } from "nativewind";
 
 import { ActivityIndicator, Dimensions, StyleSheet, View } from "react-native";
@@ -109,6 +109,8 @@ const CustomAreaChart = ({
     };
   });
 
+  const [isAnimated, setIsAnimated] = useState(false);
+
   useEffect(() => {
     if (loading) {
       chartContainerOpacity.value = withTiming(0, {
@@ -120,6 +122,10 @@ const CustomAreaChart = ({
       chartContainerOpacity.value = withTiming(1, {
         duration: 300,
       });
+
+      setTimeout(() => {
+        setIsAnimated(true);
+      }, 5000);
     }
   }, [loading]);
 
@@ -146,6 +152,8 @@ const CustomAreaChart = ({
           hideRules
           hideDataPoints
           curved
+          parentWidth={screenWidth - 88}
+          adjustToWidth={true}
           thickness={2.5}
           curveType={1}
           stepHeight={150 / 3}
@@ -189,7 +197,6 @@ const CustomAreaChart = ({
               : undefined,
             ...pointerConfig,
           }}
-          isAnimated
           {...props}
         />
       </Animated.View>
@@ -197,7 +204,7 @@ const CustomAreaChart = ({
       <Animated.View
         style={[StyleSheet.absoluteFillObject, { top: 30 }, loadingStyle]}
       >
-        <View className="flex-1 justify-center items-center">
+        <View className="flex-1 justify-center items-center bg-card-background">
           <ActivityIndicator size="large" color={colors["--color-accent"]} />
         </View>
       </Animated.View>
@@ -205,7 +212,7 @@ const CustomAreaChart = ({
       <Animated.View
         style={[StyleSheet.absoluteFillObject, { top: 30 }, noDataStyle]}
       >
-        <View className="flex-1 justify-center items-center">
+        <View className="flex-1 justify-center items-center bg-card-background">
           <CustomText className="text-text-secondary text-base font-[Rounded-Regular]">
             No data available
           </CustomText>

@@ -12,6 +12,13 @@ import { useTypedSelector } from "@/store";
 import { useEffect, useState } from "react";
 
 import { lineDataItem } from "react-native-gifted-charts";
+import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { CustomText } from "./CustomText";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 export const HomeAnalyticsChart = () => {
   const colors = useThemeColors();
@@ -78,6 +85,7 @@ export const HomeAnalyticsChart = () => {
   useEffect(() => {
     getTransactionsSummaryByHour();
   }, [getTransactionsSummaryByHour, dateRange]);
+
 
   return (
     <CustomAreaChart
