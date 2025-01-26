@@ -18,7 +18,6 @@ import ITransaction from "@/features/transactions/types/transaction";
 import formatCurrency from "@/components/Header/utils/formatCurrency";
 import IAccount from "@/features/accounts/types/account";
 import ICategory from "@/features/categories/types/category";
-import { styles } from "@/styles/shadow";
 
 interface TransactionProps {
   transaction: ITransaction;
@@ -32,14 +31,14 @@ export const Transaction = ({ transaction }: TransactionProps) => {
   const { accounts } = useTypedSelector((state) => state.accounts);
 
   const getIcon = (id?: number) =>
-    icons.find((i) => i.id === id)?.name ?? "alert";
+    icons.find((i) => i.id === id)?.name || "alert";
 
   const getColor = (id?: number) =>
-    colors.find((c) => c.id === id)?.[colorScheme] ??
+    colors.find((c) => c.id === id)?.[colorScheme] ||
     themeColors["--color-error"];
 
-  const getAccount = (id?: number) => accounts.find((a) => a.id === id);
-  const getCategory = (id?: number) => categories.find((c) => c.id === id);
+  const getAccount = (id: number) => accounts.find((a) => a.id === id);
+  const getCategory = (id: number) => categories.find((c) => c.id === id);
 
   let title: string = "Unknown";
 
@@ -63,12 +62,12 @@ export const Transaction = ({ transaction }: TransactionProps) => {
       category = getCategory(transaction.destinationId);
     }
 
-    title = category?.name ?? "Unknown";
+    title = category?.name || "Unknown";
 
     icon = getIcon(category?.icon);
     color = getColor(category?.color);
 
-    subtitle = account?.name ?? "Unknown";
+    subtitle = account?.name || "Unknown";
     subtitleColor = getColor(account?.color);
   }
 
@@ -81,8 +80,8 @@ export const Transaction = ({ transaction }: TransactionProps) => {
     icon = "repeat";
     color = themeColors["--color-transfer"];
 
-    subtitle = `${origin?.name ?? "Unknown"} → ${
-      destination?.name ?? "Unknown"
+    subtitle = `${origin?.name || "Unknown"} → ${
+      destination?.name || "Unknown"
     }`;
     subtitleColor = getColor(origin?.color);
   }

@@ -68,7 +68,72 @@ const useHomeAnalyticsChart = () => {
           ? [
               ...formattedResult,
               {
-                datetime: moment(formattedResult[0].datetime).format("LT"),
+                datetime: moment(formattedResult[0].datetime)
+                  .add(1, "hour")
+                  .format(),
+                income: 0,
+                expense: 0,
+              },
+              {
+                datetime: moment(formattedResult[0].datetime)
+                  .add(1, "hour")
+                  .format(),
+                income: 0,
+                expense: 0,
+              },
+              {
+                datetime: moment(formattedResult[0].datetime)
+                  .add(1, "hour")
+                  .format(),
+                income: 0,
+                expense: 0,
+              },
+              {
+                datetime: moment(formattedResult[0].datetime)
+                  .add(1, "hour")
+                  .format(),
+                income: 0,
+                expense: 0,
+              },
+              {
+                datetime: moment(formattedResult[0].datetime)
+                  .add(1, "hour")
+                  .format(),
+                income: 0,
+                expense: 0,
+              },
+              {
+                datetime: moment(formattedResult[0].datetime)
+                  .add(1, "hour")
+                  .format(),
+                income: 0,
+                expense: 0,
+              },
+              {
+                datetime: moment(formattedResult[0].datetime)
+                  .add(1, "hour")
+                  .format(),
+                income: 0,
+                expense: 0,
+              },
+              {
+                datetime: moment(formattedResult[0].datetime)
+                  .add(1, "hour")
+                  .format(),
+                income: 0,
+                expense: 0,
+              },
+              {
+                datetime: moment(formattedResult[0].datetime)
+                  .add(1, "hour")
+                  .format("LT"),
+                income: 0,
+                expense: 0,
+              },
+              {
+                datetime: moment(formattedResult[0].datetime)
+                  .add(1, "hour")
+                  .format("LT"),
                 income: 0,
                 expense: 0,
               },

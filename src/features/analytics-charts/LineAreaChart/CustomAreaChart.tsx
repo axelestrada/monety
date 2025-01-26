@@ -109,8 +109,6 @@ const CustomAreaChart = ({
     };
   });
 
-  const [isAnimated, setIsAnimated] = useState(false);
-
   useEffect(() => {
     if (loading) {
       chartContainerOpacity.value = withTiming(0, {
@@ -122,10 +120,6 @@ const CustomAreaChart = ({
       chartContainerOpacity.value = withTiming(1, {
         duration: 300,
       });
-
-      setTimeout(() => {
-        setIsAnimated(true);
-      }, 5000);
     }
   }, [loading]);
 
