@@ -102,7 +102,7 @@ const CustomAreaChart = ({
 
   const noDataStyle = useAnimatedStyle(() => {
     return {
-      opacity: withTiming(noData && !loading ? 1 : 0, {
+      opacity: withTiming(noData ? 1 : 0, {
         duration: 300,
       }),
       pointerEvents: "none",
@@ -196,20 +196,20 @@ const CustomAreaChart = ({
       </Animated.View>
 
       <Animated.View
-        style={[StyleSheet.absoluteFillObject, { top: 30 }, loadingStyle]}
+        style={[StyleSheet.absoluteFillObject, { top: 30 }, noDataStyle]}
       >
         <View className="flex-1 justify-center items-center bg-card-background">
-          <ActivityIndicator size="large" color={colors["--color-accent"]} />
+          <CustomText className="text-text-secondary text-s font-[Rounded-Regular]">
+            No data available
+          </CustomText>
         </View>
       </Animated.View>
 
       <Animated.View
-        style={[StyleSheet.absoluteFillObject, { top: 30 }, noDataStyle]}
+        style={[StyleSheet.absoluteFillObject, { top: 30 }, loadingStyle]}
       >
         <View className="flex-1 justify-center items-center bg-card-background">
-          <CustomText className="text-text-secondary text-base font-[Rounded-Regular]">
-            No data available
-          </CustomText>
+          <ActivityIndicator size="large" color={colors["--color-accent"]} />
         </View>
       </Animated.View>
     </View>
