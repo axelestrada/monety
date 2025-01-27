@@ -1,4 +1,5 @@
 import Header from "@/components/Header/Header";
+import MainContainer from "@/components/MainContainer";
 import Screen from "@/components/Screen";
 import { normalizeAccount } from "@/features/accounts/normalizers/normalizeAccount";
 import { accountsServices } from "@/features/accounts/redux/reducers/accountsSlice";
@@ -21,7 +22,7 @@ export default function Transactions() {
     comment: "",
     originId: "",
     destinationId: "",
-    type: "expense",
+    type: "income",
   });
 
   const handleSubmit = useCallback(async () => {
@@ -79,86 +80,92 @@ export default function Transactions() {
     <Screen>
       <Header title="Transactions" overallBalance showDateRange drawer />
 
-      <View className="mx-3">
-        <Text className="text-text-primary">date: {transaction.date}</Text>
-        <Text className="text-text-primary">
-          createdAt: {transaction.createdAt}
-        </Text>
-        <Text className="text-text-primary">amount: {transaction.amount}</Text>
-        <Text className="text-text-primary">
-          comment: {transaction.comment}
-        </Text>
-        <Text className="text-text-primary">
-          originId: {transaction.originId}
-        </Text>
-        <Text className="text-text-primary">
-          destinationId: {transaction.destinationId}
-        </Text>
-        <Text className="text-text-primary">type: {transaction.type}</Text>
-      </View>
+      <MainContainer>
+        <View className="m-5">
+          <View className="mx-3">
+            <Text className="text-text-primary">date: {transaction.date}</Text>
+            <Text className="text-text-primary">
+              createdAt: {transaction.createdAt}
+            </Text>
+            <Text className="text-text-primary">
+              amount: {transaction.amount}
+            </Text>
+            <Text className="text-text-primary">
+              comment: {transaction.comment}
+            </Text>
+            <Text className="text-text-primary">
+              originId: {transaction.originId}
+            </Text>
+            <Text className="text-text-primary">
+              destinationId: {transaction.destinationId}
+            </Text>
+            <Text className="text-text-primary">type: {transaction.type}</Text>
+          </View>
 
-      <TextInput
-        placeholder="Date"
-        className="bg-card-background m-3 p-3 text-text-primary"
-        keyboardType="numeric"
-        value={transaction.date}
-        onChangeText={(text) =>
-          setTransaction((prev) => ({ ...prev, date: text }))
-        }
-      />
+          <TextInput
+            placeholder="Date"
+            className="bg-card-background m-3 p-3 text-text-primary"
+            keyboardType="numeric"
+            value={transaction.date}
+            onChangeText={(text) =>
+              setTransaction((prev) => ({ ...prev, date: text }))
+            }
+          />
 
-      <TextInput
-        placeholder="Amount"
-        className="bg-card-background m-3 p-3 text-text-primary"
-        keyboardType="numeric"
-        value={transaction.amount}
-        onChangeText={(text) =>
-          setTransaction((prev) => ({ ...prev, amount: text }))
-        }
-      />
+          <TextInput
+            placeholder="Amount"
+            className="bg-card-background m-3 p-3 text-text-primary"
+            keyboardType="numeric"
+            value={transaction.amount}
+            onChangeText={(text) =>
+              setTransaction((prev) => ({ ...prev, amount: text }))
+            }
+          />
 
-      <TextInput
-        placeholder="Comment"
-        className="bg-card-background m-3 p-3 text-text-primary"
-        value={transaction.comment}
-        onChangeText={(text) =>
-          setTransaction((prev) => ({ ...prev, comment: text }))
-        }
-      />
+          <TextInput
+            placeholder="Comment"
+            className="bg-card-background m-3 p-3 text-text-primary"
+            value={transaction.comment}
+            onChangeText={(text) =>
+              setTransaction((prev) => ({ ...prev, comment: text }))
+            }
+          />
 
-      <TextInput
-        placeholder="Origin"
-        className="bg-card-background m-3 p-3 text-text-primary"
-        value={transaction.originId}
-        keyboardType="numeric"
-        onChangeText={(text) =>
-          setTransaction((prev) => ({ ...prev, originId: text }))
-        }
-      />
+          <TextInput
+            placeholder="Origin"
+            className="bg-card-background m-3 p-3 text-text-primary"
+            value={transaction.originId}
+            keyboardType="numeric"
+            onChangeText={(text) =>
+              setTransaction((prev) => ({ ...prev, originId: text }))
+            }
+          />
 
-      <TextInput
-        placeholder="Destination"
-        className="bg-card-background m-3 p-3 text-text-primary"
-        value={transaction.destinationId}
-        keyboardType="numeric"
-        onChangeText={(text) =>
-          setTransaction((prev) => ({
-            ...prev,
-            destinationId: text,
-          }))
-        }
-      />
+          <TextInput
+            placeholder="Destination"
+            className="bg-card-background m-3 p-3 text-text-primary"
+            value={transaction.destinationId}
+            keyboardType="numeric"
+            onChangeText={(text) =>
+              setTransaction((prev) => ({
+                ...prev,
+                destinationId: text,
+              }))
+            }
+          />
 
-      <TextInput
-        placeholder="Type"
-        className="bg-card-background m-3 p-3 text-text-primary"
-        value={transaction.type}
-        onChangeText={(text) =>
-          setTransaction((prev) => ({ ...prev, type: text }))
-        }
-      />
+          <TextInput
+            placeholder="Type"
+            className="bg-card-background m-3 p-3 text-text-primary"
+            value={transaction.type}
+            onChangeText={(text) =>
+              setTransaction((prev) => ({ ...prev, type: text }))
+            }
+          />
 
-      <Button title="Submit" onPress={handleSubmit} />
+          <Button title="Submit" onPress={handleSubmit} />
+        </View>
+      </MainContainer>
     </Screen>
   );
 }

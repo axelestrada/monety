@@ -18,6 +18,8 @@ import ITransaction from "@/features/transactions/types/transaction";
 import formatCurrency from "@/components/Header/utils/formatCurrency";
 import IAccount from "@/features/accounts/types/account";
 import ICategory from "@/features/categories/types/category";
+import { useCallback } from "react";
+import { useSQLiteContext } from "expo-sqlite";
 
 interface TransactionProps {
   transaction: ITransaction;
@@ -26,6 +28,8 @@ interface TransactionProps {
 export const Transaction = ({ transaction }: TransactionProps) => {
   const themeColors = useThemeColors();
   const { colorScheme = "light" } = useColorScheme();
+
+  const db = useSQLiteContext();
 
   const { categories } = useTypedSelector((state) => state.categories);
   const { accounts } = useTypedSelector((state) => state.accounts);
@@ -86,8 +90,19 @@ export const Transaction = ({ transaction }: TransactionProps) => {
     subtitleColor = getColor(origin?.color);
   }
 
+  const handleLongPress = useCallback(async () => {
+    await db.runAsync("DELETE FROM Transactions WHERE id = ?", [
+      transaction.id,
+    ]);
+
+    alert("Transacción eliminada");
+  }, [transaction]);
+
   return (
-    <TouchableOpacity className="flex-row items-center py-4 border-b border-separator">
+    <TouchableOpacity
+      className="flex-row items-center py-4 border-b border-separator"
+      onLongPress={handleLongPress}
+    >
       <View
         className="p-2 flex items-center justify-center"
         style={{
