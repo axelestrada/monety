@@ -30,7 +30,7 @@ export default function Transactions() {
         await db.runAsync(
           "INSERT INTO Transactions (date, created_at, amount, comment, origin_id, destination_id, type) VALUES (?, ?, ?, ?, ?, ?, ?);",
           [
-            transaction.date,
+            parseInt(transaction.date),
             transaction.createdAt,
             parseFloat(transaction.amount),
             transaction.comment || null,
@@ -102,6 +102,9 @@ export default function Transactions() {
         className="bg-card-background m-3 p-3 text-text-primary"
         keyboardType="numeric"
         value={transaction.date}
+        onChangeText={(text) =>
+          setTransaction((prev) => ({ ...prev, date: text }))
+        }
       />
 
       <TextInput

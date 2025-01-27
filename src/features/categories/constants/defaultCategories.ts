@@ -33,5 +33,5 @@ export const defaultCategories: ICategory[] = [
   { id: 6, name: "Pets", icon: 15, color: 11, type: "expense" },
   { id: 7, name: "Family", icon: 14, color: 14, type: "expense" },
   { id: 8, name: "Clothes", icon: 13, color: 15, type: "expense" },
-  { id: 9, name: "Salary", icon: 12, color: 20, type: "income" },
+  { id: 9, name: "Salary", icon: 12, color: 12, type: "income" },
 ];
