@@ -8,19 +8,20 @@ import moment from "moment";
 import { useCallback, useState } from "react";
 import { Button, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
+import { parse } from "react-native-svg";
 
 export default function Transactions() {
   const db = useSQLiteContext();
   const dispatch = useAppDispatch();
 
   const [transaction, setTransaction] = useState({
-    date: moment().unix(),
+    date: moment().unix().toString(),
     createdAt: moment().startOf("day").unix(),
-    amount: 0,
+    amount: "",
     comment: "",
-    originId: 0,
-    destinationId: 0,
-    type: "income",
+    originId: "",
+    destinationId: "",
+    type: "expense",
   });
 
   const handleSubmit = useCallback(async () => {
@@ -31,10 +32,10 @@ export default function Transactions() {
           [
             transaction.date,
             transaction.createdAt,
-            transaction.amount,
+            parseFloat(transaction.amount),
             transaction.comment || null,
-            transaction.originId,
-            transaction.destinationId,
+            parseFloat(transaction.originId),
+            parseFloat(transaction.destinationId),
             transaction.type,
           ]
         );
@@ -59,12 +60,12 @@ export default function Transactions() {
         );
 
         setTransaction({
-          date: moment().unix(),
+          date: moment().unix().toString(),
           createdAt: moment().startOf("day").unix(),
-          amount: 0,
+          amount: "",
           comment: "",
-          originId: 0,
-          destinationId: 0,
+          originId: "",
+          destinationId: "",
           type: "income",
         });
       });
@@ -79,28 +80,43 @@ export default function Transactions() {
       <Header title="Transactions" overallBalance showDateRange drawer />
 
       <View className="mx-3">
-        <Text>date: {transaction.date}</Text>
-        <Text>createdAt: {transaction.createdAt}</Text>
-        <Text>amount: {transaction.amount}</Text>
-        <Text>comment: {transaction.comment}</Text>
-        <Text>originId: {transaction.originId}</Text>
-        <Text>destinationId: {transaction.destinationId}</Text>
-        <Text>type: {transaction.type}</Text>
+        <Text className="text-text-primary">date: {transaction.date}</Text>
+        <Text className="text-text-primary">
+          createdAt: {transaction.createdAt}
+        </Text>
+        <Text className="text-text-primary">amount: {transaction.amount}</Text>
+        <Text className="text-text-primary">
+          comment: {transaction.comment}
+        </Text>
+        <Text className="text-text-primary">
+          originId: {transaction.originId}
+        </Text>
+        <Text className="text-text-primary">
+          destinationId: {transaction.destinationId}
+        </Text>
+        <Text className="text-text-primary">type: {transaction.type}</Text>
       </View>
 
       <TextInput
-        placeholder="Amount"
-        className="bg-red m-3 p-3 text-white"
+        placeholder="Date"
+        className="bg-card-background m-3 p-3 text-text-primary"
         keyboardType="numeric"
-        value={transaction.amount.toString()}
+        value={transaction.date}
+      />
+
+      <TextInput
+        placeholder="Amount"
+        className="bg-card-background m-3 p-3 text-text-primary"
+        keyboardType="numeric"
+        value={transaction.amount}
         onChangeText={(text) =>
-          setTransaction((prev) => ({ ...prev, amount: parseFloat(text) }))
+          setTransaction((prev) => ({ ...prev, amount: text }))
         }
       />
 
       <TextInput
         placeholder="Comment"
-        className="bg-red m-3 p-3 text-white"
+        className="bg-card-background m-3 p-3 text-text-primary"
         value={transaction.comment}
         onChangeText={(text) =>
           setTransaction((prev) => ({ ...prev, comment: text }))
@@ -109,30 +125,30 @@ export default function Transactions() {
 
       <TextInput
         placeholder="Origin"
-        className="bg-red m-3 p-3 text-white"
-        value={transaction.originId.toString()}
+        className="bg-card-background m-3 p-3 text-text-primary"
+        value={transaction.originId}
         keyboardType="numeric"
         onChangeText={(text) =>
-          setTransaction((prev) => ({ ...prev, originId: parseFloat(text) }))
+          setTransaction((prev) => ({ ...prev, originId: text }))
         }
       />
 
       <TextInput
         placeholder="Destination"
-        className="bg-red m-3 p-3 text-white"
-        value={transaction.destinationId.toString()}
+        className="bg-card-background m-3 p-3 text-text-primary"
+        value={transaction.destinationId}
         keyboardType="numeric"
         onChangeText={(text) =>
           setTransaction((prev) => ({
             ...prev,
-            destinationId: parseFloat(text),
+            destinationId: text,
           }))
         }
       />
 
       <TextInput
         placeholder="Type"
-        className="bg-red m-3 p-3 text-white"
+        className="bg-card-background m-3 p-3 text-text-primary"
         value={transaction.type}
         onChangeText={(text) =>
           setTransaction((prev) => ({ ...prev, type: text }))

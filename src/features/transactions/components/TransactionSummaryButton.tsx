@@ -5,20 +5,34 @@ import { CustomText } from "@/components/CustomText";
 import formatCurrency from "@/components/Header/utils/formatCurrency";
 import useThemeColors from "@/hooks/useThemeColors";
 
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { useEffect, useState } from "react";
+
 interface TransactionSummaryButtonProps {
   type: "income" | "expense";
   value: number;
   onPress?: () => void;
   active: boolean;
+  loading?: boolean;
 }
 
 export const TransactionSummaryButton = ({
   active,
   type,
-  value,
+  value = 0,
+  loading = false,
   onPress,
 }: TransactionSummaryButtonProps) => {
   const colors = useThemeColors();
+
+  const valueStyle = useAnimatedStyle(() => ({
+    opacity: loading ? 0 : 1,
+  }));
 
   return (
     <TouchableOpacity
@@ -42,17 +56,19 @@ export const TransactionSummaryButton = ({
       </View>
 
       <View style={{ flex: 1 }}>
-        <CustomText
-          className={`text-base font-[Rounded-Bold] -mb-0.5`}
-          style={{
-            color: colors[`--color-${type}`],
-          }}
-          numberOfLines={1}
-        >
-          {formatCurrency(value, {
-            spacing: true,
-          })}
-        </CustomText>
+        <Animated.View style={valueStyle}>
+          <CustomText
+            className={`text-base font-[Rounded-Bold] -mb-0.5`}
+            style={{
+              color: colors[`--color-${type}`],
+            }}
+            numberOfLines={1}
+          >
+            {formatCurrency(value, {
+              spacing: true,
+            })}
+          </CustomText>
+        </Animated.View>
 
         <CustomText className="text-text-primary font-[Rounded-Bold] text-base">
           {type === "income" ? "Incomes" : "Expenses"}

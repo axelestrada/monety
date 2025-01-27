@@ -4,7 +4,7 @@ import { useTypedSelector } from "@/store";
 import { sleep } from "@/utils/sleep";
 import moment from "moment";
 
-const useHomeAnalyticsChart = () => {
+export const useHomeAnalyticsChart = () => {
   const [transactionsSummary, setTransactionsSummary] = useState<
     TransactionChart[]
   >([]);
@@ -92,4 +92,4 @@ const useHomeAnalyticsChart = () => {
   };
 };
 
-export default useHomeAnalyticsChart;
+

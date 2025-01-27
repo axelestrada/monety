@@ -28,7 +28,7 @@ import { normalizeCategory } from "@/features/categories/normalizers/normalizeCa
 import { accountsServices } from "@/features/accounts/redux/reducers/accountsSlice";
 import { normalizeAccount } from "@/features/accounts/normalizers/normalizeAccount";
 import { DateRangePicker } from "@/components/DateRangePicker/DateRangePicker";
-import { HomeAnalyticsChart } from "@/components/HomeAnalyticsChart";
+import { HomeAnalyticsChart } from "@/features/analytics-charts/HomeAnalyticsChart";
 
 export default function HomeScreen() {
   const { toggleColorScheme, colorScheme } = useColorScheme();
@@ -160,14 +160,6 @@ export default function HomeScreen() {
 
       <MainContainer onRefresh={onRefresh} refreshing={refreshing}>
         <HomeAnalyticsChart />
-
-        <View className="flex-row mt-3">
-          <TransactionSummaryButton type="income" value={230} active />
-
-          <View className="w-3" />
-
-          <TransactionSummaryButton type="expense" value={120} active />
-        </View>
 
         <LatestTransactions {...latestTransactions} />
       </MainContainer>
