@@ -239,10 +239,9 @@ export const HomeAnalyticsChart = () => {
                 },
                 propsForVerticalLabels: {
                   translateY: 0,
-                  fontSize: 11,
                 },
                 propsForLabels: {
-                  fontSize: 12,
+                  fontSize: 11,
                   fontFamily: "Rounded-Regular",
                   fill: colors["--color-text-secondary"],
                 },
