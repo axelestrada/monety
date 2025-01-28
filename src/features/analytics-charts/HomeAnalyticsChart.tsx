@@ -6,6 +6,7 @@ import {
   Dimensions,
   ScrollView,
   StyleSheet,
+  Text,
   View,
 } from "react-native";
 
@@ -131,8 +132,8 @@ export const HomeAnalyticsChart = () => {
     chartWidth = dataLength * spacing;
   }
 
-  if (spacing < 64) {
-    spacing = 64;
+  if (spacing < 90) {
+    spacing = 90;
     chartWidth = dataLength * spacing + 10;
   }
 
@@ -161,97 +162,94 @@ export const HomeAnalyticsChart = () => {
         <Animated.ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={[chartContainerStyle]}
+          style={chartContainerStyle}
         >
-          <View
+          <LineChart
+            data={chartData}
+            bezier
+            width={chartWidth}
+            height={160}
+            withInnerLines={false}
+            withOuterLines={false}
+            yAxisInterval={3}
             style={{
-              marginRight: -(spacing - 74),
+              marginRight: 0,
+              marginLeft: 0,
             }}
-          >
-            <LineChart
-              data={chartData}
-              bezier
-              width={chartWidth}
-              height={160}
-              withInnerLines={false}
-              withOuterLines={false}
-              yAxisInterval={3}
-              style={{
-                marginRight: 0,
-                marginLeft: 0,
-              }}
-              renderDotContent={({ x, y, index, indexData }) => {
-                const isIncome =
-                  chartData.datasets[0].data[index] === indexData;
+            renderDotContent={({ x, y, index, indexData }) => {
+              const isIncome = chartData.datasets[0].data[index] === indexData;
 
-                const strokeColor = isIncome
-                  ? colors["--color-income"]
-                  : colors["--color-expense"];
+              const strokeColor = isIncome
+                ? colors["--color-income"]
+                : colors["--color-expense"];
 
-                return (
-                  <Svg
-                    key={
-                      "chart-dot-" + index + indexData + Math.random() * 100000
-                    }
-                  >
-                    <Circle
-                      cx={x}
-                      cy={y}
-                      r="4"
-                      stroke={strokeColor}
-                      strokeWidth="2"
-                      fill={colors["--color-card-background"]}
-                    />
-                  </Svg>
-                );
-              }}
-              formatYLabel={(value) => {
-                const floatValue = parseFloat(value);
+              return (
+                <Svg
+                  key={
+                    "chart-dot-" + index + indexData + Math.random() * 100000
+                  }
+                >
+                  <Circle
+                    cx={x}
+                    cy={y}
+                    r="4"
+                    stroke={strokeColor}
+                    strokeWidth="2"
+                    fill={colors["--color-card-background"]}
+                  />
+                </Svg>
+              );
+            }}
+            formatYLabel={(value) => {
+              const floatValue = parseFloat(value);
 
-                if (isNaN(floatValue)) return value;
+              if (isNaN(floatValue)) return value;
 
-                const roundedValue = Math.round(floatValue / 10) * 10;
+              const roundedValue = Math.round(floatValue / 10) * 10;
 
-                const suffix = roundedValue > 999 ? "K" : "";
+              const suffix = roundedValue > 999 ? "K" : "";
 
-                return `L ${
-                  suffix
-                    ? (roundedValue / 1000) % 1 === 0
-                      ? roundedValue / 1000
-                      : (roundedValue / 1000).toFixed(1)
-                    : roundedValue
-                }${suffix}`;
-              }}
-              chartConfig={{
-                backgroundColor: colors["--color-card-background"],
-                backgroundGradientFrom: colors["--color-card-background"],
-                backgroundGradientTo: colors["--color-card-background"],
-                decimalPlaces: 0,
-                color: (opacity = 1) =>
-                  colorScheme === "light"
-                    ? `rgba(217, 112, 136, ${opacity})`
-                    : colors["--color-card-background"],
-                labelColor: (opacity = 1) => colors["--color-text-secondary"],
-                strokeWidth: 2.5,
-                propsForHorizontalLabels: {
-                  translateX: -20,
-                  textAnchor: "middle",
-                },
-                propsForVerticalLabels: {
-                  translateY: 0,
-                },
-                propsForLabels: {
-                  fontSize: 11,
-                  fontFamily: "Rounded-Regular",
-                  fill: colors["--color-text-secondary"],
-                },
-              }}
-            />
-          </View>
+              return `L ${
+                suffix
+                  ? (roundedValue / 1000) % 1 === 0
+                    ? roundedValue / 1000
+                    : (roundedValue / 1000).toFixed(1)
+                  : roundedValue
+              }${suffix}`;
+            }}
+            chartConfig={{
+              backgroundColor: colors["--color-card-background"],
+              backgroundGradientFrom: colors["--color-card-background"],
+              backgroundGradientTo: colors["--color-card-background"],
+              decimalPlaces: 0,
+              color: (opacity = 1) =>
+                colorScheme === "light"
+                  ? `rgba(217, 112, 136, ${opacity})`
+                  : colors["--color-card-background"],
+              labelColor: (opacity = 1) => colors["--color-text-secondary"],
+              strokeWidth: 2.5,
+              propsForHorizontalLabels: {
+                translateX: -20,
+                textAnchor: "middle",
+              },
+              propsForVerticalLabels: {
+                translateY: 0,
+              },
+              propsForLabels: {
+                fontSize: 11,
+                fontFamily: "Rounded-Regular",
+                fill: colors["--color-text-secondary"],
+              },
+            }}
+          />
         </Animated.ScrollView>
 
         <Animated.View
-          style={[StyleSheet.absoluteFillObject, { top: 30 }, noDataStyle]}
+          style={[
+            StyleSheet.absoluteFillObject,
+            { top: 30, pointerEvents: "none" },
+            noDataStyle,
+          ]}
         >
           <View className="flex-1 justify-center items-center">
             <CustomText className="text-text-secondary text-s font-[Rounded-Regular]">
@@ -261,7 +259,11 @@ export const HomeAnalyticsChart = () => {
         </Animated.View>
 
         <Animated.View
-          style={[StyleSheet.absoluteFillObject, { top: 30 }, loadingStyle]}
+          style={[
+            StyleSheet.absoluteFillObject,
+            { top: 30, pointerEvents: "none" },
+            loadingStyle,
+          ]}
         >
           <LoadingIndicator />
         </Animated.View>
