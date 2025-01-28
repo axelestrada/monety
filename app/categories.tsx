@@ -79,6 +79,7 @@ export default function Categories() {
         <View className="flex-row flex-wrap">
           {colors.map((color) => (
             <View
+              key={"CategoryColor: " + color.id}
               className="rounded-full m-2 justify-center items-center"
               style={{
                 width: 50,
@@ -94,6 +95,7 @@ export default function Categories() {
         <View className="flex-row flex-wrap">
           {icons.map((icon) => (
             <View
+              key={"CategoryIcon: " + icon.id}
               className="rounded-full m-2 justify-center items-center bg-card-background"
               style={{
                 width: 50,
@@ -115,11 +117,11 @@ export default function Categories() {
 
         {categories.map((category) => (
           <View key={"Category" + category.id} className="m-3">
-            <Text>Id: {category.id}</Text>
-            <Text>Name: {category.name}</Text>
-            <Text>Color: {category.color}</Text>
-            <Text>Type: {category.type}</Text>
-            <Text>Icon: {category.icon}</Text>
+            <Text className="text-text-primary">Id: {category.id}</Text>
+            <Text className="text-text-primary">Name: {category.name}</Text>
+            <Text className="text-text-primary">Color: {category.color}</Text>
+            <Text className="text-text-primary">Type: {category.type}</Text>
+            <Text className="text-text-primary">Icon: {category.icon}</Text>
           </View>
         ))}
 

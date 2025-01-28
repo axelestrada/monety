@@ -11,12 +11,16 @@ export default function Accounts() {
 
       {accounts.map((account) => (
         <View key={"Account" + account.id} className="m-3">
-          <Text>Id: {account.id}</Text>
-          <Text>Name: {account.name}</Text>
-          <Text>CurrentBalance: {account.currentBalance}</Text>
-          <Text>Description: {account.description}</Text>
-          <Text>Color: {account.color}</Text>
-          <Text>Type: {account.type}</Text>
+          <Text className="text-text-primary">Id: {account.id}</Text>
+          <Text className="text-text-primary">Name: {account.name}</Text>
+          <Text className="text-text-primary">
+            CurrentBalance: {account.currentBalance}
+          </Text>
+          <Text className="text-text-primary">
+            Description: {account.description}
+          </Text>
+          <Text className="text-text-primary">Color: {account.color}</Text>
+          <Text className="text-text-primary">Type: {account.type}</Text>
         </View>
       ))}
     </Screen>

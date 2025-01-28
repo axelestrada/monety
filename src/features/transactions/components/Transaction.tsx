@@ -10,7 +10,7 @@ import { CustomText } from "@/components/CustomText";
 import { icons } from "@/constants/icons";
 import { colors } from "@/constants/colors";
 
-import { useTypedSelector } from "@/store";
+import { useAppDispatch, useTypedSelector } from "@/store";
 
 import useThemeColors from "@/hooks/useThemeColors";
 import ITransaction from "@/features/transactions/types/transaction";
@@ -20,6 +20,8 @@ import IAccount from "@/features/accounts/types/account";
 import ICategory from "@/features/categories/types/category";
 import { useCallback } from "react";
 import { useSQLiteContext } from "expo-sqlite";
+import { normalizeAccount } from "@/features/accounts/normalizers/normalizeAccount";
+import { accountsServices } from "@/features/accounts/redux/reducers/accountsSlice";
 
 interface TransactionProps {
   transaction: ITransaction;
@@ -30,6 +32,8 @@ export const Transaction = ({ transaction }: TransactionProps) => {
   const { colorScheme = "light" } = useColorScheme();
 
   const db = useSQLiteContext();
+
+  const dispatch = useAppDispatch();
 
   const { categories } = useTypedSelector((state) => state.categories);
   const { accounts } = useTypedSelector((state) => state.accounts);
@@ -94,6 +98,25 @@ export const Transaction = ({ transaction }: TransactionProps) => {
     await db.runAsync("DELETE FROM Transactions WHERE id = ?", [
       transaction.id,
     ]);
+
+    if (transaction.type === "income") {
+      await db.runAsync(
+        "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
+        [transaction.amount, transaction.destinationId]
+      );
+    } else {
+      await db.runAsync(
+        "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
+        [transaction.amount, transaction.originId]
+      );
+    }
+
+    const accounts = await db.getAllAsync<any>("SELECT * FROM Accounts;");
+    dispatch(
+      accountsServices.actions.setAccounts(
+        accounts.map((account) => normalizeAccount(account))
+      )
+    );
 
     alert("Transacción eliminada");
   }, [transaction]);
