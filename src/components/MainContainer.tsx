@@ -2,6 +2,7 @@ import useThemeColors from "@/hooks/useThemeColors";
 
 import { RefreshControl, ScrollView, View } from "react-native";
 import { FloatingActionButton } from "@/components/FloatingActionButton/FloatingActionButton";
+import { useRouter } from "expo-router";
 
 interface MainContainerProps {
   children: React.ReactNode;
@@ -15,6 +16,8 @@ export default function MainContainer({
   refreshing = false,
 }: MainContainerProps) {
   const colors = useThemeColors();
+
+  const router = useRouter();
 
   return (
     <View className="flex-[1]">
@@ -35,7 +38,7 @@ export default function MainContainer({
 
       <FloatingActionButton
         icon="plus"
-        onPress={() => console.log("Add new transaction")}
+        onPress={() => router.navigate("/transactions")}
       />
     </View>
   );
