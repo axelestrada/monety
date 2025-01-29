@@ -22,6 +22,8 @@
     "@react-navigation/drawer": "^6.5.8",
     "@reduxjs/toolkit": "^2.2.7",
     "@types/react-redux": "^7.1.33",
+    "d3-scale": "^4.0.2",
+    "d3-shape": "^3.2.0",
     "dayjs": "^1.11.13",
     "expo": "^51.0.38",
     "expo-application": "~5.9.1",
@@ -60,6 +62,8 @@
   "devDependencies": {
     "@babel/core": "^7.20.0",
     "@jest/globals": "^29.7.0",
+    "@types/d3-scale": "^4.0.8",
+    "@types/d3-shape": "^3.1.7",
     "@types/jest": "^29.5.14",
     "@types/react": "~18.2.45",
     "@types/react-test-renderer": "^18.0.7",
