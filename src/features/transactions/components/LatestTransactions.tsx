@@ -36,7 +36,7 @@ export const LatestTransactions = ({
   }, [getLatestTransactions]);
 
   return (
-    <View className="mt-4 grow mb-[74]">
+    <View className={`mt-4 grow mb-[74]`}>
       <View className="flex-row justify-between items-center -mr-2">
         <CustomText className="text-lg font-[Rounded-Bold] text-text-primary">
           Latest Transactions
@@ -51,7 +51,11 @@ export const LatestTransactions = ({
         </IconButton>
       </View>
 
-      <View className="flex-1">
+      <View
+        className={`flex-1 ${
+          error || loading || latestTransactions.length === 0 ? "mt-[74]" : ""
+        }`}
+      >
         {error ? (
           <ErrorMessage />
         ) : loading ? (
