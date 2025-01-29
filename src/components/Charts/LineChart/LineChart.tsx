@@ -45,10 +45,10 @@ export const LineChart = ({
 }: LineChartProps) => {
   let width = chartWidth;
 
-  const spacing = (screenWidth - 24 - 64 - 40) / (data.length - 1);
+  const spacing = (screenWidth - 24 - 64 - 20) / (data.length - 1);
 
-  if (spacing < 65) {
-    width = 64 + data.length * 65;
+  if (spacing < 70) {
+    width = 64 + data.length * 70;
   }
 
   const max = Math.max(...[...data, ...data2]);
