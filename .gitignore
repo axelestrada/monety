@@ -1,9 +1,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/reactnative
 # Edit at https://www.toptal.com/developers/gitignore?templates=reactnative
 
-# Utils
-src/utils/sleep.ts
-
 ### ReactNative ###
 # React Native Stack Base
 
