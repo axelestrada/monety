@@ -1,0 +1,8 @@
+modules = ["nodejs-20", "web"]
+run = "npm expo start"
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["sh", "-c", "npm expo start"]

@@ -9,15 +9,17 @@ import moment from "moment";
 import { useCallback, useState } from "react";
 import { Button, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
-import { parse } from "react-native-svg";
+import { useTypedSelector } from "@/store";
 
 export default function Transactions() {
   const db = useSQLiteContext();
   const dispatch = useAppDispatch();
 
+  const { dateRange } = useTypedSelector((state) => state.userPreferences);
+
   const [transaction, setTransaction] = useState({
     date: moment().unix().toString(),
-    createdAt: moment().startOf("day").unix(),
+    createdAt: moment(dateRange.to).startOf("day").unix(),
     amount: "",
     comment: "",
     originId: "",
@@ -62,7 +64,7 @@ export default function Transactions() {
 
         setTransaction({
           date: moment().unix().toString(),
-          createdAt: moment().startOf("day").unix(),
+          createdAt: moment(dateRange.to).startOf("day").unix(),
           amount: "",
           comment: "",
           originId: "",
