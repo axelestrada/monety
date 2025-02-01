@@ -19,7 +19,7 @@ export default function Transactions() {
 
   const [transaction, setTransaction] = useState({
     date: moment().unix().toString(),
-    createdAt: moment(dateRange.to).startOf("day").unix(),
+    createdAt: moment(dateRange.to * 1000).startOf("day").unix(),
     amount: "",
     comment: "",
     originId: "",
@@ -64,7 +64,7 @@ export default function Transactions() {
 
         setTransaction({
           date: moment().unix().toString(),
-          createdAt: moment(dateRange.to).startOf("day").unix(),
+          createdAt: moment(dateRange.to * 1000).startOf("day").unix(),
           amount: "",
           comment: "",
           originId: "",
