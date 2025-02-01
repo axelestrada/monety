@@ -36,7 +36,7 @@ export const useHomeAnalyticsChart = () => {
           type,
           SUM(amount) AS total_amount
         FROM Transactions
-        WHERE type IN ('income', 'expense') AND (date >= ? AND date <= ?)
+        WHERE type IN ('income', 'expense') AND (createdAt >= ? AND createdAt <= ?)
         GROUP BY datetime, type
         ORDER BY datetime ASC;`,
             [dateRange.from, dateRange.to]
