@@ -30,9 +30,13 @@ import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { TransactionSummaryButton } from "../transactions/components/TransactionSummaryButton";
 import { LoadingIndicator } from "@/components/LoadingIndicator";
 
+interface HomeAnalyticsChartProps {
+  refreshing?: boolean;
+}
+
 const screenWidth = Dimensions.get("window").width;
 
-export const HomeAnalyticsChart = () => {
+export const HomeAnalyticsChart = ({refreshing}:HomeAnalyticsChartProps) => {
   const colors = useThemeColors();
 
   const { transactions } = useTypedSelector((state) => state.transactions);
@@ -76,6 +80,12 @@ export const HomeAnalyticsChart = () => {
     getTransactionsSummaryByHour();
   }, [getTransactionsSummaryByHour, dateRange]);
 
+  useEffect(() => {
+    if (refreshing){
+    getTransactionsSummaryByHour()
+    }
+  },[getTransactionsSummaryByHour, refreshing]);
+  
   useEffect(() => {
     if (transactionsSummary.length === 0) {
       setNoData(true);

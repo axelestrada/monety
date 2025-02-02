@@ -159,7 +159,7 @@ export default function HomeScreen() {
       </DateRangePickerProvider>
 
       <MainContainer onRefresh={onRefresh} refreshing={refreshing}>
-        <HomeAnalyticsChart />
+        <HomeAnalyticsChart refreshing={refreshing} />
 
         <LatestTransactions {...latestTransactions} />
       </MainContainer>
