@@ -31,7 +31,7 @@ export const TransactionSummaryButton = ({
   const colors = useThemeColors();
 
   const valueStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(loading ? 0 : 1, { duration: 100 }),
+    opacity: withTiming(loading ? 0 : 1, { duration: 200 }),
   }));
 
   return (
