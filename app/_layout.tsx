@@ -1,4 +1,5 @@
-import { Stack } from "expo-router";
+import { Tabs } from "expo-router/tabs";
+
 import { SQLiteProvider } from "expo-sqlite";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
@@ -17,10 +18,13 @@ export default function Layout() {
         <SQLiteProvider databaseName="monety.db">
           <ThemeProvider>
             <PortalProvider>
-              <Stack
-                screenOptions={{
+              <Tabs
+                screenOptions={() => ({
                   headerShown: false,
-                }}
+                  tabBarStyle: {
+                    display: "none",
+                  },
+                })}
               />
             </PortalProvider>
           </ThemeProvider>
