@@ -36,7 +36,7 @@ interface HomeAnalyticsChartProps {
 
 const screenWidth = Dimensions.get("window").width;
 
-export const HomeAnalyticsChart = ({refreshing}:HomeAnalyticsChartProps) => {
+export const HomeAnalyticsChart = ({ refreshing }: HomeAnalyticsChartProps) => {
   const colors = useThemeColors();
 
   const { transactions } = useTypedSelector((state) => state.transactions);
@@ -81,11 +81,11 @@ export const HomeAnalyticsChart = ({refreshing}:HomeAnalyticsChartProps) => {
   }, [getTransactionsSummaryByHour, dateRange]);
 
   useEffect(() => {
-    if (refreshing){
-    getTransactionsSummaryByHour()
+    if (refreshing) {
+      getTransactionsSummaryByHour();
     }
-  },[getTransactionsSummaryByHour, refreshing]);
-  
+  }, [getTransactionsSummaryByHour, refreshing]);
+
   useEffect(() => {
     if (transactionsSummary.length === 0) {
       setNoData(true);

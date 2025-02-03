@@ -5,9 +5,12 @@ import * as d3 from "d3-shape";
 import { scaleLinear } from "d3-scale";
 import {
   Circle,
+  Defs,
   ForeignObject,
   Line,
+  LinearGradient,
   Path,
+  Stop,
   Svg,
   Text as SvgText,
 } from "react-native-svg";
@@ -57,7 +60,7 @@ export const LineChart = ({
 
   const xScale = scaleLinear()
     .domain([0, data.length - 1])
-    .range([yAxisContainerWidth, width - margin - 5]);
+    .range([yAxisContainerWidth, width - (margin + 10)]);
 
   const yScale = scaleLinear()
     .domain([0, max])
@@ -67,6 +70,13 @@ export const LineChart = ({
     .line<number>()
     .x((_, i) => xScale(i))
     .y((d) => yScale(d))
+    .curve(d3.curveBumpX);
+
+  const areaGenerator = d3
+    .area<number>()
+    .x((d, ix) => xScale(ix))
+    .y0(height - margin)
+    .y1((d, ix) => yScale(d))
     .curve(d3.curveBumpX);
 
   const yAxisLabels = [0, max / 3, (max / 3) * 2, max].map((item) =>
@@ -79,13 +89,43 @@ export const LineChart = ({
         alignItems: "center",
       }}
     >
-      <Svg width={width + margin - 5} height={height + margin}>
+      <Svg width={width} height={height + margin}>
+        <Defs>
+          <LinearGradient id="gradient1" x1="0%" y1="0%" x2="0%" y2="100%">
+            <Stop
+              offset="0%"
+              stopColor={strokeColors[0] || "#FF2883"}
+              stopOpacity={0.2}
+            />
+
+            <Stop
+              offset="100%"
+              stopColor={strokeColors[0] || "#FF2883"}
+              stopOpacity={0}
+            />
+          </LinearGradient>
+
+          <LinearGradient id="gradient2" x1="0%" y1="0%" x2="0%" y2="100%">
+            <Stop
+              offset="0%"
+              stopColor={strokeColors[1] || "#FF2883"}
+              stopOpacity={0.2}
+            />
+
+            <Stop
+              offset="100%"
+              stopColor={strokeColors[1] || "#FF2883"}
+              stopOpacity={0}
+            />
+          </LinearGradient>
+        </Defs>
+
         {yAxisLabels.map((tick, i) => (
           <SvgText
             key={"yAxisLabel" + i}
             x={margin + 10}
             y={yScale(tick)}
-            fontSize={12}
+            fontSize={11}
             textAnchor="middle"
             fontFamily="Rounded-Regular"
             fill={labelsColor}
@@ -101,6 +141,12 @@ export const LineChart = ({
           fill="none"
         />
 
+        <Path
+          d={areaGenerator(data) || ""}
+          stroke="none"
+          fill="url(#gradient1)"
+        />
+
         {data.map((y, i) => (
           <Circle
             key={i}
@@ -114,12 +160,20 @@ export const LineChart = ({
         ))}
 
         {data2.length > 0 && (
-          <Path
-            d={lineGenerator(data2) || ""}
-            stroke={strokeColors[1] || "#FF2883"}
-            strokeWidth={strokeWidth}
-            fill="none"
-          />
+          <>
+            <Path
+              d={lineGenerator(data2) || ""}
+              stroke={strokeColors[1] || "#FF2883"}
+              strokeWidth={strokeWidth}
+              fill="none"
+            />
+
+            <Path
+              d={areaGenerator(data2) || ""}
+              stroke="none"
+              fill="url(#gradient2)"
+            />
+          </>
         )}
 
         {data2.length > 0 &&
@@ -140,10 +194,10 @@ export const LineChart = ({
             key={"xAxisLabel" + i}
             x={xScale(i)}
             y={height - margin + 25}
-            fontSize={12}
+            fontSize={11}
             fill={labelsColor}
             textAnchor="middle"
-            fontFamily="Rounded-Regular" // Cambia la fuente si lo necesitas
+            fontFamily="Rounded-Regular"
           >
             {label}
           </SvgText>
