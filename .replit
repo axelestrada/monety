@@ -1,8 +1,8 @@
 modules = ["nodejs-20", "web"]
-run = "npm expo start"
+run = "eas update --branch preview"
 
 [nix]
 channel = "stable-24_05"
 
 [deployment]
-run = ["sh", "-c", "npm expo start"]
+run = ["sh", "-c", "eas update --branch preview"]
