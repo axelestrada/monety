@@ -53,7 +53,7 @@ export const HomeAnalyticsChart = ({ refreshing }: HomeAnalyticsChartProps) => {
   const chartContainerStyle = useAnimatedStyle(() => {
     return {
       opacity: withTiming(loading || noData ? 0 : 1, {
-        duration: 200,
+        duration: 150,
       }),
     };
   }, [loading, noData]);
@@ -61,7 +61,7 @@ export const HomeAnalyticsChart = ({ refreshing }: HomeAnalyticsChartProps) => {
   const loadingStyle = useAnimatedStyle(
     () => ({
       opacity: withTiming(loading ? 1 : 0, {
-        duration: 200,
+        duration: 150,
       }),
     }),
     [loading]
@@ -70,7 +70,7 @@ export const HomeAnalyticsChart = ({ refreshing }: HomeAnalyticsChartProps) => {
   const noDataStyle = useAnimatedStyle(
     () => ({
       opacity: withTiming(noData && !loading ? 1 : 0, {
-        duration: 200,
+        duration: 150,
       }),
     }),
     [loading, noData]
