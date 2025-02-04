@@ -38,6 +38,7 @@ const screenWidth = Dimensions.get("window").width;
 
 export const HomeAnalyticsChart = ({ refreshing }: HomeAnalyticsChartProps) => {
   const colors = useThemeColors();
+  const { colorScheme } = useColorScheme();
 
   const { transactions } = useTypedSelector((state) => state.transactions);
   const { dateRange } = useTypedSelector((state) => state.userPreferences);
@@ -127,6 +128,7 @@ export const HomeAnalyticsChart = ({ refreshing }: HomeAnalyticsChartProps) => {
           style={chartContainerStyle}
         >
           <LineChart
+            area={colorScheme === "light"}
             width={screenWidth - marginHorizontal}
             height={160}
             data={incomes}

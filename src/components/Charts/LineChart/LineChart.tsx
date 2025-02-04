@@ -31,6 +31,7 @@ type LineChartProps = {
   labelsColor?: string;
   yAxisLabelsPrefix?: string;
   xAxisLabels?: string[];
+  area?: boolean;
 };
 
 export const LineChart = ({
@@ -45,6 +46,7 @@ export const LineChart = ({
   labelsColor,
   yAxisLabelsPrefix = "",
   xAxisLabels = [],
+  area,
 }: LineChartProps) => {
   let width = chartWidth;
 
@@ -141,11 +143,13 @@ export const LineChart = ({
           fill="none"
         />
 
-        <Path
-          d={areaGenerator(data) || ""}
-          stroke="none"
-          fill="url(#gradient1)"
-        />
+        {area && (
+          <Path
+            d={areaGenerator(data) || ""}
+            stroke="none"
+            fill="url(#gradient1)"
+          />
+        )}
 
         {data.map((y, i) => (
           <Circle
@@ -168,11 +172,13 @@ export const LineChart = ({
               fill="none"
             />
 
-            <Path
-              d={areaGenerator(data2) || ""}
-              stroke="none"
-              fill="url(#gradient2)"
-            />
+            {area && (
+              <Path
+                d={areaGenerator(data2) || ""}
+                stroke="none"
+                fill="url(#gradient2)"
+              />
+            )}
           </>
         )}
 
