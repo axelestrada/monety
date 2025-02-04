@@ -6,7 +6,7 @@ import { accountsServices } from "@/features/accounts/redux/reducers/accountsSli
 import { useAppDispatch } from "@/store";
 import { useSQLiteContext } from "expo-sqlite";
 import moment from "moment";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { Button, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useTypedSelector } from "@/store";
@@ -19,13 +19,29 @@ export default function Transactions() {
 
   const [transaction, setTransaction] = useState({
     date: moment().unix().toString(),
-    createdAt: moment(dateRange.to * 1000).startOf("day").unix(),
+    createdAt: moment(dateRange.to * 1000)
+      .startOf("day")
+      .unix(),
     amount: "",
     comment: "",
     originId: "",
     destinationId: "",
     type: "income",
   });
+
+  useEffect(() => {
+    setTransaction({
+      date: moment().unix().toString(),
+      createdAt: moment(dateRange.to * 1000)
+        .startOf("day")
+        .unix(),
+      amount: "",
+      comment: "",
+      originId: "",
+      destinationId: "",
+      type: "income",
+    });
+  }, [dateRange]);
 
   const handleSubmit = useCallback(async () => {
     try {
@@ -40,31 +56,33 @@ export default function Transactions() {
             parseFloat(transaction.originId),
             parseFloat(transaction.destinationId),
             transaction.type,
-          ]
+          ],
         );
 
         if (transaction.type === "income") {
           await db.runAsync(
             "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
-            [transaction.amount, transaction.destinationId]
+            [transaction.amount, transaction.destinationId],
           );
         } else {
           await db.runAsync(
             "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
-            [transaction.amount, transaction.originId]
+            [transaction.amount, transaction.originId],
           );
         }
 
         const accounts = await db.getAllAsync<any>("SELECT * FROM Accounts;");
         dispatch(
           accountsServices.actions.setAccounts(
-            accounts.map((account) => normalizeAccount(account))
-          )
+            accounts.map((account) => normalizeAccount(account)),
+          ),
         );
 
         setTransaction({
           date: moment().unix().toString(),
-          createdAt: moment(dateRange.to * 1000).startOf("day").unix(),
+          createdAt: moment(dateRange.to * 1000)
+            .startOf("day")
+            .unix(),
           amount: "",
           comment: "",
           originId: "",

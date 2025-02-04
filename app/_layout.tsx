@@ -28,7 +28,7 @@ export default function Layout() {
             <PortalProvider>
               <Tabs
                 tabBar={() => <BottomNavigationBar />}
-                screenOptions={{
+                detachInactiveScreens={false}                screenOptions={{
                   headerShown: false,
                 }}
               />
