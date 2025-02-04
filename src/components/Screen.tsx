@@ -25,31 +25,19 @@ export default function Screen({
 }: ScreenProps) {
   const currentPathname = usePathname();
 
-  const opacity = useSharedValue(pathname ? 0 : 1);
-
   const animatedStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
+    opacity: withTiming(pathname === currentPathname ? 1 : 0),
   }));
-
-  useEffect(() => {
-    if (pathname) {
-      if (currentPathname === pathname) {
-        opacity.value = withTiming(1);
-      } else {
-        opacity.value = withTiming(0);
-      }
-    }
-  }, [currentPathname, pathname]);
 
   return (
     <View className="flex-1 bg-main-background">
-      <Animated.View style={[{ flex: 1 }, animatedStyle]}>
-        <SafeAreaView className="flex-[1] bg-main-background relative">
-          <StatusBar translucent backgroundColor="transparent" />
+      <SafeAreaView className="flex-[1] bg-main-background relative">
+        <StatusBar translucent backgroundColor="transparent" />
 
+        <Animated.View style={[{ flex: 1 }, animatedStyle]}>
           {children}
-        </SafeAreaView>
-      </Animated.View>
+        </Animated.View>
+      </SafeAreaView>
     </View>
   );
 }
