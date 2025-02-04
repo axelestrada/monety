@@ -4,12 +4,17 @@ import { Octicons } from "@expo/vector-icons";
 import { CustomText } from "@/components/CustomText";
 
 import useThemeColors from "@/hooks/useThemeColors";
+import Animated, { FadeIn, FadeOut } from "react-native-reanimated";
 
 export const NoTransactions = () => {
   const colors = useThemeColors();
 
   return (
-    <View className="items-center justify-center flex-1">
+    <Animated.View
+      className="items-center justify-center flex-1"
+      entering={FadeIn}
+      exiting={FadeOut}
+    >
       <Octicons
         size={24}
         name="rows"
@@ -19,6 +24,6 @@ export const NoTransactions = () => {
       <CustomText className="text-text-secondary text-sm mt-2 font-[Rounded-Medium]">
         No transactions yet
       </CustomText>
-    </View>
+    </Animated.View>
   );
 };

@@ -14,6 +14,12 @@ import useThemeColors from "@/hooks/useThemeColors";
 
 import ITransaction from "@/features/transactions/types/transaction";
 import { IconButton } from "@/components/IconButton";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  FadingTransition,
+  LinearTransition,
+} from "react-native-reanimated";
 
 interface LatestTransactionsProps {
   loading: boolean;
@@ -36,7 +42,7 @@ export const LatestTransactions = ({
   }, [getLatestTransactions]);
 
   return (
-    <View className={`mt-4 grow mb-[74]`}>
+    <View className={`mt-4 grow`}>
       <View className="flex-row justify-between items-center -mr-2">
         <CustomText className="text-lg font-[Rounded-Bold] text-text-primary">
           Latest Transactions
@@ -51,26 +57,29 @@ export const LatestTransactions = ({
         </IconButton>
       </View>
 
-      <View
-        className={`flex-1 ${
-          error || loading || latestTransactions.length === 0 ? "mt-[74]" : ""
-        }`}
-      >
-        {error ? (
-          <ErrorMessage />
-        ) : loading ? (
-          <LoadingIndicator />
-        ) : latestTransactions.length === 0 ? (
-          <NoTransactions />
-        ) : (
-          latestTransactions.map((transaction) => (
-            <Transaction
-              key={"Transaction: " + transaction.id}
-              transaction={transaction}
-            />
-          ))
-        )}
-      </View>
+      <Animated.View className="flex-1">
+        <LoadingIndicator visible={loading} />
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+
+        {!loading && !error ? (
+          latestTransactions.length > 0 ? (
+            <Animated.View exiting={FadeOut} style={{
+              marginBottom: 76
+            }}>
+              {latestTransactions.map((transaction, index) => (
+                <Transaction
+                  key={"Transaction: " + transaction.id}
+                  transaction={transaction}
+                  index={index}
+                />
+              ))}
+            </Animated.View>
+          ) : (
+            <NoTransactions />
+          )
+        ) : null}
+      </Animated.View>
     </View>
   );
 };

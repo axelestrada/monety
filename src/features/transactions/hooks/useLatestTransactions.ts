@@ -3,6 +3,7 @@ import { useCallback, useState } from "react";
 import ITransaction from "@/features/transactions/types/transaction";
 import { useSQLiteContext } from "expo-sqlite";
 import { normalizeTransaction } from "@/features/transactions/normalizers/normalizeTransaction";
+import { sleep } from "@/utils/sleep";
 
 export default function useLatestTransactions() {
   const [loading, setLoading] = useState<boolean>(false);
@@ -19,9 +20,16 @@ export default function useLatestTransactions() {
     setError(null);
 
     try {
-      const result = await db.getAllAsync<any>(
-        "SELECT * FROM Transactions ORDER BY date DESC LIMIT 10;"
-      );
+      let result: any[] = [];
+
+      await Promise.all([
+        db
+          .getAllAsync<any>(
+            "SELECT * FROM Transactions ORDER BY date DESC LIMIT 10;"
+          )
+          .then((res) => (result = res)),
+        sleep(300),
+      ]);
 
       setLatestTransactions(
         result.map((transaction) => normalizeTransaction(transaction))

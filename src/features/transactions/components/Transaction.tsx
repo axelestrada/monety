@@ -1,5 +1,5 @@
 import { TouchableOpacity, View } from "react-native";
-import moment from "moment";
+import moment, { duration } from "moment";
 
 import { useColorScheme } from "nativewind";
 
@@ -18,16 +18,30 @@ import ITransaction from "@/features/transactions/types/transaction";
 import formatCurrency from "@/components/Header/utils/formatCurrency";
 import IAccount from "@/features/accounts/types/account";
 import ICategory from "@/features/categories/types/category";
-import { useCallback } from "react";
+import { useCallback, useEffect } from "react";
 import { useSQLiteContext } from "expo-sqlite";
 import { normalizeAccount } from "@/features/accounts/normalizers/normalizeAccount";
 import { accountsServices } from "@/features/accounts/redux/reducers/accountsSlice";
+import Animated, {
+  BounceIn,
+  Easing,
+  FadeIn,
+  FadeInDown,
+  FadeInUp,
+  FadeOut,
+  useAnimatedStyle,
+  useSharedValue,
+  withDelay,
+  withTiming,
+  ZoomInUp,
+} from "react-native-reanimated";
 
 interface TransactionProps {
   transaction: ITransaction;
+  index?: number;
 }
 
-export const Transaction = ({ transaction }: TransactionProps) => {
+export const Transaction = ({ transaction, index = 0 }: TransactionProps) => {
   const themeColors = useThemeColors();
   const { colorScheme = "light" } = useColorScheme();
 
@@ -48,13 +62,13 @@ export const Transaction = ({ transaction }: TransactionProps) => {
   const getAccount = (id: number) => accounts.find((a) => a.id === id);
   const getCategory = (id: number) => categories.find((c) => c.id === id);
 
-  let title: string = "Unknown";
+  let title: string = "";
 
-  let subtitle: string = "Unknown";
-  let subtitleColor: string = themeColors["--color-error"];
+  let subtitle: string = "";
+  let subtitleColor: string = "";
 
   let icon: keyof typeof Ionicons.glyphMap = "alert";
-  let color: string = themeColors["--color-error"];
+  let color: string = "";
 
   if (transaction.type === "income" || transaction.type === "expense") {
     let account: IAccount | undefined;
@@ -121,72 +135,95 @@ export const Transaction = ({ transaction }: TransactionProps) => {
     alert("Transacción eliminada");
   }, [transaction]);
 
+  const opacity = useSharedValue(0);
+  const scale = useSharedValue(0.8);
+
+  useEffect(() => {
+    opacity.value = withDelay(
+      index * 100,
+      withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) })
+    );
+
+    scale.value = withDelay(
+      index * 100,
+      withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) })
+    );
+  }, [opacity, scale, index]);
+
+  const transactionStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+    transform: [
+      {
+        scale: scale.value,
+      },
+    ],
+  }));
+
   return (
-    <TouchableOpacity
-      className="flex-row items-center py-4 border-b border-separator"
-      onLongPress={handleLongPress}
-    >
-      <View
-        className="p-2 flex items-center justify-center"
-        style={{
-          backgroundColor: color + "26",
-          borderRadius: 12,
-          width: 40,
-          height: 40,
-        }}
-      >
-        <Ionicons name={icon} size={22} color={color} />
-      </View>
+    <Animated.View style={transactionStyle}>
+      <TouchableOpacity className="flex-row items-center py-4 border-b border-separator">
+        <View
+          className="p-2 flex items-center justify-center"
+          style={{
+            backgroundColor: color + "26",
+            borderRadius: 12,
+            width: 40,
+            height: 40,
+          }}
+        >
+          <Ionicons name={icon} size={22} color={color} />
+        </View>
 
-      <View className="mx-3 items-start flex-[1]">
-        <CustomText className="font-[Rounded-Medium] text-base text-text-primary">
-          {title}
-        </CustomText>
+        <View className="mx-3 items-start flex-[1]">
+          <CustomText className="font-[Rounded-Medium] text-base text-text-primary">
+            {title}
+          </CustomText>
 
-        <View className="flex-row items-center">
-          <View
-            className="items-center px-1"
-            style={{ backgroundColor: subtitleColor + "26", borderRadius: 5 }}
-          >
-            <CustomText
-              className="font-[Rounded-Regular] text-xs"
-              style={{ color: subtitleColor }}
+          <View className="flex-row items-center">
+            <View
+              className="items-center px-1"
+              style={{ backgroundColor: subtitleColor + "26", borderRadius: 5 }}
             >
-              {subtitle}
-            </CustomText>
-          </View>
+              <CustomText
+                className="font-[Rounded-Regular] text-xs"
+                style={{ color: subtitleColor }}
+              >
+                {subtitle}
+              </CustomText>
+            </View>
 
-          <View className="flex-row items-center ml-1 bg-separator px-1 rounded-[5]">
-            <Feather
-              className="mr-0.5"
-              name="clock"
-              size={10}
-              color={themeColors["--color-text-secondary"]}
-            />
+            <View className="flex-row items-center ml-1 bg-separator px-1 rounded-[5]">
+              <Feather
+                className="mr-0.5"
+                name="clock"
+                size={10}
+                color={themeColors["--color-text-secondary"]}
+              />
 
-            <CustomText className="font-[Rounded-Regular] text-xs text-text-secondary">
-              {moment(transaction.date * 1000).format("hh:mm A")}
-            </CustomText>
+              <CustomText className="font-[Rounded-Regular] text-xs text-text-secondary">
+                {moment(transaction.date * 1000).format("hh:mm A")}
+              </CustomText>
+            </View>
           </View>
         </View>
-      </View>
 
-      <CustomText
-        className={`font-[Rounded-Medium] text-sm`}
-        style={{
-          color: themeColors[`--color-${transaction.type}`],
-        }}
-      >
-        {transaction.type === "expense"
-          ? "- "
-          : transaction.type === "income"
-          ? "+ "
-          : ""}
+        <CustomText
+          className={`font-[Rounded-Medium] text-sm`}
+          style={{
+            color: themeColors[`--color-${transaction.type}`],
+          }}
+        >
+          {transaction.type === "expense"
+            ? "- "
+            : transaction.type === "income"
+            ? "+ "
+            : ""}
 
-        {formatCurrency(transaction.amount, {
-          showSign: "never",
-        })}
-      </CustomText>
-    </TouchableOpacity>
+          {formatCurrency(transaction.amount, {
+            showSign: "never",
+          })}
+        </CustomText>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };

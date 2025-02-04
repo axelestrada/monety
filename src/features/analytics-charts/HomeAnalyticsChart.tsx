@@ -58,15 +58,6 @@ export const HomeAnalyticsChart = ({ refreshing }: HomeAnalyticsChartProps) => {
     };
   }, [loading, noData]);
 
-  const loadingStyle = useAnimatedStyle(
-    () => ({
-      opacity: withTiming(loading ? 1 : 0, {
-        duration: 150,
-      }),
-    }),
-    [loading]
-  );
-
   const noDataStyle = useAnimatedStyle(
     () => ({
       opacity: withTiming(noData && !loading ? 1 : 0, {
@@ -165,15 +156,7 @@ export const HomeAnalyticsChart = ({ refreshing }: HomeAnalyticsChartProps) => {
           </View>
         </Animated.View>
 
-        <Animated.View
-          style={[
-            StyleSheet.absoluteFillObject,
-            { top: 30, pointerEvents: "none" },
-            loadingStyle,
-          ]}
-        >
-          <LoadingIndicator />
-        </Animated.View>
+        <LoadingIndicator visible={loading} style={{ top: 30 }} />
       </View>
 
       <View className="flex-row mt-3">
