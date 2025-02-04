@@ -3,6 +3,17 @@ import { Href, usePathname, useRouter } from "expo-router";
 
 import { CustomText } from "@/components/CustomText";
 import useThemeColors from "@/hooks/useThemeColors";
+import Animated, {
+  FadeIn,
+  FadeOut,
+  StretchInX,
+  StretchInY,
+  StretchOutX,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
+import { useEffect, useState } from "react";
 
 interface BottomNavigationItemProps {
   label: string;
@@ -22,22 +33,42 @@ export const BottomNavigationItem = ({
 
   const isActive = pathname === itemPathname;
 
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: withTiming(isActive ? 1 : 0),
+    transform: [
+      {
+        scaleX: withTiming(isActive ? 1 : 0),
+      },
+    ],
+  }));
+
   return (
     <TouchableOpacity
       className="items-center flex-[1] justify-between mx-1"
       onPress={() => router.navigate(itemPathname)}
     >
       <View
-        className={`py-1.5 px-6 mb-1 ${
+        className={`py-1.5 mb-1 ${
           itemPathname === "/transactions" ? "py-2" : ""
         }`}
-        style={{
-          borderRadius: 100,
-          backgroundColor: isActive
-            ? colors["--color-accent-background"]
-            : "transparent",
-        }}
       >
+        <Animated.View
+          entering={FadeIn}
+          exiting={FadeOut}
+          style={[
+            {
+              position: "absolute",
+              pointerEvents: "none",
+              top: 0,
+              bottom: 0,
+              left: -24,
+              right: -24,
+              backgroundColor: colors["--color-accent-background"],
+              borderRadius: 100,
+            },
+            animatedStyle,
+          ]}
+        />
         {icon({ isActive })}
       </View>
 

@@ -1,3 +1,4 @@
+import MainContainer from "@/components/MainContainer";
 import Screen from "@/components/Screen";
 import { useTypedSelector } from "@/store";
 import { Text, View } from "react-native";
@@ -6,9 +7,10 @@ export default function Accounts() {
   const { accounts } = useTypedSelector((state) => state.accounts);
 
   return (
-    <Screen>
+    <Screen showBottomNavigationBar pathname="/accounts">
       <Text className="text-center mb-3 text-xl">Accounts</Text>
 
+      <MainContainer>
       {accounts.map((account) => (
         <View key={"Account" + account.id} className="m-3">
           <Text className="text-text-primary">Id: {account.id}</Text>
@@ -23,6 +25,7 @@ export default function Accounts() {
           <Text className="text-text-primary">Type: {account.type}</Text>
         </View>
       ))}
+      </MainContainer>
     </Screen>
   );
 }

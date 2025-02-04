@@ -54,7 +54,7 @@ export const BottomNavigationBar = () => {
         pathname="/transactions"
         icon={({ isActive }) => (
           <RowsOutline
-            fill={isActive ? colors["--color-navbar-item"] : "none"}
+            fill={isActive ? colors["--color-navbar-item-active"] : "none"}
             stroke={
               colors[`--color-navbar-item${isActive ? "-active" : ""}`]
             }
@@ -67,7 +67,7 @@ export const BottomNavigationBar = () => {
         pathname="/statistics"
         icon={({ isActive }) => (
           <BarChartOutline
-            fill={isActive ? colors["--color-navbar-item"] : "none"}
+            fill={isActive ? colors["--color-navbar-item-active"] : "none"}
             stroke={
               colors[`--color-navbar-item${isActive ? "-active" : ""}`]
             }

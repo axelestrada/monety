@@ -79,7 +79,7 @@ export default function Transactions() {
   }, [transaction]);
 
   return (
-    <Screen>
+    <Screen showBottomNavigationBar pathname="/transactions">
       <Header title="Transactions" overallBalance showDateRange drawer />
 
       <MainContainer>

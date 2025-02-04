@@ -72,7 +72,7 @@ export default function Categories() {
   }, [category]);
 
   return (
-    <Screen>
+    <Screen showBottomNavigationBar pathname="/categories">
       <Header title="Categories" drawer showDateRange overallBalance></Header>
 
       <MainContainer>

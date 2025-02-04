@@ -1,4 +1,4 @@
-import { ActivityIndicator, Image, View } from "react-native";
+import { ActivityIndicator, Image, StyleSheet, View } from "react-native";
 
 import Screen from "@/components/Screen";
 import { CustomText } from "@/components/CustomText";
