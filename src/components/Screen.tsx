@@ -25,7 +25,7 @@ export default function Screen({
 }: ScreenProps) {
   const currentPathname = usePathname();
 
-  const opacity = useSharedValue(pathname ? 0 : 1);
+  const opacity = useSharedValue(0);
 
   const animatedStyle = useAnimatedStyle(() => ({
     opacity: opacity.value,
@@ -39,7 +39,7 @@ export default function Screen({
         opacity.value = withTiming(0);
       }
     }
-  }, [currentPathname, pathname]);
+  }, [currentPathname]);
 
   return (
     <View className="flex-1 bg-main-background">

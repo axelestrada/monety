@@ -53,8 +53,6 @@ export const BottomNavigationItem = ({
         }`}
       >
         <Animated.View
-          entering={FadeIn}
-          exiting={FadeOut}
           style={[
             {
               position: "absolute",
