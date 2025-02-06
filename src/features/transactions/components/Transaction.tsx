@@ -161,7 +161,7 @@ export const Transaction = ({ transaction, index = 0 }: TransactionProps) => {
 
   return (
     <Animated.View style={transactionStyle}>
-      <TouchableOpacity className="flex-row items-center py-4 border-b border-separator">
+      <TouchableOpacity className="flex-row items-center py-4 border-b border-separator" onLongPress={handleLongPress}>
         <View
           className="p-2 flex items-center justify-center"
           style={{
