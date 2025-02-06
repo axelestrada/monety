@@ -9,7 +9,6 @@ import "../global.css";
 import { ThemeProvider } from "@/shared-components/providers/ThemeProviders";
 
 import { PortalProvider } from "@gorhom/portal";
-import { BottomNavigationBar } from "@/features/navigation/BottomNavigationBar";
 
 import useLoadFonts from "@/hooks/useLoadFonts";
 
@@ -26,9 +25,8 @@ export default function Layout() {
         <SQLiteProvider databaseName="monety.db">
           <ThemeProvider>
             <PortalProvider>
-              <Tabs
-                tabBar={() => <BottomNavigationBar />}
-                detachInactiveScreens={false}                screenOptions={{
+              <Stack
+                screenOptions={{
                   headerShown: false,
                 }}
               />

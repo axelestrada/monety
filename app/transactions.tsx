@@ -6,7 +6,7 @@ import { accountsServices } from "@/features/accounts/redux/reducers/accountsSli
 import { useAppDispatch } from "@/store";
 import { useSQLiteContext } from "expo-sqlite";
 import moment from "moment";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useMemo } from "react";
 import { Button, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useTypedSelector } from "@/store";

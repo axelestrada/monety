@@ -34,10 +34,12 @@ export const BottomNavigationItem = ({
   const isActive = pathname === itemPathname;
 
   const animatedStyle = useAnimatedStyle(() => ({
-    opacity: withTiming(isActive ? 1 : 0),
+    opacity: withTiming(isActive ? 1 : 0, {
+      duration: 150,
+    }),
     transform: [
       {
-        scaleX: withTiming(isActive ? 1 : 0),
+        scaleX: withTiming(isActive ? 1 : 0, { duration: 150 }),
       },
     ],
   }));
