@@ -1,9 +1,14 @@
-import { TouchableOpacity, View } from "react-native";
+import {
+  Alert,
+  TouchableHighlight,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import moment, { duration } from "moment";
 
 import { useColorScheme } from "nativewind";
 
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Feather, Ionicons, Octicons } from "@expo/vector-icons";
 
 import { CustomText } from "@/components/CustomText";
 
@@ -18,7 +23,7 @@ import ITransaction from "@/features/transactions/types/transaction";
 import formatCurrency from "@/components/Header/utils/formatCurrency";
 import IAccount from "@/features/accounts/types/account";
 import ICategory from "@/features/categories/types/category";
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useSQLiteContext } from "expo-sqlite";
 import { normalizeAccount } from "@/features/accounts/normalizers/normalizeAccount";
 import { accountsServices } from "@/features/accounts/redux/reducers/accountsSlice";
@@ -29,17 +34,23 @@ import Animated, {
   FadeInDown,
   FadeInUp,
   FadeOut,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withDelay,
+  withSpring,
   withTiming,
   ZoomInUp,
 } from "react-native-reanimated";
+import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 interface TransactionProps {
   transaction: ITransaction;
   index?: number;
 }
+
+const SWIPE_THRESHOLD = 50;
+const BUTTON_WIDTH = 70;
 
 export const Transaction = ({ transaction, index = 0 }: TransactionProps) => {
   const themeColors = useThemeColors();
@@ -108,35 +119,81 @@ export const Transaction = ({ transaction, index = 0 }: TransactionProps) => {
     subtitleColor = getColor(origin?.color);
   }
 
-  const handleLongPress = useCallback(async () => {
-    await db.runAsync("DELETE FROM Transactions WHERE id = ?", [
-      transaction.id,
-    ]);
+  const onDelete = useCallback(() => {
+    Alert.alert(
+      "Delete Transaction",
+      "Are you sure you want to delete this transaction?",
+      [
+        {
+          text: "No, Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Yes, Delete",
+          onPress: async () => {
+            await db.runAsync("DELETE FROM Transactions WHERE id = ?", [
+              transaction.id,
+            ]);
 
-    if (transaction.type === "income") {
-      await db.runAsync(
-        "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
-        [transaction.amount, transaction.destinationId]
-      );
-    } else {
-      await db.runAsync(
-        "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
-        [transaction.amount, transaction.originId]
-      );
-    }
+            if (transaction.type === "income") {
+              await db.runAsync(
+                "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
+                [transaction.amount, transaction.destinationId]
+              );
+            } else {
+              await db.runAsync(
+                "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
+                [transaction.amount, transaction.originId]
+              );
+            }
 
-    const accounts = await db.getAllAsync<any>("SELECT * FROM Accounts;");
-    dispatch(
-      accountsServices.actions.setAccounts(
-        accounts.map((account) => normalizeAccount(account))
-      )
+            const accounts = await db.getAllAsync<any>(
+              "SELECT * FROM Accounts;"
+            );
+            dispatch(
+              accountsServices.actions.setAccounts(
+                accounts.map((account) => normalizeAccount(account))
+              )
+            );
+          },
+        },
+      ]
     );
-
-    alert("Transacción eliminada");
   }, [transaction]);
 
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.8);
+
+  const translateX = useSharedValue(0);
+
+  const onEdit = () => {
+    console.log("editame");
+  };
+
+  const [showActions, setShowActions] = useState(false);
+
+  // Gestos de deslizamiento
+  const panGesture = Gesture.Pan()
+    .onBegin(() => {
+      runOnJS(setShowActions)(true);
+    })
+    .onUpdate((event) => {
+      translateX.value = Math.min(
+        Math.max(event.translationX, -BUTTON_WIDTH),
+        BUTTON_WIDTH
+      );
+    })
+    .onEnd(() => {
+      if (translateX.value < -SWIPE_THRESHOLD) {
+        runOnJS(onDelete)();
+      } else if (translateX.value > SWIPE_THRESHOLD) {
+        runOnJS(onEdit)();
+      }
+
+      translateX.value = withTiming(0, {}, () => {
+        runOnJS(setShowActions)(false);
+      });
+    });
 
   useEffect(() => {
     opacity.value = withDelay(
@@ -156,74 +213,124 @@ export const Transaction = ({ transaction, index = 0 }: TransactionProps) => {
       {
         scale: scale.value,
       },
+      {
+        translateX: translateX.value,
+      },
     ],
   }));
 
   return (
-    <Animated.View style={transactionStyle}>
-      <TouchableOpacity className="flex-row items-center py-4 border-b border-separator" onLongPress={handleLongPress}>
+    <View className="relative">
+      {showActions && (
         <View
-          className="p-2 flex items-center justify-center"
+          className="absolute h-full left-0 justify-center items-center"
           style={{
-            backgroundColor: color + "26",
-            borderRadius: 12,
-            width: 40,
-            height: 40,
+            width: BUTTON_WIDTH,
+            backgroundColor: color,
           }}
         >
-          <Ionicons name={icon} size={22} color={color} />
+          <Octicons
+            name="pencil"
+            color={themeColors["--color-text-white"]}
+            size={22}
+          />
         </View>
+      )}
 
-        <View className="mx-3 items-start flex-[1]">
-          <CustomText className="font-[Rounded-Medium] text-base text-text-primary">
-            {title}
-          </CustomText>
-
-          <View className="flex-row items-center">
-            <View
-              className="items-center px-1"
-              style={{ backgroundColor: subtitleColor + "26", borderRadius: 5 }}
-            >
-              <CustomText
-                className="font-[Rounded-Regular] text-xs"
-                style={{ color: subtitleColor }}
+      <GestureDetector gesture={panGesture}>
+        <Animated.View
+          style={transactionStyle}
+          className="z-10 bg-main-background"
+        >
+          <TouchableHighlight
+            className="py-4 border-b border-separator px-3"
+            underlayColor={themeColors["--color-separator"]}
+          >
+            <View className="flex-row items-center">
+              <View
+                className="p-2 flex items-center justify-center"
+                style={{
+                  backgroundColor: color + "26",
+                  borderRadius: 12,
+                  width: 40,
+                  height: 40,
+                }}
               >
-                {subtitle}
+                <Ionicons name={icon} size={22} color={color} />
+              </View>
+
+              <View className="mx-3 items-start flex-[1]">
+                <CustomText className="font-[Rounded-Medium] text-base text-text-primary">
+                  {title}
+                </CustomText>
+
+                <View className="flex-row items-center">
+                  <View
+                    className="items-center px-1"
+                    style={{
+                      backgroundColor: subtitleColor + "26",
+                      borderRadius: 5,
+                    }}
+                  >
+                    <CustomText
+                      className="font-[Rounded-Regular] text-xs"
+                      style={{ color: subtitleColor }}
+                    >
+                      {subtitle}
+                    </CustomText>
+                  </View>
+
+                  <View className="flex-row items-center ml-1 bg-separator px-1 rounded-[5]">
+                    <Feather
+                      className="mr-0.5"
+                      name="clock"
+                      size={10}
+                      color={themeColors["--color-text-secondary"]}
+                    />
+
+                    <CustomText className="font-[Rounded-Regular] text-xs text-text-secondary">
+                      {moment(transaction.date * 1000).format("hh:mm A")}
+                    </CustomText>
+                  </View>
+                </View>
+              </View>
+
+              <CustomText
+                className={`font-[Rounded-Medium] text-sm`}
+                style={{
+                  color: themeColors[`--color-${transaction.type}`],
+                }}
+              >
+                {transaction.type === "expense"
+                  ? "- "
+                  : transaction.type === "income"
+                  ? "+ "
+                  : ""}
+
+                {formatCurrency(transaction.amount, {
+                  showSign: "never",
+                })}
               </CustomText>
             </View>
+          </TouchableHighlight>
+        </Animated.View>
+      </GestureDetector>
 
-            <View className="flex-row items-center ml-1 bg-separator px-1 rounded-[5]">
-              <Feather
-                className="mr-0.5"
-                name="clock"
-                size={10}
-                color={themeColors["--color-text-secondary"]}
-              />
-
-              <CustomText className="font-[Rounded-Regular] text-xs text-text-secondary">
-                {moment(transaction.date * 1000).format("hh:mm A")}
-              </CustomText>
-            </View>
-          </View>
-        </View>
-
-        <CustomText
-          className={`font-[Rounded-Medium] text-sm`}
+      {showActions && (
+        <View
+          className="absolute h-full right-0 justify-center items-center"
           style={{
-            color: themeColors[`--color-${transaction.type}`],
+            width: BUTTON_WIDTH,
+            backgroundColor: color,
           }}
         >
-          {transaction.type === "expense"
-            ? "- "
-            : transaction.type === "income"
-            ? "+ "
-            : ""}
-
-          {formatCurrency(transaction.amount, {
-            showSign: "never",
-          })}
-        </CustomText>
-      </TouchableOpacity>
-    </Animated.View>
+          <Octicons
+            name="trash"
+            color={themeColors["--color-text-white"]}
+            size={22}
+          />
+        </View>
+      )}
+    </View>
   );
 };

@@ -43,7 +43,7 @@ export const LatestTransactions = ({
 
   return (
     <View className={`mt-4 grow`}>
-      <View className="flex-row justify-between items-center -mr-2">
+      <View className="flex-row justify-between items-center -mr-2 px-3">
         <CustomText className="text-lg font-[Rounded-Bold] text-text-primary">
           Latest Transactions
         </CustomText>
