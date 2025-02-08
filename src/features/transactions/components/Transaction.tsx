@@ -11,7 +11,12 @@ import moment, { duration } from "moment";
 
 import { useColorScheme } from "nativewind";
 
-import { Feather, Ionicons, Octicons } from "@expo/vector-icons";
+import {
+  Feather,
+  Ionicons,
+  MaterialCommunityIcons,
+  Octicons,
+} from "@expo/vector-icons";
 
 import { CustomText } from "@/components/CustomText";
 
@@ -206,38 +211,35 @@ export const Transaction = ({
       } else if (translateX.value >= SWIPE_THRESHOLD) {
         runOnJS(executeAction)(onEdit);
       }
-      translateX.value = withTiming(0, {duration: 150});
+      translateX.value = withTiming(0, { duration: 150 });
     })
     .simultaneousWithExternalGesture(externalScrollGesture);
 
   const transactionAnimatedStyle = useAnimatedStyle(() => {
     return {
       opacity: opacity.value,
-    transform: [
-      {
-        scale: scale.value,
-      },
-      {
-        translateX: translateX.value
-      }
-    ],
+      transform: [
+        {
+          scale: scale.value,
+        },
+        {
+          translateX: translateX.value,
+        },
+      ],
     };
   });
 
   useEffect(() => {
-    
-  
     return () => {
-      setShowActions(false)
-    }
-  }, [])
-  
+      setShowActions(false);
+    };
+  }, []);
 
   useEffect(() => {
     opacity.value = withDelay(
       index * 100,
       withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) }, () => {
-        runOnJS(setShowActions)(true)
+        runOnJS(setShowActions)(true);
       })
     );
 
@@ -277,79 +279,83 @@ export const Transaction = ({
       <GestureDetector gesture={transactionPanGesture}>
         <Animated.View
           style={[transactionAnimatedStyle, style]}
-          className="z-10 bg-main-background"
+          className="z-10 bg-main-background py-4 border-b border-separator px-3"
         >
-          <TouchableHighlight
-            className="py-4 border-b border-separator px-3"
-            underlayColor={themeColors["--color-separator"]}
-          >
-            <View className="flex-row items-center">
-              <View
-                className="p-2 flex items-center justify-center"
-                style={{
-                  backgroundColor: color + "26",
-                  borderRadius: 12,
-                  width: 40,
-                  height: 40,
-                }}
-              >
-                <Ionicons name={icon} size={22} color={color} />
-              </View>
+          <View className="flex-row items-center">
+            <View
+              className="p-2 flex items-center justify-center"
+              style={{
+                backgroundColor: color + "26",
+                borderRadius: 12,
+                width: 40,
+                height: 40,
+              }}
+            >
+              <Ionicons name={icon} size={22} color={color} />
+            </View>
 
-              <View className="mx-3 items-start flex-[1]">
-                <CustomText className="font-[Rounded-Medium] text-base text-text-primary">
-                  {title}
-                </CustomText>
+            <View className="mx-3 items-start flex-[1]">
+              <CustomText className="font-[Rounded-Medium] text-base text-text-primary">
+                {title}
+              </CustomText>
 
-                <View className="flex-row items-center">
-                  <View
-                    className="items-center px-1"
-                    style={{
-                      backgroundColor: subtitleColor + "26",
-                      borderRadius: 5,
-                    }}
+              <View className="flex-row items-center">
+                <View
+                  className="items-center px-1"
+                  style={{
+                    backgroundColor: subtitleColor + "26",
+                    borderRadius: 5,
+                  }}
+                >
+                  <CustomText
+                    className="font-[Rounded-Regular] text-xs"
+                    style={{ color: subtitleColor }}
                   >
-                    <CustomText
-                      className="font-[Rounded-Regular] text-xs"
-                      style={{ color: subtitleColor }}
-                    >
-                      {subtitle}
-                    </CustomText>
-                  </View>
+                    {subtitle}
+                  </CustomText>
+                </View>
 
-                  <View className="flex-row items-center ml-1 bg-separator px-1 rounded-[5]">
-                    <Feather
-                      className="mr-0.5"
-                      name="clock"
-                      size={10}
+                <View className="flex-row items-center ml-1 bg-separator px-1 rounded-[5]">
+                  {transaction.comment && (
+                    <MaterialCommunityIcons
+                      className="mr-1"
+                      name="comment-processing-outline"
+                      size={11}
                       color={themeColors["--color-text-secondary"]}
                     />
+                  )}
 
-                    <CustomText className="font-[Rounded-Regular] text-xs text-text-secondary">
-                      {moment(transaction.date * 1000).format("hh:mm A")}
-                    </CustomText>
-                  </View>
+                  <Feather
+                    className="mr-1"
+                    name="clock"
+                    size={10}
+                    color={themeColors["--color-text-secondary"]}
+                  />
+
+                  <CustomText className="font-[Rounded-Regular] text-xs text-text-secondary">
+                    {moment(transaction.date * 1000).format("hh:mm A")}
+                  </CustomText>
                 </View>
               </View>
-
-              <CustomText
-                className={`font-[Rounded-Medium] text-sm`}
-                style={{
-                  color: themeColors[`--color-${transaction.type}`],
-                }}
-              >
-                {transaction.type === "expense"
-                  ? "- "
-                  : transaction.type === "income"
-                  ? "+ "
-                  : ""}
-
-                {formatCurrency(transaction.amount, {
-                  showSign: "never",
-                })}
-              </CustomText>
             </View>
-          </TouchableHighlight>
+
+            <CustomText
+              className={`font-[Rounded-Medium] text-sm`}
+              style={{
+                color: themeColors[`--color-${transaction.type}`],
+              }}
+            >
+              {transaction.type === "expense"
+                ? "- "
+                : transaction.type === "income"
+                ? "+ "
+                : ""}
+
+              {formatCurrency(transaction.amount, {
+                showSign: "never",
+              })}
+            </CustomText>
+          </View>
         </Animated.View>
       </GestureDetector>
 

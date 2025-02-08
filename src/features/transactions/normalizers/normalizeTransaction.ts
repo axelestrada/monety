@@ -6,7 +6,7 @@ export const normalizeTransaction = (transaction: any): ITransaction => {
     amount: transaction.amount,
     date: transaction.date,
     createdAt: transaction.created_at,
-    comment: transaction.description,
+    comment: transaction.comment,
     originId: transaction.origin_id,
     destinationId: transaction.destination_id,
     type: transaction.type,

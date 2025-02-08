@@ -44,6 +44,8 @@ export default function Transactions() {
   }, [dateRange]);
 
   const handleSubmit = useCallback(async () => {
+    console.log(transaction.comment);
+    
     try {
       await db.withTransactionAsync(async () => {
         await db.runAsync(
@@ -52,7 +54,7 @@ export default function Transactions() {
             parseInt(transaction.date),
             transaction.createdAt,
             parseFloat(transaction.amount),
-            transaction.comment || null,
+            transaction.comment,
             parseFloat(transaction.originId),
             parseFloat(transaction.destinationId),
             transaction.type,
