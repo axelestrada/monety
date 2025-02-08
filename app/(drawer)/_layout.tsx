@@ -27,29 +27,19 @@ export default function Layout() {
   const colors = useThemeColors();
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Provider store={store}>
-        <SQLiteProvider databaseName="monety.db">
-          <ThemeProvider>
-            <PortalProvider>
-              <Drawer
-                drawerContent={(props) => {
-                  return <CustomDrawer />;
-                }}
-                screenOptions={{
-                  headerShown: false,
-                  drawerStyle: {
-                    width: "80%",
-                    backgroundColor: "transparent",
-                    paddingTop: Constants.statusBarHeight,
-                  },
-                  drawerHideStatusBarOnOpen: false,
-                }}
-              />
-            </PortalProvider>
-          </ThemeProvider>
-        </SQLiteProvider>
-      </Provider>
-    </GestureHandlerRootView>
+    <Drawer
+      drawerContent={(props) => {
+        return <CustomDrawer />;
+      }}
+      screenOptions={{
+        headerShown: false,
+        drawerStyle: {
+          width: "80%",
+          backgroundColor: "transparent",
+          paddingTop: Constants.statusBarHeight,
+        },
+        drawerHideStatusBarOnOpen: false,
+      }}
+    />
   );
 }

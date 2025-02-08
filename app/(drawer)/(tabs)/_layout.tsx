@@ -21,31 +21,21 @@ import { BottomNavigationBar } from "@/features/navigation/BottomNavigationBar";
 
 export default function Layout() {
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <Provider store={store}>
-        <SQLiteProvider databaseName="monety.db">
-          <ThemeProvider>
-            <PortalProvider>
-              <Tabs
-                tabBar={() => <BottomNavigationBar />}
-                screenOptions={{
-                  headerShown: false,
-                }}
-              >
-                <Tabs.Screen name="index" />
+    <Tabs
+      tabBar={() => <BottomNavigationBar />}
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Tabs.Screen name="index" />
 
-                <Tabs.Screen name="accounts" />
+      <Tabs.Screen name="accounts" />
 
-                <Tabs.Screen name="categories" />
+      <Tabs.Screen name="categories" />
 
-                <Tabs.Screen name="transactions" />
+      <Tabs.Screen name="transactions" />
 
-                <Tabs.Screen name="statistics" />
-              </Tabs>
-            </PortalProvider>
-          </ThemeProvider>
-        </SQLiteProvider>
-      </Provider>
-    </GestureHandlerRootView>
+      <Tabs.Screen name="statistics" />
+    </Tabs>
   );
 }

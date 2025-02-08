@@ -10,32 +10,14 @@ interface MainContainerProps {
   refreshing?: boolean;
 }
 
-export default function MainContainer({
-  children,
-  onRefresh = () => {},
-  refreshing = false,
-}: MainContainerProps) {
+export default function MainContainer({ children }: MainContainerProps) {
   const colors = useThemeColors();
 
   const router = useRouter();
 
   return (
     <View className="flex-[1]">
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ flexGrow: 1 }}
-        className="bg-main-background pb-4 relative"
-        refreshControl={
-          <RefreshControl
-            refreshing={refreshing}
-            onRefresh={onRefresh}
-            colors={[colors["--color-text-primary"]]}
-            progressBackgroundColor={colors["--color-main-background"]}
-          />
-        }
-      >
-        {children}
-      </ScrollView>
+      {children}
 
       <FloatingActionButton
         icon="plus"

@@ -19,13 +19,17 @@ import Animated, {
   FadeOut,
   FadingTransition,
   LinearTransition,
+  SlideOutDown,
+  ZoomOut,
 } from "react-native-reanimated";
+import { NativeGesture } from "react-native-gesture-handler";
 
 interface LatestTransactionsProps {
   loading: boolean;
   error: string | null;
   latestTransactions: ITransaction[];
   getLatestTransactions: () => void;
+  externalScrollGesture: NativeGesture;
 }
 
 export const LatestTransactions = ({
@@ -33,9 +37,11 @@ export const LatestTransactions = ({
   error,
   latestTransactions,
   getLatestTransactions,
+  externalScrollGesture,
 }: LatestTransactionsProps) => {
   const router = useRouter();
   const colors = useThemeColors();
+
 
   useEffect(() => {
     getLatestTransactions();
@@ -58,13 +64,13 @@ export const LatestTransactions = ({
       </View>
 
       <Animated.View className="flex-1">
-        <LoadingIndicator visible={loading} />
+        <LoadingIndicator visible={loading} size={28}/>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
         {!loading && !error ? (
           latestTransactions.length > 0 ? (
-            <Animated.View exiting={FadeOut} style={{
+            <Animated.View exiting={SlideOutDown} style={{
               marginBottom: 76
             }}>
               {latestTransactions.map((transaction, index) => (
@@ -72,8 +78,10 @@ export const LatestTransactions = ({
                   key={"Transaction: " + transaction.id}
                   transaction={transaction}
                   index={index}
+                  externalScrollGesture={externalScrollGesture}
                 />
               ))}
+
             </Animated.View>
           ) : (
             <NoTransactions />

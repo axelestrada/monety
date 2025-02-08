@@ -1,8 +1,11 @@
 import {
   Alert,
+  StyleProp,
   TouchableHighlight,
   TouchableOpacity,
+  Vibration,
   View,
+  ViewStyle,
 } from "react-native";
 import moment, { duration } from "moment";
 
@@ -28,6 +31,7 @@ import { useSQLiteContext } from "expo-sqlite";
 import { normalizeAccount } from "@/features/accounts/normalizers/normalizeAccount";
 import { accountsServices } from "@/features/accounts/redux/reducers/accountsSlice";
 import Animated, {
+  AnimatedStyle,
   BounceIn,
   Easing,
   FadeIn,
@@ -42,17 +46,28 @@ import Animated, {
   withTiming,
   ZoomInUp,
 } from "react-native-reanimated";
-import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import {
+  Gesture,
+  GestureDetector,
+  NativeGesture,
+} from "react-native-gesture-handler";
 
 interface TransactionProps {
   transaction: ITransaction;
   index?: number;
+  style?: StyleProp<AnimatedStyle<ViewStyle>>;
+  externalScrollGesture: NativeGesture;
 }
 
-const SWIPE_THRESHOLD = 50;
 const BUTTON_WIDTH = 70;
+const SWIPE_THRESHOLD = 55;
 
-export const Transaction = ({ transaction, index = 0 }: TransactionProps) => {
+export const Transaction = ({
+  transaction,
+  index = 0,
+  style,
+  externalScrollGesture,
+}: TransactionProps) => {
   const themeColors = useThemeColors();
   const { colorScheme = "light" } = useColorScheme();
 
@@ -164,19 +179,21 @@ export const Transaction = ({ transaction, index = 0 }: TransactionProps) => {
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.8);
 
-  const translateX = useSharedValue(0);
-
-  const onEdit = () => {
-    console.log("editame");
-  };
-
   const [showActions, setShowActions] = useState(false);
 
-  // Gestos de deslizamiento
-  const panGesture = Gesture.Pan()
-    .onBegin(() => {
-      runOnJS(setShowActions)(true);
-    })
+  const translateX = useSharedValue(0);
+
+  const executeAction = (action: () => void) => {
+    Vibration.vibrate(50);
+    action();
+  };
+
+  const onEdit = () => {
+    console.log("Edit");
+  };
+
+  const transactionPanGesture = Gesture.Pan()
+    .activeOffsetX([-10, 10])
     .onUpdate((event) => {
       translateX.value = Math.min(
         Math.max(event.translationX, -BUTTON_WIDTH),
@@ -184,21 +201,44 @@ export const Transaction = ({ transaction, index = 0 }: TransactionProps) => {
       );
     })
     .onEnd(() => {
-      if (translateX.value < -SWIPE_THRESHOLD) {
-        runOnJS(onDelete)();
-      } else if (translateX.value > SWIPE_THRESHOLD) {
-        runOnJS(onEdit)();
+      if (translateX.value <= -SWIPE_THRESHOLD) {
+        runOnJS(executeAction)(onDelete);
+      } else if (translateX.value >= SWIPE_THRESHOLD) {
+        runOnJS(executeAction)(onEdit);
       }
+      translateX.value = withTiming(0, {duration: 150});
+    })
+    .simultaneousWithExternalGesture(externalScrollGesture);
 
-      translateX.value = withTiming(0, {}, () => {
-        runOnJS(setShowActions)(false);
-      });
-    });
+  const transactionAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      opacity: opacity.value,
+    transform: [
+      {
+        scale: scale.value,
+      },
+      {
+        translateX: translateX.value
+      }
+    ],
+    };
+  });
+
+  useEffect(() => {
+    
+  
+    return () => {
+      setShowActions(false)
+    }
+  }, [])
+  
 
   useEffect(() => {
     opacity.value = withDelay(
       index * 100,
-      withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) })
+      withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) }, () => {
+        runOnJS(setShowActions)(true)
+      })
     );
 
     scale.value = withDelay(
@@ -212,9 +252,6 @@ export const Transaction = ({ transaction, index = 0 }: TransactionProps) => {
     transform: [
       {
         scale: scale.value,
-      },
-      {
-        translateX: translateX.value,
       },
     ],
   }));
@@ -237,9 +274,9 @@ export const Transaction = ({ transaction, index = 0 }: TransactionProps) => {
         </View>
       )}
 
-      <GestureDetector gesture={panGesture}>
+      <GestureDetector gesture={transactionPanGesture}>
         <Animated.View
-          style={transactionStyle}
+          style={[transactionAnimatedStyle, style]}
           className="z-10 bg-main-background"
         >
           <TouchableHighlight

@@ -158,7 +158,7 @@ export const HomeAnalyticsChart = ({ refreshing }: HomeAnalyticsChartProps) => {
           </View>
         </Animated.View>
 
-        <LoadingIndicator visible={loading} style={{ top: 30 }} />
+        <LoadingIndicator visible={loading} style={{ top: 30 }} size={24} />
       </View>
 
       <View className="flex-row mt-3">

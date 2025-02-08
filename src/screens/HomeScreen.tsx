@@ -1,5 +1,12 @@
-import { useCallback, useEffect, useState } from "react";
-import { Alert, View } from "react-native";
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  Alert,
+  RefreshControl,
+  ScrollView,
+  Text,
+  Vibration,
+  View,
+} from "react-native";
 
 import moment from "moment";
 
@@ -29,9 +36,28 @@ import { accountsServices } from "@/features/accounts/redux/reducers/accountsSli
 import { normalizeAccount } from "@/features/accounts/normalizers/normalizeAccount";
 import { DateRangePicker } from "@/components/DateRangePicker/DateRangePicker";
 import { HomeAnalyticsChart } from "@/features/analytics-charts/HomeAnalyticsChart";
+import useThemeColors from "@/hooks/useThemeColors";
+import {
+  Gesture,
+  GestureDetector,
+  GestureHandlerRootView,
+  GestureType,
+  NativeGesture,
+} from "react-native-gesture-handler";
+import { Transaction } from "@/features/transactions/components/Transaction";
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+import ITransaction from "@/features/transactions/types/transaction";
+const SWIPE_THRESHOLD = 55;
+const BUTTON_WIDTH = 70;
 
 export default function HomeScreen() {
   const { toggleColorScheme, colorScheme } = useColorScheme();
+  const colors = useThemeColors();
 
   const { dateRange } = useTypedSelector((state) => state.userPreferences);
 
@@ -42,6 +68,8 @@ export default function HomeScreen() {
   const db = useSQLiteContext();
 
   const dispatch = useAppDispatch();
+
+  const [scrollEnabled, setScrollEnabled] = useState(true);
 
   const getData = useCallback(async () => {
     const categories = await db.getAllAsync<any>("SELECT * FROM Categories;");
@@ -60,6 +88,14 @@ export default function HomeScreen() {
     );
   }, []);
 
+  const translateX = useSharedValue(0);
+  const transactionAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateX: translateX.value }],
+    };
+  });
+  const [showActions, setShowActions] = useState(false);
+
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
 
@@ -75,8 +111,9 @@ export default function HomeScreen() {
   useEffect(() => {
     if (!loading && !error) {
       getData();
+      latestTransactions.getLatestTransactions();
     }
-  }, [getData, loading, error]);
+  }, [getData, loading, error, latestTransactions.getLatestTransactions]);
 
   const checkForUpdates = useCallback(async () => {
     try {
@@ -144,6 +181,8 @@ export default function HomeScreen() {
     return "Monety";
   };
 
+  const nativeGesture = Gesture.Native();
+
   return (
     <Screen>
       <DateRangePickerProvider>
@@ -158,12 +197,29 @@ export default function HomeScreen() {
         <DateRangePicker />
       </DateRangePickerProvider>
 
-      <MainContainer onRefresh={onRefresh} refreshing={refreshing}>
-        <View className="px-3">
-          <HomeAnalyticsChart refreshing={refreshing} />
-        </View>
+      <MainContainer>
+        <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1 }}
+          className="bg-main-background pb-4 relative"
+          refreshControl={
+            <RefreshControl
+              refreshing={refreshing}
+              onRefresh={onRefresh}
+              colors={[colors["--color-text-secondary"]]}
+              progressBackgroundColor={colors["--color-card-background"]}
+            />
+          }
+        >
+          <View className="px-3">
+            <HomeAnalyticsChart refreshing={refreshing} />
+          </View>
 
-        <LatestTransactions {...latestTransactions} />
+          <LatestTransactions
+            {...latestTransactions}
+            externalScrollGesture={nativeGesture}
+          />
+        </Animated.ScrollView>
       </MainContainer>
     </Screen>
   );

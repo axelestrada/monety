@@ -16,9 +16,10 @@ import Animated, {
 type LoadingIndicatorProps = {
   visible?: boolean;
   style?: ViewStyle;
+  size?: number | "small" | "large"
 };
 
-export const LoadingIndicator = ({ visible, style }: LoadingIndicatorProps) => {
+export const LoadingIndicator = ({ visible, style, size = "large" }: LoadingIndicatorProps) => {
   const colors = useThemeColors();
 
   const animatedStyle = useAnimatedStyle(() => ({
@@ -33,7 +34,7 @@ export const LoadingIndicator = ({ visible, style }: LoadingIndicatorProps) => {
       className="flex-1 justify-center items-center"
       style={[StyleSheet.absoluteFillObject, style, animatedStyle]}
     >
-      <ActivityIndicator size="large" color={colors["--color-accent"]} />
+      <ActivityIndicator size={size} color={colors["--color-accent"]} />
     </Animated.View>
   );
 };
