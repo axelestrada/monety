@@ -15,5 +15,5 @@ export default function useLoadFonts() {
     }
   }, [loaded, error]);
 
-  return [error, loaded];
+  return [error, loaded] as const;
 }

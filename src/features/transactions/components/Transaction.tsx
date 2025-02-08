@@ -283,7 +283,7 @@ export const Transaction = ({
         >
           <View className="flex-row items-center">
             <View
-              className="p-2 flex items-center justify-center"
+              className="flex items-center justify-center"
               style={{
                 backgroundColor: color + "26",
                 borderRadius: 12,

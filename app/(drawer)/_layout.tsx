@@ -40,6 +40,6 @@ export default function Layout() {
         },
         drawerHideStatusBarOnOpen: false,
       }}
-    />
+    ></Drawer>
   );
 }

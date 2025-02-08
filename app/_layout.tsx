@@ -10,25 +10,20 @@ import { ThemeProvider } from "@/shared-components/providers/ThemeProviders";
 
 import { PortalProvider } from "@gorhom/portal";
 
-import useLoadFonts from "@/hooks/useLoadFonts";
-
-SplashScreen.preventAutoHideAsync();
-
 export default function Layout() {
-  const [error, loaded] = useLoadFonts();
-
-  if (!loaded && !error) return null;
-
+ 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
         <SQLiteProvider databaseName="monety.db">
           <ThemeProvider>
             <PortalProvider>
-              <Stack>
+              <Stack screenOptions={{
+                headerShown: false
+              }}>
+
                 <Stack.Screen
                   name="(drawer)"
-                  options={{ headerShown: false }}
                 />
               </Stack>
             </PortalProvider>
