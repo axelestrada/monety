@@ -25,11 +25,12 @@ export default function Layout() {
         <SQLiteProvider databaseName="monety.db">
           <ThemeProvider>
             <PortalProvider>
-              <Stack
-                screenOptions={{
-                  headerShown: false,
-                }}
-              />
+              <Stack>
+                <Stack.Screen
+                  name="(drawer)"
+                  options={{ headerShown: false }}
+                />
+              </Stack>
             </PortalProvider>
           </ThemeProvider>
         </SQLiteProvider>

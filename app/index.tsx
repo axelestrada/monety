@@ -1,5 +1,10 @@
-import HomeScreen from "@/screens/HomeScreen";
+import React from 'react'
+import { Text, View } from 'react-native'
 
-export default function Index() {
-  return <HomeScreen />;
+export const WelcomeScreen = () => {
+  return (
+    <View>
+      <Text>Welcome to Monety!</Text>
+    </View>
+  )
 }

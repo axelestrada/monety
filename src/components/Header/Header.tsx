@@ -10,6 +10,9 @@ import { OverallBalance } from "@/components/Header/OverallBalance";
 import { CustomDrawer } from "@/features/navigation/CustomDrawer";
 
 import { MenuIcon } from "@/icons/MenuIcon";
+import { useNavigation } from "expo-router";
+
+import { DrawerActions } from "@react-navigation/native";
 
 interface HeaderProps {
   overallBalance?: boolean;
@@ -27,22 +30,16 @@ export default function Header({
   title,
 }: HeaderProps) {
   const colors = useThemeColors();
-
-  const [drawerVisible, setDrawerVisible] = useState(false);
+  const navigation = useNavigation();
 
   return (
     <View className="px-1 bg-header-background z-20">
-      {drawer && (
-        <CustomDrawer
-          visible={drawerVisible}
-          closeDrawer={() => setDrawerVisible(false)}
-        />
-      )}
-
       <View className="flex-row justify-between items-center">
         <View className="flex-row items-center">
           {drawer && (
-            <HeaderAction onPress={() => setDrawerVisible(true)}>
+            <HeaderAction
+              onPress={() => navigation.dispatch(DrawerActions.openDrawer)}
+            >
               <MenuIcon stroke={colors["--color-accent"]} />
             </HeaderAction>
           )}

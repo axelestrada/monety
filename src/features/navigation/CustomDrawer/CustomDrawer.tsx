@@ -21,185 +21,162 @@ import { usePathname } from "expo-router";
 
 import * as Application from "expo-application";
 
-interface CustomDrawerProps {
-  visible: boolean;
-  closeDrawer: () => void;
-}
+import Constants from "expo-constants";
+import { useDrawerStatus } from "@react-navigation/drawer";
 
-export const CustomDrawer = ({ visible, closeDrawer }: CustomDrawerProps) => {
+export const CustomDrawer = () => {
   const colors = useThemeColors();
 
   const router = useRouter();
   const pathname = usePathname();
 
-  const [showStatusBar, setShowStatusBar] = useState(false);
-
-  useEffect(() => {
-    if (visible) {
-      setShowStatusBar(true);
-    } else {
-      setTimeout(() => {
-        setShowStatusBar(false);
-      }, 200);
-    }
-  }, [visible]);
+  const drawerStatus = useDrawerStatus();
 
   return (
-    <CustomModal
-      isVisible={visible}
-      onRequestClose={closeDrawer}
-      position="left"
-      animationType="slide-from-left"
-    >
-      <SafeAreaView className="flex-[1] w-4/5">
-        {showStatusBar && (
-          <StatusBar
-            style="auto"
-            backgroundColor={colors["--color-main-background"]}
+    <View className="bg-main-background flex-[1] rounded-r-2xl px-3 w-full">
+      {drawerStatus === "open" && (
+        <StatusBar
+          style="auto"
+          backgroundColor={colors["--color-main-background"]}
+        />
+      )}
+
+      <DrawerHeader />
+
+      <Separator className="mx-3 mb-6" />
+
+      <DrawerItem
+        active={pathname === "/"}
+        label="Home"
+        icon={({ isActive }) => (
+          <HomeOutline
+            fill={
+              isActive
+                ? colors["--color-accent"]
+                : colors["--color-text-secondary"]
+            }
           />
         )}
+        onPress={() => {
+          if (pathname !== "/") {
+            router.navigate("/");
+          }
+        }}
+      />
 
-        <View className="bg-main-background flex-[1] rounded-r-2xl px-3">
-          <DrawerHeader />
-
-          <Separator className="mx-3 mb-6" />
-
-          <DrawerItem
-            active={pathname === "/"}
-            label="Home"
-            icon={({ isActive }) => (
-              <HomeOutline
-                fill={
-                  isActive
-                    ? colors["--color-accent"]
-                    : colors["--color-text-secondary"]
-                }
-              />
-            )}
-            onPress={() => {
-              closeDrawer();
-
-              if (pathname !== "/") {
-                router.navigate("/");
-              }
-            }}
+      <DrawerItem
+        icon={({ isActive }) => (
+          <BarChartOutline
+            fill="none"
+            stroke={
+              isActive
+                ? colors["--color-accent"]
+                : colors["--color-text-secondary"]
+            }
           />
+        )}
+        label="Statistics"
+      />
 
-          <DrawerItem
-            icon={({ isActive }) => (
-              <BarChartOutline
-                fill="none"
-                stroke={
-                  isActive
-                    ? colors["--color-accent"]
-                    : colors["--color-text-secondary"]
-                }
-              />
-            )}
-            label="Statistics"
+      <DrawerItem
+        icon={({ isActive }) => (
+          <AntDesign
+            name="calculator"
+            size={22}
+            color={
+              isActive
+                ? colors["--color-accent"]
+                : colors["--color-text-secondary"]
+            }
           />
+        )}
+        label="Budgets"
+      />
 
-          <DrawerItem
-            icon={({ isActive }) => (
-              <AntDesign
-                name="calculator"
-                size={22}
-                color={
-                  isActive
-                    ? colors["--color-accent"]
-                    : colors["--color-text-secondary"]
-                }
-              />
-            )}
-            label="Budgets"
+      <Separator className="my-3.5" />
+
+      <DrawerItem
+        icon={({ isActive }) => (
+          <Feather
+            name="settings"
+            size={22}
+            color={
+              isActive
+                ? colors["--color-accent"]
+                : colors["--color-text-secondary"]
+            }
           />
+        )}
+        label="Settings"
+      />
 
-          <Separator className="my-3.5" />
-
-          <DrawerItem
-            icon={({ isActive }) => (
-              <Feather
-                name="settings"
-                size={22}
-                color={
-                  isActive
-                    ? colors["--color-accent"]
-                    : colors["--color-text-secondary"]
-                }
-              />
-            )}
-            label="Settings"
+      <DrawerItem
+        icon={({ isActive }) => (
+          <Feather
+            name="upload-cloud"
+            size={22}
+            color={
+              isActive
+                ? colors["--color-accent"]
+                : colors["--color-text-secondary"]
+            }
           />
+        )}
+        label="Backup & restore"
+      />
 
-          <DrawerItem
-            icon={({ isActive }) => (
-              <Feather
-                name="upload-cloud"
-                size={22}
-                color={
-                  isActive
-                    ? colors["--color-accent"]
-                    : colors["--color-text-secondary"]
-                }
-              />
-            )}
-            label="Backup & restore"
+      <Separator className="my-3.5" />
+
+      <DrawerItem
+        icon={({ isActive }) => (
+          <MaterialCommunityIcons
+            name="check-decagram-outline"
+            size={24}
+            color={
+              isActive
+                ? colors["--color-accent"]
+                : colors["--color-text-secondary"]
+            }
           />
+        )}
+        label="Get premium"
+      />
 
-          <Separator className="my-3.5" />
-
-          <DrawerItem
-            icon={({ isActive }) => (
-              <MaterialCommunityIcons
-                name="check-decagram-outline"
-                size={24}
-                color={
-                  isActive
-                    ? colors["--color-accent"]
-                    : colors["--color-text-secondary"]
-                }
-              />
-            )}
-            label="Get premium"
+      <DrawerItem
+        icon={({ isActive }) => (
+          <Feather
+            name="star"
+            size={22}
+            color={
+              isActive
+                ? colors["--color-accent"]
+                : colors["--color-text-secondary"]
+            }
           />
+        )}
+        label="Rate this app"
+      />
 
-          <DrawerItem
-            icon={({ isActive }) => (
-              <Feather
-                name="star"
-                size={22}
-                color={
-                  isActive
-                    ? colors["--color-accent"]
-                    : colors["--color-text-secondary"]
-                }
-              />
-            )}
-            label="Rate this app"
+      <DrawerItem
+        icon={({ isActive }) => (
+          <MaterialCommunityIcons
+            name="comment-alert-outline"
+            size={24}
+            color={
+              isActive
+                ? colors["--color-accent"]
+                : colors["--color-text-secondary"]
+            }
           />
+        )}
+        label="Contact us"
+      />
 
-          <DrawerItem
-            icon={({ isActive }) => (
-              <MaterialCommunityIcons
-                name="comment-alert-outline"
-                size={24}
-                color={
-                  isActive
-                    ? colors["--color-accent"]
-                    : colors["--color-text-secondary"]
-                }
-              />
-            )}
-            label="Contact us"
-          />
-
-          <View className="flex-1 justify-end py-3.5">
-            <CustomText className="font-[Rounded-Regular] text-xs text-center text-text-secondary">
-              v {Application.nativeApplicationVersion}
-            </CustomText>
-          </View>
-        </View>
-      </SafeAreaView>
-    </CustomModal>
+      <View className="flex-1 justify-end py-3.5">
+        <CustomText className="font-[Rounded-Regular] text-xs text-center text-text-secondary">
+          v {Application.nativeApplicationVersion}
+        </CustomText>
+      </View>
+    </View>
   );
 };

@@ -145,7 +145,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <Screen showBottomNavigationBar pathname="/">
+    <Screen>
       <DateRangePickerProvider>
         <Header drawer overallBalance showDateRange title={getHeaderTitle()}>
           <HeaderAction

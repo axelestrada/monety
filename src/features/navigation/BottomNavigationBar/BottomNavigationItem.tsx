@@ -39,7 +39,7 @@ export const BottomNavigationItem = ({
     }),
     transform: [
       {
-        scaleX: withTiming(isActive ? 1 : 0, { duration: 150 }),
+        scaleX: withTiming(isActive ? 1 : 0.7, { duration: 150 }),
       },
     ],
   }));
