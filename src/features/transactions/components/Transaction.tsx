@@ -1,6 +1,6 @@
 import {
-  Alert,
   StyleProp,
+  StyleSheet,
   TouchableHighlight,
   TouchableOpacity,
   Vibration,
@@ -56,6 +56,7 @@ import {
   GestureDetector,
   NativeGesture,
 } from "react-native-gesture-handler";
+import { Alert } from "@/components/Alert";
 
 interface TransactionProps {
   transaction: ITransaction;
@@ -139,46 +140,29 @@ export const Transaction = ({
     subtitleColor = getColor(origin?.color);
   }
 
-  const onDelete = useCallback(() => {
-    Alert.alert(
-      "Delete Transaction",
-      "Are you sure you want to delete this transaction?",
-      [
-        {
-          text: "No, Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Yes, Delete",
-          onPress: async () => {
-            await db.runAsync("DELETE FROM Transactions WHERE id = ?", [
-              transaction.id,
-            ]);
-
-            if (transaction.type === "income") {
-              await db.runAsync(
-                "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
-                [transaction.amount, transaction.destinationId]
-              );
-            } else {
-              await db.runAsync(
-                "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
-                [transaction.amount, transaction.originId]
-              );
-            }
-
-            const accounts = await db.getAllAsync<any>(
-              "SELECT * FROM Accounts;"
-            );
-            dispatch(
-              accountsServices.actions.setAccounts(
-                accounts.map((account) => normalizeAccount(account))
-              )
-            );
-          },
-        },
-      ]
+  const deleteTransaction = useCallback(async () => {
+    await db.runAsync("DELETE FROM Transactions WHERE id = ?", [
+      transaction.id,
+    ]);
+    if (transaction.type === "income") {
+      await db.runAsync(
+        "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
+        [transaction.amount, transaction.destinationId]
+      );
+    } else {
+      await db.runAsync(
+        "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
+        [transaction.amount, transaction.originId]
+      );
+    }
+    const accounts = await db.getAllAsync<any>("SELECT * FROM Accounts;");
+    dispatch(
+      accountsServices.actions.setAccounts(
+        accounts.map((account) => normalizeAccount(account))
+      )
     );
+
+    setIsAlertVisible(false);
   }, [transaction]);
 
   const opacity = useSharedValue(0);
@@ -197,8 +181,33 @@ export const Transaction = ({
     console.log("Edit");
   };
 
-  const transactionPanGesture = Gesture.Pan()
+  const onDelete = () => {
+    setIsAlertVisible(true);
+  };
+
+  const underlayOpacity = useSharedValue(0);
+
+  const hideUnderlay = () => {
+    underlayOpacity.value = withTiming(0, {
+      duration: 100,
+    });
+  };
+
+  const showUnderlay = () => {
+    underlayOpacity.value = withTiming(0.5, {
+      duration: 100,
+    });
+  };
+
+  const handleLongPress = () => {
+    Vibration.vibrate(50);
+  };
+
+  const panGesture = Gesture.Pan()
     .activeOffsetX([-10, 10])
+    .onBegin(() => {
+      runOnJS(showUnderlay)();
+    })
     .onUpdate((event) => {
       translateX.value = Math.min(
         Math.max(event.translationX, -BUTTON_WIDTH),
@@ -212,8 +221,28 @@ export const Transaction = ({
         runOnJS(executeAction)(onEdit);
       }
       translateX.value = withTiming(0, { duration: 150 });
+      runOnJS(hideUnderlay)();
     })
-    .simultaneousWithExternalGesture(externalScrollGesture);
+    .simultaneousWithExternalGesture(externalScrollGesture)
+    .onTouchesUp(() => {
+      runOnJS(hideUnderlay)();
+    })
+    .onTouchesCancelled(() => {
+      runOnJS(hideUnderlay)();
+    });
+
+  const tapGesture = Gesture.LongPress()
+    .onTouchesDown(() => {
+      runOnJS(showUnderlay)();
+    })
+    .onStart(() => {
+      runOnJS(handleLongPress)();
+    })
+    .onTouchesUp(() => {
+      runOnJS(hideUnderlay)();
+    });
+
+  const composed = Gesture.Simultaneous(panGesture, tapGesture);
 
   const transactionAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -229,11 +258,11 @@ export const Transaction = ({
     };
   });
 
-  useEffect(() => {
-    return () => {
-      setShowActions(false);
+  const underlayStyle = useAnimatedStyle(() => {
+    return {
+      opacity: underlayOpacity.value,
     };
-  }, []);
+  });
 
   useEffect(() => {
     opacity.value = withDelay(
@@ -249,17 +278,24 @@ export const Transaction = ({
     );
   }, [opacity, scale, index]);
 
-  const transactionStyle = useAnimatedStyle(() => ({
-    opacity: opacity.value,
-    transform: [
-      {
-        scale: scale.value,
-      },
-    ],
-  }));
+  const [isAlertVisible, setIsAlertVisible] = useState(false);
 
   return (
     <View className="relative">
+      <Alert
+        isVisible={isAlertVisible}
+        title="Delete transaction?"
+        onRequestClose={() => {
+          setIsAlertVisible(false);
+        }}
+        onCancel={() => {
+          setIsAlertVisible(false);
+        }}
+        onSuccess={() => {
+          deleteTransaction();
+        }}
+      />
+
       {showActions && (
         <View
           className="absolute h-full left-0 justify-center items-center"
@@ -276,7 +312,7 @@ export const Transaction = ({
         </View>
       )}
 
-      <GestureDetector gesture={transactionPanGesture}>
+      <GestureDetector gesture={composed}>
         <Animated.View
           style={[transactionAnimatedStyle, style]}
           className="z-10 bg-main-background py-4 border-b border-separator px-3"
@@ -356,6 +392,18 @@ export const Transaction = ({
               })}
             </CustomText>
           </View>
+
+          <Animated.View
+            className="z-10"
+            style={[
+              StyleSheet.absoluteFillObject,
+              {
+                backgroundColor: themeColors["--color-separator"],
+                opacity: 0.5,
+              },
+              underlayStyle,
+            ]}
+          />
         </Animated.View>
       </GestureDetector>
 
