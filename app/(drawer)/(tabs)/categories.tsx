@@ -19,6 +19,13 @@ import { useCallback, useState } from "react";
 import { Button, Text, TextInput, View } from "react-native";
 import { parse } from "react-native-svg";
 
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+
 export default function Categories() {
   const themeColors = useThemeColors();
   const { colorScheme } = useColorScheme();
@@ -76,6 +83,12 @@ export default function Categories() {
       <Header title="Categories" drawer showDateRange overallBalance></Header>
 
       <MainContainer>
+        <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1 }}
+          className="bg-main-background pb-4 relative"
+          
+        >
         <View className="flex-row flex-wrap">
           {colors.map((color) => (
             <View
@@ -170,7 +183,7 @@ export default function Categories() {
           />
 
           <Button title="Submit" onPress={handleSubmit} />
-        </View>
+        </View></Animated.ScrollView>
       </MainContainer>
     </Screen>
   );

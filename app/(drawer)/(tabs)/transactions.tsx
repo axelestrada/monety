@@ -11,6 +11,13 @@ import { Button, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import { useTypedSelector } from "@/store";
 
+import Animated, {
+  runOnJS,
+  useAnimatedStyle,
+  useSharedValue,
+  withSpring,
+} from "react-native-reanimated";
+
 export default function Transactions() {
   const db = useSQLiteContext();
   const dispatch = useAppDispatch();
@@ -103,6 +110,11 @@ export default function Transactions() {
       <Header title="Transactions" overallBalance showDateRange drawer />
 
       <MainContainer>
+        <Animated.ScrollView
+          showsVerticalScrollIndicator={false}
+          contentContainerStyle={{ flexGrow: 1 }}
+          className="bg-main-background pb-4 relative"
+        >
         <View className="m-5">
           <View className="mx-3">
             <Text className="text-text-primary">date: {transaction.date}</Text>
@@ -186,7 +198,7 @@ export default function Transactions() {
           />
 
           <Button title="Submit" onPress={handleSubmit} />
-        </View>
+        </View></Animated.ScrollView>
       </MainContainer>
     </Screen>
   );
