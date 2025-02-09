@@ -73,11 +73,24 @@ export default function Transactions() {
             "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
             [transaction.amount, transaction.destinationId],
           );
-        } else {
+        } 
+        else if (transaction.type === "expense") {
           await db.runAsync(
             "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
             [transaction.amount, transaction.originId],
           );
+        }
+        else if (transaction.type === "transfer") {
+await db.runAsync(
+            "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
+            [transaction.amount, transaction.originId],
+          );
+          
+          await db.runAsync(
+            "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
+            [transaction.amount, transaction.destinationId],
+          );
+          
         }
 
         const accounts = await db.getAllAsync<any>("SELECT * FROM Accounts;");
