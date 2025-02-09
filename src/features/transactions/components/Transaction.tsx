@@ -145,17 +145,31 @@ export const Transaction = ({
     await db.runAsync("DELETE FROM Transactions WHERE id = ?", [
       transaction.id,
     ]);
+    
     if (transaction.type === "income") {
       await db.runAsync(
         "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
         [transaction.amount, transaction.destinationId]
       );
-    } else {
+    } 
+    else if (transaction.type === "expense") {
       await db.runAsync(
         "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
         [transaction.amount, transaction.originId]
       );
     }
+    else if (transaction.type === "transfer") {
+      await db.runAsync(
+        "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
+        [transaction.amount, transaction.originId]
+      );
+
+      await db.runAsync(
+        "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
+        [transaction.amount, transaction.destinationId]
+      );
+    }
+    
     const accounts = await db.getAllAsync<any>("SELECT * FROM Accounts;");
     dispatch(
       accountsServices.actions.setAccounts(

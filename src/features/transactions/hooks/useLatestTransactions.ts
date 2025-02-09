@@ -27,8 +27,7 @@ export default function useLatestTransactions() {
           .getAllAsync<any>(
             "SELECT * FROM Transactions ORDER BY date DESC LIMIT 10;"
           )
-          .then((res) => (result = res)),
-        sleep(300),
+          .then((res) => (result = res))
       ]);
 
       setLatestTransactions(

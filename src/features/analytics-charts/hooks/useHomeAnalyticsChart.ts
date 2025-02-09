@@ -60,7 +60,6 @@ export const useHomeAnalyticsChart = () => {
               }
             });
           }),
-        sleep(300),
       ]);
 
       setTransactionsSummary(
