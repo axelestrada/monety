@@ -117,9 +117,9 @@ export default function Transactions() {
         >
         <View className="m-5">
           <View className="mx-3">
-            <Text className="text-text-primary">date: {transaction.date}</Text>
+            <Text className="text-text-primary">date: {moment(parseInt(transaction.date) * 1000).format()}</Text>
             <Text className="text-text-primary">
-              createdAt: {transaction.createdAt}
+              createdAt: {moment(transaction.createdAt * 1000).format()}
             </Text>
             <Text className="text-text-primary">
               amount: {transaction.amount}
