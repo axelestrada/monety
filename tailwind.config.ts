@@ -35,6 +35,7 @@ module.exports = {
           DEFAULT: "var(--color-accent)",
           "50": "var(--color-accent-50)",
           "25": "var(--color-accent-25)",
+          dark: "var(--color-accent-dark)",
         },
         "card-background": {
           DEFAULT: "var(--color-card-background)",
@@ -74,6 +75,10 @@ module.exports = {
         },
         "accent-background": {
           DEFAULT: "var(--color-accent-background)",
+        },
+        "navbar-item": {
+          DEFAULT: "var(--color-navbar-item)",
+          active: "var(--color-navbar-item-active)",
         },
         main: "#1B1D1C",
         "light-background": "#f5f6f7",

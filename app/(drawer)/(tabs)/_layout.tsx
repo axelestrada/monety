@@ -18,24 +18,27 @@ import { HeaderTitle } from "@/components/Header/HeaderTitle";
 
 import Constants from "expo-constants";
 import { BottomNavigationBar } from "@/features/navigation/BottomNavigationBar";
+import { PremiumBannerProvider } from "@/components/PremiumBanner/PremiumBannerContext";
 
 export default function Layout() {
   return (
-    <Tabs
-      tabBar={() => <BottomNavigationBar />}
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Tabs.Screen name="index" />
+    <PremiumBannerProvider>
+      <Tabs
+        tabBar={() => <BottomNavigationBar />}
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Tabs.Screen name="index" />
 
-      <Tabs.Screen name="accounts" />
+        <Tabs.Screen name="accounts" />
 
-      <Tabs.Screen name="categories" />
+        <Tabs.Screen name="categories" />
 
-      <Tabs.Screen name="transactions" />
+        <Tabs.Screen name="transactions" />
 
-      <Tabs.Screen name="statistics" />
-    </Tabs>
+        <Tabs.Screen name="statistics" />
+      </Tabs>
+    </PremiumBannerProvider>
   );
 }
