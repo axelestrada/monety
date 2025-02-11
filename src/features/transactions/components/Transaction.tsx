@@ -1,15 +1,12 @@
+import moment from "moment";
+
 import {
   StyleProp,
   StyleSheet,
-  TouchableHighlight,
-  TouchableOpacity,
   Vibration,
   View,
   ViewStyle,
 } from "react-native";
-import moment, { duration } from "moment";
-
-import { useColorScheme } from "nativewind";
 
 import {
   Feather,
@@ -17,6 +14,8 @@ import {
   MaterialCommunityIcons,
   Octicons,
 } from "@expo/vector-icons";
+
+import { useColorScheme } from "nativewind";
 
 import { CustomText } from "@/components/CustomText";
 
@@ -173,7 +172,7 @@ export const Transaction = ({
   const translateX = useSharedValue(0);
 
   const executeAction = (action: () => void) => {
-    Vibration.vibrate(50);
+    Vibration.vibrate(25);
     action();
   };
 
@@ -200,7 +199,7 @@ export const Transaction = ({
   };
 
   const handleLongPress = () => {
-    Vibration.vibrate(50);
+    Vibration.vibrate(25);
   };
 
   const panGesture = Gesture.Pan()
@@ -317,7 +316,12 @@ export const Transaction = ({
           style={[transactionAnimatedStyle, style]}
           className="z-10 bg-main-background py-4 border-b border-separator px-3"
         >
-          <View className="flex-row items-center">
+          <View
+            style={{
+              zIndex: 2,
+            }}
+            className="flex-row items-center"
+          >
             <View
               className="flex items-center justify-center"
               style={{
@@ -394,12 +398,12 @@ export const Transaction = ({
           </View>
 
           <Animated.View
-            className="z-10"
             style={[
               StyleSheet.absoluteFillObject,
               {
-                backgroundColor: themeColors["--color-separator"],
+                backgroundColor: themeColors["--color-underlay"],
                 opacity: 0.5,
+                zIndex: 1,
               },
               underlayStyle,
             ]}

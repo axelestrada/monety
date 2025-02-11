@@ -31,6 +31,7 @@ const themeColors = {
     "--color-separator": "#FDF4F7",
     "--color-navbar-item": "#6D4953",
     "--color-navbar-item-active": "#4E3239",
+    "--color-underlay": "#4E323926",
   },
   dark: {
     "--color-main-background": "#121212",
@@ -64,6 +65,7 @@ const themeColors = {
     "--color-error": "#f05264",
     "--color-text-white": "#F5F5F5",
     "--color-separator": "#F4EBEC1A",
+    "--color-underlay": "#F4EBEC1A",
   },
 };
 
