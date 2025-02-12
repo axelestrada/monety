@@ -55,7 +55,7 @@ import {
   GestureDetector,
   NativeGesture,
 } from "react-native-gesture-handler";
-import { Alert } from "@/components/Alert";
+import { useAlert } from "@/components/Alert/hooks/useAlert";
 
 interface TransactionProps {
   transaction: ITransaction;
@@ -73,6 +73,8 @@ export const Transaction = ({
   style,
   externalScrollGesture,
 }: TransactionProps) => {
+  const Alert = useAlert();
+
   const themeColors = useThemeColors();
   const { colorScheme = "light" } = useColorScheme();
 
@@ -200,6 +202,21 @@ export const Transaction = ({
 
   const handleLongPress = () => {
     Vibration.vibrate(25);
+    Alert.show({
+      title: "Delete transaction?",
+      buttons: [
+        {
+          title: "CANCEL",
+        },
+        {
+          title: "YES",
+          style: "primary",
+          onPress: () => {
+            deleteTransaction();
+          },
+        },
+      ],
+    });
   };
 
   const panGesture = Gesture.Pan()
@@ -281,20 +298,6 @@ export const Transaction = ({
 
   return (
     <View className="relative">
-      <Alert
-        isVisible={isAlertVisible}
-        title="Delete transaction?"
-        onRequestClose={() => {
-          setIsAlertVisible(false);
-        }}
-        onCancel={() => {
-          setIsAlertVisible(false);
-        }}
-        onSuccess={() => {
-          deleteTransaction();
-        }}
-      />
-
       {showActions && (
         <View
           className="absolute h-full left-0 justify-center items-center"

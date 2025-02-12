@@ -52,6 +52,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import ITransaction from "@/features/transactions/types/transaction";
+import { AlertProvider } from "@/components/Alert/AlertContext";
 const SWIPE_THRESHOLD = 55;
 const BUTTON_WIDTH = 70;
 
@@ -184,43 +185,45 @@ export default function HomeScreen() {
   const nativeGesture = Gesture.Native();
 
   return (
-    <Screen>
-      <DateRangePickerProvider>
-        <Header drawer overallBalance showDateRange title={getHeaderTitle()}>
-          <HeaderAction
-            icon={colorScheme === "dark" ? "sun" : "moon"}
-            onPress={toggleColorScheme}
-          />
-          <HeaderAction icon="calendar" />
-        </Header>
-
-        <DateRangePicker />
-      </DateRangePickerProvider>
-
-      <MainContainer>
-        <Animated.ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ flexGrow: 1 }}
-          className="bg-main-background pb-4 relative"
-          refreshControl={
-            <RefreshControl
-              refreshing={refreshing}
-              onRefresh={onRefresh}
-              colors={[colors["--color-text-secondary"]]}
-              progressBackgroundColor={colors["--color-card-background"]}
+    <AlertProvider>
+      <Screen>
+        <DateRangePickerProvider>
+          <Header drawer overallBalance showDateRange title={getHeaderTitle()}>
+            <HeaderAction
+              icon={colorScheme === "dark" ? "sun" : "moon"}
+              onPress={toggleColorScheme}
             />
-          }
-        >
-          <View className="px-3">
-            <HomeAnalyticsChart refreshing={refreshing} />
-          </View>
+            <HeaderAction icon="calendar" />
+          </Header>
 
-          <LatestTransactions
-            {...latestTransactions}
-            externalScrollGesture={nativeGesture}
-          />
-        </Animated.ScrollView>
-      </MainContainer>
-    </Screen>
+          <DateRangePicker />
+        </DateRangePickerProvider>
+
+        <MainContainer>
+          <Animated.ScrollView
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ flexGrow: 1 }}
+            className="bg-main-background pb-4 relative"
+            refreshControl={
+              <RefreshControl
+                refreshing={refreshing}
+                onRefresh={onRefresh}
+                colors={[colors["--color-text-secondary"]]}
+                progressBackgroundColor={colors["--color-card-background"]}
+              />
+            }
+          >
+            <View className="px-3">
+              <HomeAnalyticsChart refreshing={refreshing} />
+            </View>
+
+            <LatestTransactions
+              {...latestTransactions}
+              externalScrollGesture={nativeGesture}
+            />
+          </Animated.ScrollView>
+        </MainContainer>
+      </Screen>
+    </AlertProvider>
   );
 }
