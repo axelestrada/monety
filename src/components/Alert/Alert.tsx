@@ -18,11 +18,11 @@ export const Alert = ({ alertOptions, onRequestClose }: AlertProps) => {
     <View
       className="bg-main-background dark:bg-card-background rounded-3xl"
       style={{
-        minWidth: 220,
+        minWidth: 250,
       }}
     >
-      <View className="p-5 items-center border-b border-separator">
-        <CustomText className="font-[Rounded-Medium] text-text-secondary text-xs">
+      <View className="p-4 items-center border-b border-separator">
+        <CustomText className="font-[Rounded-Medium] text-text-secondary text-[11px]">
           {title}
         </CustomText>
       </View>
