@@ -183,7 +183,21 @@ export const Transaction = ({
   };
 
   const onDelete = () => {
-    setIsAlertVisible(true);
+    Alert.show({
+      title: "Delete transaction?",
+      buttons: [
+        {
+          title: "CANCEL",
+        },
+        {
+          title: "YES",
+          style: "primary",
+          onPress: () => {
+            deleteTransaction();
+          },
+        },
+      ],
+    });
   };
 
   const underlayOpacity = useSharedValue(0);
@@ -202,21 +216,6 @@ export const Transaction = ({
 
   const handleLongPress = () => {
     Vibration.vibrate(25);
-    Alert.show({
-      title: "Delete transaction?",
-      buttons: [
-        {
-          title: "CANCEL",
-        },
-        {
-          title: "YES",
-          style: "primary",
-          onPress: () => {
-            deleteTransaction();
-          },
-        },
-      ],
-    });
   };
 
   const panGesture = Gesture.Pan()

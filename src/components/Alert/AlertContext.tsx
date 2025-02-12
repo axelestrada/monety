@@ -28,8 +28,8 @@ export const AlertProvider = ({ children }: { children: ReactNode }) => {
   });
 
   const show = useCallback((options: AlertOptions) => {
-    setAlertOptions(options);
     setIsAlertVisible(true);
+    setAlertOptions(options);
   }, []);
 
   const close = useCallback(() => {
