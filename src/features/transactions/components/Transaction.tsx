@@ -145,39 +145,35 @@ export const Transaction = ({
     await db.runAsync("DELETE FROM Transactions WHERE id = ?", [
       transaction.id,
     ]);
-    
+
     if (transaction.type === "income") {
       await db.runAsync(
         "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
-        [transaction.amount, transaction.destinationId]
+        [transaction.amount, transaction.destinationId],
       );
-    } 
-    else if (transaction.type === "expense") {
+    } else if (transaction.type === "expense") {
       await db.runAsync(
         "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
-        [transaction.amount, transaction.originId]
+        [transaction.amount, transaction.originId],
       );
-    }
-    else if (transaction.type === "transfer") {
+    } else if (transaction.type === "transfer") {
       await db.runAsync(
         "UPDATE Accounts SET current_balance = current_balance + ? WHERE id = ?",
-        [transaction.amount, transaction.originId]
+        [transaction.amount, transaction.originId],
       );
 
       await db.runAsync(
         "UPDATE Accounts SET current_balance = current_balance - ? WHERE id = ?",
-        [transaction.amount, transaction.destinationId]
+        [transaction.amount, transaction.destinationId],
       );
     }
-    
+
     const accounts = await db.getAllAsync<any>("SELECT * FROM Accounts;");
     dispatch(
       accountsServices.actions.setAccounts(
-        accounts.map((account) => normalizeAccount(account))
-      )
+        accounts.map((account) => normalizeAccount(account)),
+      ),
     );
-
-    setIsAlertVisible(false);
   }, [transaction]);
 
   const opacity = useSharedValue(0);
@@ -188,7 +184,7 @@ export const Transaction = ({
   const translateX = useSharedValue(0);
 
   const executeAction = (action: () => void) => {
-    Vibration.vibrate(25);
+    Vibration.vibrate(50);
     action();
   };
 
@@ -229,27 +225,35 @@ export const Transaction = ({
   };
 
   const handleLongPress = () => {
-    Vibration.vibrate(25);
+    Vibration.vibrate(50);
   };
 
   const panGesture = Gesture.Pan()
-    .activeOffsetX([-10, 10])
+    .activeOffsetX([-12, 12])
     .onBegin(() => {
       runOnJS(showUnderlay)();
     })
     .onUpdate((event) => {
       translateX.value = Math.min(
         Math.max(event.translationX, -BUTTON_WIDTH),
-        BUTTON_WIDTH
+        BUTTON_WIDTH,
       );
     })
     .onEnd(() => {
+  
+      
       if (translateX.value <= -SWIPE_THRESHOLD) {
-        runOnJS(executeAction)(onDelete);
+        translateX.value = withTiming(0, { duration: 50 }, () => {
+          runOnJS(executeAction)(onDelete);
+        });
       } else if (translateX.value >= SWIPE_THRESHOLD) {
-        runOnJS(executeAction)(onEdit);
+        translateX.value = withTiming(0, { duration: 50 }, () => {
+          runOnJS(executeAction)(onEdit);
+        });
+      } else {
+        translateX.value = withTiming(0, { duration: 50 });
       }
-      translateX.value = withTiming(0, { duration: 150 });
+
       runOnJS(hideUnderlay)();
     })
     .simultaneousWithExternalGesture(externalScrollGesture)
@@ -298,12 +302,12 @@ export const Transaction = ({
       index * 100,
       withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) }, () => {
         runOnJS(setShowActions)(true);
-      })
+      }),
     );
 
     scale.value = withDelay(
       index * 100,
-      withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) })
+      withTiming(1, { duration: 300, easing: Easing.out(Easing.ease) }),
     );
   }, [opacity, scale, index]);
 
@@ -404,8 +408,8 @@ export const Transaction = ({
               {transaction.type === "expense"
                 ? "- "
                 : transaction.type === "income"
-                ? "+ "
-                : ""}
+                  ? "+ "
+                  : ""}
 
               {formatCurrency(transaction.amount, {
                 showSign: "never",

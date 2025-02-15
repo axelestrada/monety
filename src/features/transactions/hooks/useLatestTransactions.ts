@@ -6,7 +6,7 @@ import { normalizeTransaction } from "@/features/transactions/normalizers/normal
 import { sleep } from "@/utils/sleep";
 
 export default function useLatestTransactions() {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   const [latestTransactions, setLatestTransactions] = useState<ITransaction[]>(

@@ -87,7 +87,9 @@ export default function HomeScreen() {
         accounts.map((account) => normalizeAccount(account))
       )
     );
-  }, []);
+
+    latestTransactions.getLatestTransactions();
+  }, [latestTransactions.getLatestTransactions]);
 
   const translateX = useSharedValue(0);
   const transactionAnimatedStyle = useAnimatedStyle(() => {
@@ -112,9 +114,8 @@ export default function HomeScreen() {
   useEffect(() => {
     if (!loading && !error) {
       getData();
-      latestTransactions.getLatestTransactions();
     }
-  }, [getData, loading, error, latestTransactions.getLatestTransactions]);
+  }, [getData, loading, error]);
 
   const checkForUpdates = useCallback(async () => {
     try {
